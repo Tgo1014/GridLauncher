@@ -8,6 +8,10 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import okhttp3.Dispatcher
 import tgo1014.gridlauncher.data.DispatcherProviderImpl
 import tgo1014.gridlauncher.domain.models.DispatcherProvider
 import javax.inject.Singleton
@@ -26,6 +30,10 @@ abstract class AppModule {
         fun providePackageManager(@ApplicationContext context: Context): PackageManager {
             return context.packageManager
         }
+
+        @Provides
+        @Singleton
+        fun provideScope(): CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     }
 
 }

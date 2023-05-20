@@ -1,10 +1,9 @@
 package tgo1014.gridlauncher.domain.models
 
-import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
+import java.io.File
 
 data class App(
     val name: String,
-    val icon: Bitmap,
+    val icon: File,
     val packageName: String,
 )
