@@ -2,11 +2,10 @@ package tgo1014.gridlauncher.app.injection
 
 import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import tgo1014.gridlauncher.data.AppsRepositoryImpl
-import tgo1014.gridlauncher.domain.AppsRepository
+import tgo1014.gridlauncher.data.AppsManagerImpl
+import tgo1014.gridlauncher.domain.AppsManager
 import javax.inject.Singleton
 
 @Module
@@ -15,6 +14,6 @@ abstract class StorageModule {
 
     @Binds
     @Singleton
-    abstract fun providesAppsRepository(repo: AppsRepositoryImpl): AppsRepository
+    abstract fun bindAppsManager(repo: AppsManagerImpl): AppsManager
 
 }

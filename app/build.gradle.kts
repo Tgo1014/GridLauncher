@@ -68,6 +68,7 @@ dependencies {
     implementation(libs.material3)
     implementation(libs.bundles.hilt)
     kapt(libs.hilt.kapt)
+    implementation(libs.reorderable)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
