@@ -15,7 +15,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
@@ -26,7 +25,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -34,8 +32,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
-import coil.request.CachePolicy
-import coil.request.ImageRequest
 import tgo1014.gridlauncher.domain.models.App
 import tgo1014.gridlauncher.ui.theme.GridLauncherTheme
 import tgo1014.gridlauncher.ui.theme.plus
@@ -62,7 +58,7 @@ private fun HomeScreen(
     ) {
         items(
             items = state.appList,
-            span = { GridItemSpan(4) }
+            span = { GridItemSpan(2) }
         ) {
             Card(onClick = { onAppClicked(it) }) {
                 BoxWithConstraints(
@@ -82,21 +78,28 @@ private fun HomeScreen(
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
-                    val context = LocalContext.current
                     AsyncImage(
-                        model = ImageRequest.Builder(context)
-                            .data(it.icon)
-                            .memoryCacheKey(it.packageName)
-                            .diskCacheKey(it.packageName)
-                            .diskCachePolicy(CachePolicy.ENABLED)
-                            .memoryCachePolicy(CachePolicy.ENABLED)
-                            .build(),
+                        model = it.iconFile,
                         contentDescription = null,
                         //colorFilter = ColorFilter.tint(Color.Red, BlendMode.Modulate),
                         modifier = Modifier
                             .fillMaxSize(0.4f)
                             .align(Alignment.Center)
                     )
+//                    AsyncImage(
+//                        model = ImageRequest.Builder(context)
+//                            .data(it.iconFile)
+//                            .memoryCacheKey(it.packageName)
+//                            .diskCacheKey(it.packageName)
+//                            .diskCachePolicy(CachePolicy.ENABLED)
+//                            .memoryCachePolicy(CachePolicy.ENABLED)
+//                            .build(),
+//                        contentDescription = null,
+//                        //colorFilter = ColorFilter.tint(Color.Red, BlendMode.Modulate),
+//                        modifier = Modifier
+//                            .fillMaxSize(0.4f)
+//                            .align(Alignment.Center)
+//                    )
                 }
             }
 
