@@ -1,20 +1,12 @@
 package tgo1014.gridlauncher.ui.home
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.GridItemSpan
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
@@ -33,8 +25,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import tgo1014.gridlauncher.domain.models.App
+import tgo1014.gridlauncher.ui.TileLayout
+import tgo1014.gridlauncher.ui.composables.GridTile
 import tgo1014.gridlauncher.ui.theme.GridLauncherTheme
-import tgo1014.gridlauncher.ui.theme.plus
 
 @Composable
 fun HomeScreen(viewModel: HomeScreenViewModel = hiltViewModel()) {
@@ -50,15 +43,12 @@ private fun HomeScreen(
 ) = Box {
     var height by remember { mutableStateOf(Dp.Unspecified) }
     val padding = 6.dp
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(6),
-        verticalArrangement = Arrangement.spacedBy(padding),
-        horizontalArrangement = Arrangement.spacedBy(padding),
-        contentPadding = WindowInsets.systemBars.asPaddingValues() + PaddingValues(padding),
-    ) {
-        items(
-            items = state.appList,
-            span = { GridItemSpan(2) }
+    val items = state.appList.mapIndexed { index, it ->
+        GridTile(
+            column = 0,
+            row = 2 * index,
+            gridWidth = 2,
+            gridHeight = 2
         ) {
             Card(onClick = { onAppClicked(it) }) {
                 BoxWithConstraints(
@@ -102,9 +92,107 @@ private fun HomeScreen(
 //                    )
                 }
             }
-
         }
     }
+    if (items.isNotEmpty()) {
+        TileLayout(
+            content = items,
+            modifier = Modifier.fillMaxSize(),
+            footer = {
+                Text("FOOTER", modifier = Modifier.navigationBarsPadding())
+            }
+        )
+    }
+
+//    TileLayout(
+//        modifier = Modifier.fillMaxSize(),
+//        content = listOf(
+//            GridTile(4, 2, column = 1, row = 0) {
+//                Text(
+//                    "Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem",
+//                    modifier = Modifier
+//                        .background(Color.Red)
+//                        .fillMaxSize()
+//                )
+//            },
+//            GridTile(1, column = 0, row = 0) {
+//                Text(
+//                    "Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem",
+//                    modifier = Modifier.background(Color.Blue)
+//                )
+//            },
+//            GridTile(1, column = 0, row = 1) {
+//                Text(
+//                    "Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem",
+//                    modifier = Modifier.background(Color.Yellow)
+//                )
+//            }
+//        ),
+//        footer = {
+//            Row(
+//                modifier = Modifier.fillMaxWidth(),
+//                horizontalArrangement = Arrangement.End
+//            ) {
+//                Text(text = "All Apps")
+//
+//            }
+//        }
+//    )
+//    LazyVerticalGrid(
+//        columns = GridCells.Fixed(6),
+//        verticalArrangement = Arrangement.spacedBy(padding),
+//        horizontalArrangement = Arrangement.spacedBy(padding),
+//        contentPadding = WindowInsets.systemBars.asPaddingValues() + PaddingValues(padding),
+//    ) {
+//        items(
+//            items = state.appList,
+//            span = { GridItemSpan(2) }
+//        ) {
+//            Card(onClick = { onAppClicked(it) }) {
+//                BoxWithConstraints(
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .height(height)
+//                ) {
+//                    if (height == Dp.Unspecified) {
+//                        height = this.maxWidth
+//                    }
+//                    Text(
+//                        it.name,
+//                        Modifier
+//                            .align(Alignment.BottomStart)
+//                            .fillMaxWidth()
+//                            .padding(padding),
+//                        maxLines = 1,
+//                        overflow = TextOverflow.Ellipsis
+//                    )
+//                    AsyncImage(
+//                        model = it.iconFile,
+//                        contentDescription = null,
+//                        //colorFilter = ColorFilter.tint(Color.Red, BlendMode.Modulate),
+//                        modifier = Modifier
+//                            .fillMaxSize(0.4f)
+//                            .align(Alignment.Center)
+//                    )
+////                    AsyncImage(
+////                        model = ImageRequest.Builder(context)
+////                            .data(it.iconFile)
+////                            .memoryCacheKey(it.packageName)
+////                            .diskCacheKey(it.packageName)
+////                            .diskCachePolicy(CachePolicy.ENABLED)
+////                            .memoryCachePolicy(CachePolicy.ENABLED)
+////                            .build(),
+////                        contentDescription = null,
+////                        //colorFilter = ColorFilter.tint(Color.Red, BlendMode.Modulate),
+////                        modifier = Modifier
+////                            .fillMaxSize(0.4f)
+////                            .align(Alignment.Center)
+////                    )
+//                }
+//            }
+//
+//        }
+//    }
 }
 
 @Preview(showBackground = true, showSystemUi = true)
