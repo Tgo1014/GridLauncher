@@ -1,6 +1,5 @@
 package tgo1014.gridlauncher.ui
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,18 +15,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import eu.wewox.lazytable.LazyTable
-import eu.wewox.lazytable.LazyTableItem
-import eu.wewox.lazytable.lazyTableDimensions
-import tgo1014.gridlauncher.ui.composables.GridTile
+import tgo1014.gridlauncher.ui.models.GridItem
 
 @Composable
 fun TileLayout(
-    content: List<GridTile>,
+    content: List<GridItem>,
     modifier: Modifier = Modifier,
     footer: @Composable () -> Unit = {},
     columns: Int = 6,
 ) {
+    //LazyColumn(content = )
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxWidth()
@@ -35,41 +32,41 @@ fun TileLayout(
     ) {
         val gridItemSize = maxWidth / columns
         Column {
-            LazyTable(
-                dimensions = lazyTableDimensions({ gridItemSize }, { gridItemSize }),
-            ) {
-                items(1,
-                    layoutInfo = { tile ->
-                        LazyTableItem(
-                            column = tile.item.column,
-                            row = tile.item.row,
-                            columnsCount = tile.item.gridWidth,
-                            rowsCount = tile.item.gridHeight
-                        )
-                    }
-                ) {
-                    LazyTableItem()
-                }
-                items(
-                    items = content,
-                    layoutInfo = { tile ->
-                        LazyTableItem(
-                            column = tile.item.column,
-                            row = tile.item.row,
-                            columnsCount = tile.item.gridWidth,
-                            rowsCount = tile.item.gridHeight
-                        )
-                    }
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .padding(2.dp)
-                            .fillMaxSize()
-                    ) {
-                        it.content()
-                    }
-                }
-            }
+//            LazyTable(
+//                dimensions = lazyTableDimensions({ gridItemSize }, { gridItemSize }),
+//            ) {
+//                items(1,
+//                    layoutInfo = { tile ->
+//                        LazyTableItem(
+//                            column = tile.item.column,
+//                            row = tile.item.row,
+//                            columnsCount = tile.item.gridWidth,
+//                            rowsCount = tile.item.gridHeight
+//                        )
+//                    }
+//                ) {
+//                    LazyTableItem()
+//                }
+//                items(
+//                    items = content,
+//                    layoutInfo = { tile ->
+//                        LazyTableItem(
+//                            column = tile.item.column,
+//                            row = tile.item.row,
+//                            columnsCount = tile.item.gridWidth,
+//                            rowsCount = tile.item.gridHeight
+//                        )
+//                    }
+//                ) {
+//                    Box(
+//                        modifier = Modifier
+//                            .padding(2.dp)
+//                            .fillMaxSize()
+//                    ) {
+//                        it.content()
+//                    }
+//                }
+//            }
             footer()
         }
     }
@@ -81,26 +78,9 @@ private fun Preview() {
     TileLayout(
         modifier = Modifier.fillMaxSize(),
         content = listOf(
-            GridTile(4, 2, column = 1, row = 0) {
-                Text(
-                    "Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem",
-                    modifier = Modifier
-                        .background(Color.Red)
-                        .fillMaxSize()
-                )
-            },
-            GridTile(1, column = 0, row = 0) {
-                Text(
-                    "Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem",
-                    modifier = Modifier.background(Color.Blue)
-                )
-            },
-            GridTile(1, column = 0, row = 1) {
-                Text(
-                    "Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem",
-                    modifier = Modifier.background(Color.Yellow)
-                )
-            }
+            GridItem("FooBar 1", 4, 2, column = 1, row = 0),
+            GridItem("FooBar 2", 1, column = 1, row = 0),
+            GridItem("FooBar 3", 4, column = 0, row = 1),
         ),
         footer = {
             Row(
@@ -128,12 +108,8 @@ private fun PreviewScroll() {
         modifier = Modifier
             .fillMaxSize()
             .padding(8.dp),
-        content = items.mapIndexed { index, item ->
-            GridTile(3, 30, index * 3) {
-                Box(Modifier.fillMaxSize()) {
-                    Text(index.toString())
-                }
-            }
+        content = List(items.size) { index ->
+            GridItem("FooBar 1", 3, column = 0, row = index * 3)
         }
     )
 }

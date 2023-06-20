@@ -1,9 +1,10 @@
 [versions]
 accompanist-systemuicontroller = "0.31.2-alpha"
 agp = "8.0.2"
-coil-compose = "2.3.0"
+coil-compose = "2.4.0"
 datastore = "1.0.0"
 kotlinx-serialization-json = "1.5.1"
+lazytable = "1.1.0"
 org-jetbrains-kotlin-android = "1.8.21"
 core-ktx = "1.10.1"
 junit = "4.13.2"
@@ -24,6 +25,7 @@ junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext-junit" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
+lazytable = { module = "io.github.oleksandrbalan:lazytable", version.ref = "lazytable" }
 lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle-runtime-ktx" }
 lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycle-runtime-ktx" }
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity-compose" }
@@ -38,7 +40,7 @@ ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 material3 = { group = "androidx.compose.material3", name = "material3" }
 hilt = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-kapt = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
-hilt-navigation = { group = "androidx.hilt", name = "hilt-navigation-compose", version = "1.0.0" }
+hilt-navigation = { group = "androidx.hilt", name = "hilt-navigation-compose", version = "1.1.0-alpha01" }
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "agp" }

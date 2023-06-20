@@ -65,7 +65,7 @@ hilt { enableAggregatingTask = true }
 
 dependencies {
 
-    api(platform("dev.chrisbanes.compose:compose-bom:2023.04.00-alpha04"))
+    api(platform("dev.chrisbanes.compose:compose-bom:2023.04.00-beta02"))
 
     implementation(libs.core.ktx)
     implementation(libs.lifecycle.runtime.ktx)
@@ -92,5 +92,5 @@ dependencies {
     debugImplementation(libs.ui.tooling)
     debugImplementation(libs.ui.test.manifest)
 
-    implementation("io.github.oleksandrbalan:lazytable:+")
+    implementation(libs.lazytable)
 }
