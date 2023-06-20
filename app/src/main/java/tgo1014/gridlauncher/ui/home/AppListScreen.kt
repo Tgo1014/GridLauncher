@@ -60,7 +60,7 @@ fun AppListScreen(
         modifier = Modifier.fillMaxSize()
     ) {
         val listByLetter = appList
-            .sortedBy { it.name.firstOrNull() }
+            .sortedBy { it.name.uppercase().firstOrNull() }
             .groupBy { it.name.firstOrNull() }
         listByLetter.forEach { group ->
             item {

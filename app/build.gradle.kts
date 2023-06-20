@@ -9,14 +9,14 @@ plugins {
 
 android {
     namespace = "tgo1014.gridlauncher"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "tgo1014.gridlauncher"
         minSdk = 21
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
-        versionName = "1.0"
+        versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -65,14 +65,15 @@ hilt { enableAggregatingTask = true }
 
 dependencies {
 
-    api(platform("dev.chrisbanes.compose:compose-bom:2023.04.00-beta02"))
+   // api(platform("dev.chrisbanes.compose:compose-bom:2023.04.00-beta02"))
 
     implementation(libs.core.ktx)
     implementation(libs.lifecycle.runtime.ktx)
     implementation(libs.lifecycle.runtime.compose)
     implementation(libs.activity.compose)
-    //implementation(platform(libs.compose.bom))
+    implementation(platform(libs.compose.bom))
     implementation(libs.ui)
+    implementation(libs.ui.util)
     implementation(libs.ui.graphics)
     implementation(libs.ui.tooling.preview)
     implementation(libs.material3)
