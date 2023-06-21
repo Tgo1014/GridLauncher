@@ -9,8 +9,6 @@ import android.content.pm.ResolveInfo
 import android.os.Build
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import tgo1014.gridlauncher.domain.AppIconManager
 import tgo1014.gridlauncher.domain.AppsManager
@@ -18,8 +16,6 @@ import tgo1014.gridlauncher.domain.AppsManagerDataSource
 import tgo1014.gridlauncher.domain.models.App
 import javax.inject.Inject
 
-
-@Suppress("DEPRECATION")
 class AppsManagerImpl @Inject constructor(
     @ApplicationContext private val context: Context,
     private val packageManager: PackageManager,

@@ -10,4 +10,5 @@ data class App(
     val packageName: String = "",
 ) {
     val iconFile get() = File(iconPath)
+    val nameFirstLetter = name.firstOrNull() ?: '#'
 }

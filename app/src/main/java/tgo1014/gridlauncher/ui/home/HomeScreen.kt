@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -29,7 +28,11 @@ import tgo1014.gridlauncher.ui.theme.GridLauncherTheme
 @Composable
 fun HomeScreen(viewModel: HomeScreenViewModel = hiltViewModel()) {
     val state by viewModel.stateFlow.collectAsStateWithLifecycle()
-    HomeScreen(state, onAppClicked = viewModel::onOpenApp)
+    HomeScreen(
+        state = state,
+        onAppClicked = viewModel::onOpenApp,
+        onOpenNotificationShade = viewModel::openNotificationShade
+    )
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -37,6 +40,7 @@ fun HomeScreen(viewModel: HomeScreenViewModel = hiltViewModel()) {
 private fun HomeScreen(
     state: HomeState,
     onAppClicked: (App) -> Unit = {},
+    onOpenNotificationShade: () -> Unit = {},
 ) = BoxWithConstraints {
     val pagerState = rememberPagerState()
     val scope = rememberCoroutineScope()
@@ -62,6 +66,7 @@ private fun HomeScreen(
             0 -> GridScreenScreen(
                 appList = state.appList,
                 onAppClicked = onAppClicked,
+                onOpenNotificationShade = onOpenNotificationShade,
                 onFooterClicked = {
                     scope.launch {
                         pagerState.animateScrollToPage(1, animationSpec = tween(1000))
@@ -69,11 +74,13 @@ private fun HomeScreen(
                 }
             )
 
-            1 -> AppListScreen(appList = state.appList, onAppClicked = onAppClicked)
+            1 -> AppListScreen(
+                appList = state.appList,
+                onAppClicked = onAppClicked,
+                onOpenNotificationShade = onOpenNotificationShade
+            )
         }
     }
-    Text(scrollOffset.toString(), color = Color.Red)
-
 }
 
 @Preview(showBackground = true, showSystemUi = true)

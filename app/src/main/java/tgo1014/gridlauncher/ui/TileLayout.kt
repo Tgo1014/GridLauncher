@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.requiredHeightIn
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,9 +28,10 @@ import tgo1014.gridlauncher.ui.models.GridItem
 
 @Composable
 fun TileLayout(
-    content: List<GridItem>,
+    appList: List<GridItem>,
     modifier: Modifier = Modifier,
     footer: @Composable () -> Unit = {},
+    isOnTop: (Boolean) -> Unit = {},
     columns: Int = 6,
 ) {
     BoxWithConstraints(
@@ -44,20 +46,8 @@ fun TileLayout(
                 contentPadding = WindowInsets.systemBars.asPaddingValues(),
                 dimensions = lazyTableDimensions({ gridItemSize }, { gridItemSize }),
             ) {
-//                items(1,
-//                    layoutInfo = { tile ->
-//                        LazyTableItem(
-//                            column = 0,
-//                            row = 0,
-//                            columnsCount = 2,
-//                            rowsCount = 2
-//                        )
-//                    }
-//                ) {
-//                    Box(Modifier.fillMaxSize())
-//                }
                 items(
-                    items = content,
+                    items = appList,
                     layoutInfo = { tile ->
                         LazyTableItem(
                             column = tile.column,
@@ -67,6 +57,12 @@ fun TileLayout(
                         )
                     }
                 ) {
+                    if (it == appList.firstOrNull()) {
+                        DisposableEffect(Unit) {
+                            isOnTop(true)
+                            onDispose { isOnTop(false) }
+                        }
+                    }
                     Box(
                         modifier = Modifier
                             .padding(2.dp)
@@ -85,8 +81,8 @@ fun TileLayout(
 @Preview(showBackground = true)
 private fun Preview() {
     TileLayout(
-       // modifier = Modifier.fillMaxSize(),
-        content = listOf(
+        // modifier = Modifier.fillMaxSize(),
+        appList = listOf(
             GridItem("FooBar 1", 4, 2, column = 1, row = 0),
             GridItem("FooBar 2", 1, column = 1, row = 0),
             GridItem("FooBar 3", 4, column = 0, row = 1),
@@ -116,7 +112,7 @@ private fun PreviewScroll() {
         modifier = Modifier
             .fillMaxSize()
             .padding(8.dp),
-        content = List(items.size) { index ->
+        appList = List(items.size) { index ->
             GridItem("FooBar 1", 3, column = 0, row = index * 3)
         }
     )
