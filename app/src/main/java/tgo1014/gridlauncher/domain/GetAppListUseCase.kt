@@ -17,8 +17,8 @@ class GetAppListUseCase @Inject constructor(
         .map { appList ->
             appList
                 .filterNot { it.packageName == context.packageName }
-                .sortedBy { app -> app.name }
                 .distinctBy { app -> app.name }
+                .sortedBy { app -> app.name }
         }
         .flowOn(dispatcherProvider.io)
 

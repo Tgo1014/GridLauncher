@@ -1,5 +1,6 @@
 package tgo1014.gridlauncher.ui
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -25,6 +26,17 @@ class MainActivity : ComponentActivity() {
                 HomeScreen()
             }
         }
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+//        if (intent?.action == Intent.ACTION_MAIN) {
+//            val alreadyOnHome = intent.flags and
+//                Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT == Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT
+//            if (!alreadyOnHome) {
+//                mainViewPager.setCurrentItem(0, true)
+//            }
+//        }
     }
 
 }

@@ -1,105 +1,84 @@
 package tgo1014.gridlauncher.ui.home
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.GridItemSpan
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material3.Card
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Text
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.lerp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.compose.AsyncImage
-import coil.request.CachePolicy
-import coil.request.ImageRequest
+import kotlinx.coroutines.launch
 import tgo1014.gridlauncher.domain.models.App
 import tgo1014.gridlauncher.ui.theme.GridLauncherTheme
-import tgo1014.gridlauncher.ui.theme.plus
 
 @Composable
 fun HomeScreen(viewModel: HomeScreenViewModel = hiltViewModel()) {
     val state by viewModel.stateFlow.collectAsStateWithLifecycle()
-    HomeScreen(state, onAppClicked = viewModel::onOpenApp)
+    HomeScreen(
+        state = state,
+        onAppClicked = viewModel::onOpenApp,
+        onOpenNotificationShade = viewModel::openNotificationShade
+    )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun HomeScreen(
     state: HomeState,
     onAppClicked: (App) -> Unit = {},
-) = Box {
-    var height by remember { mutableStateOf(Dp.Unspecified) }
-    val padding = 6.dp
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(6),
-        verticalArrangement = Arrangement.spacedBy(padding),
-        horizontalArrangement = Arrangement.spacedBy(padding),
-        contentPadding = WindowInsets.systemBars.asPaddingValues() + PaddingValues(padding),
+    onOpenNotificationShade: () -> Unit = {},
+) = BoxWithConstraints {
+    val pagerState = rememberPagerState()
+    val scope = rememberCoroutineScope()
+    var pagerWidth by remember { mutableStateOf(1) }
+    val scrollOffset by remember(pagerWidth) {
+        derivedStateOf { (pagerState.currentPage + pagerState.currentPageOffsetFraction) * pagerWidth }
+    }
+    val alpha = lerp(
+        start = 0f,
+        stop = 0.7f,
+        fraction = (scrollOffset / pagerWidth.toFloat()).coerceIn(0f, 1f)
+    )
+    HorizontalPager(
+        state = pagerState,
+        pageCount = 2,
+        beyondBoundsPageCount = 1,
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha))
+            .onSizeChanged { pagerWidth = it.width }
     ) {
-        items(
-            items = state.appList,
-            span = { GridItemSpan(4) }
-        ) {
-            Card(onClick = { onAppClicked(it) }) {
-                BoxWithConstraints(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(height)
-                ) {
-                    if (height == Dp.Unspecified) {
-                        height = this.maxWidth
+        when (it) {
+            0 -> GridScreenScreen(
+                appList = state.appList,
+                onAppClicked = onAppClicked,
+                onOpenNotificationShade = onOpenNotificationShade,
+                onFooterClicked = {
+                    scope.launch {
+                        pagerState.animateScrollToPage(1, animationSpec = tween(1000))
                     }
-                    Text(
-                        it.name,
-                        Modifier
-                            .align(Alignment.BottomStart)
-                            .fillMaxWidth()
-                            .padding(padding),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    val context = LocalContext.current
-                    AsyncImage(
-                        model = ImageRequest.Builder(context)
-                            .data(it.icon)
-                            .memoryCacheKey(it.packageName)
-                            .diskCacheKey(it.packageName)
-                            .diskCachePolicy(CachePolicy.ENABLED)
-                            .memoryCachePolicy(CachePolicy.ENABLED)
-                            .build(),
-                        contentDescription = null,
-                        //colorFilter = ColorFilter.tint(Color.Red, BlendMode.Modulate),
-                        modifier = Modifier
-                            .fillMaxSize(0.4f)
-                            .align(Alignment.Center)
-                    )
                 }
-            }
+            )
 
+            1 -> AppListScreen(
+                appList = state.appList,
+                onAppClicked = onAppClicked,
+                onOpenNotificationShade = onOpenNotificationShade
+            )
         }
     }
 }
@@ -107,5 +86,5 @@ private fun HomeScreen(
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 private fun HomeScreenPreview() = GridLauncherTheme {
-    //HomeScreen(HomeState(List(100) { "FooBar" }))
+    HomeScreen(HomeState())
 }

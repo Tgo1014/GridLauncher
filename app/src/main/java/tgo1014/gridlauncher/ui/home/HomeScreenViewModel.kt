@@ -9,12 +9,14 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import tgo1014.gridlauncher.domain.AppsManager
 import tgo1014.gridlauncher.domain.GetAppListUseCase
+import tgo1014.gridlauncher.domain.OpenNotificationShadeUseCase
 import tgo1014.gridlauncher.domain.models.App
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeScreenViewModel @Inject constructor(
     private val getAppListUseCase: GetAppListUseCase,
+    private val openNotificationShadeUseCase: OpenNotificationShadeUseCase,
     private val appsManager: AppsManager,
 ) : ViewModel() {
 
@@ -27,6 +29,10 @@ class HomeScreenViewModel @Inject constructor(
 
     fun onOpenApp(app: App) {
         appsManager.openApp(app)
+    }
+
+    fun openNotificationShade() {
+        openNotificationShadeUseCase()
     }
 
     private fun init() = viewModelScope.launch {
