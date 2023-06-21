@@ -9,7 +9,6 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.core.graphics.drawable.toBitmap
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -26,20 +25,20 @@ class AppIconManagerImpl @Inject constructor(
     private val packageManager: PackageManager,
 ) : AppIconManager {
 
-    override suspend fun getIcon(packageName: String): File? {
+    override suspend fun getIcon(packageName: String): File {
         return withContext(dispatcherProvider.io) {
             getIconFromCache(packageName) ?: cacheAngGetIcon(packageName)
         }
     }
 
     private fun getIconFromCache(packageName: String): File? {
-        return File(context.cacheDir, packageName).takeIf { it.exists() }
+        return File(context.cacheDir, "$packageName.png").takeIf { it.exists() }
     }
 
     private suspend fun cacheAngGetIcon(packageName: String): File {
         return withContext(Dispatchers.IO) {
             val iconBitmap = getDynamicIconFromSystem(packageName) ?: getDefaultIconFromSystem(packageName)
-            val cacheFile = File(context.cacheDir, packageName)
+            val cacheFile = File(context.cacheDir, "$packageName.png")
             if (cacheFile.exists()) {
                 cacheFile.delete()
             }
@@ -54,8 +53,10 @@ class AppIconManagerImpl @Inject constructor(
         return packageManager.getApplicationIcon(packageName).toBitmap()
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     private fun getDynamicIconFromSystem(packageName: String): Bitmap? {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            return null
+        }
         try {
             val drawable = packageManager.getApplicationIcon(packageName)
             if (drawable is BitmapDrawable) {
