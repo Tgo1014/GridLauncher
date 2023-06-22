@@ -18,7 +18,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import tgo1014.gridlauncher.domain.models.App
@@ -64,13 +63,9 @@ private fun Footer(onFooterClicked: () -> Unit = {}) {
             contentPadding = PaddingValues(start = 16.dp, end = 6.dp),
             modifier = Modifier
                 .padding(8.dp)
-                .align(Alignment.CenterEnd)
+                .align(Alignment.TopEnd)
         ) {
-            Text(
-                text = "All apps",
-                modifier = Modifier.align(Alignment.CenterVertically),
-                textAlign = TextAlign.Center
-            )
+            Text(text = "All apps")
             Icon(
                 imageVector = Icons.Default.KeyboardArrowRight,
                 contentDescription = null

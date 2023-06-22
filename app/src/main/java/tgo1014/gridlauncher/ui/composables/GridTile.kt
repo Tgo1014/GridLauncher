@@ -1,19 +1,23 @@
 package tgo1014.gridlauncher.ui.composables
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.Wallpapers
@@ -27,7 +31,9 @@ import tgo1014.gridlauncher.ui.theme.isPreview
 @Composable
 fun GridTile(item: GridItem, modifier: Modifier = Modifier) {
     Card(
-        colors = CardDefaults.cardColors(),
+        colors = CardDefaults.cardColors(
+            MaterialTheme.colorScheme.primaryContainer
+        ),
         modifier = modifier
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -37,21 +43,28 @@ fun GridTile(item: GridItem, modifier: Modifier = Modifier) {
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
                     .align(Alignment.BottomStart)
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .padding(8.dp),
             )
             val iconModifier = Modifier
                 .fillMaxSize(0.4f)
                 .align(Alignment.Center)
+            val filter = ColorFilter.lighting(
+                multiply = MaterialTheme.colorScheme.primary,
+                add = Color.Transparent
+            )
             if (isPreview) {
-                Icon(
+                Image(
                     imageVector = Icons.Default.Settings,
                     contentDescription = null,
-                    modifier = iconModifier
+                    modifier = iconModifier,
+                    //colorFilter = filter
                 )
             } else {
                 AsyncImage(
                     model = item.app.iconFile,
                     contentDescription = null,
+                    //colorFilter = filter,
                     //colorFilter = ColorFilter.tint(Color.Red, BlendMode.Modulate),
                     modifier = iconModifier
                 )

@@ -72,7 +72,7 @@ fun TileLayout(
                 layoutInfo = {
                     LazyTableItem(
                         column = 0,
-                        row = grid.maxOf { it.y } + 1,
+                        row = grid.maxOf { it.y } + 2,
                         columnsCount = columns,
                         rowsCount = 2
                     )

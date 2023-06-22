@@ -174,14 +174,14 @@ fun AppListScreen(
                         Image(
                             painter = painterResource(id = R.drawable.ic_launcher_foreground),
                             contentDescription = null,
-                            colorFilter = filter,
+                            // colorFilter = filter,
                             modifier = iconModifier
                         )
                     } else {
                         AsyncImage(
                             model = app.iconFile,
                             contentDescription = null,
-                            colorFilter = filter,
+                            // colorFilter = filter,
                             modifier = iconModifier
                         )
                     }
