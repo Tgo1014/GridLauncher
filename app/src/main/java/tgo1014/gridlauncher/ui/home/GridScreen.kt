@@ -30,20 +30,17 @@ import tgo1014.gridlauncher.ui.theme.detectConsumedVerticalDragGestures
 
 @Composable
 fun GridScreenScreen(
-    appList: List<App>,
+    items: List<GridItem>,
     onAppClicked: (App) -> Unit = {},
     onFooterClicked: () -> Unit = {},
     onOpenNotificationShade: () -> Unit = {},
 ) {
-    if (appList.isEmpty()) {
+    if (items.isEmpty()) {
         return
-    }
-    val items = appList.mapIndexed { index, it ->
-        GridItem(it.name, 2, row = index * 2)
     }
     var isOnTop by remember { mutableStateOf(false) }
     TileLayout(
-        appList = items,
+        grid = items,
         footer = { Footer(onFooterClicked) },
         isOnTop = { isOnTop = it },
         modifier = Modifier
@@ -86,15 +83,15 @@ private fun Footer(onFooterClicked: () -> Unit = {}) {
 @Preview
 private fun Preview() = GridLauncherTheme {
     GridScreenScreen(
-        appList = listOf(
-            App("وأصدقاؤك"),
-            App("123"),
-            App("#1231"),
-            App("$$$$"),
-            App("FooBar"),
-            App("Aaaa"),
-            App("AAb"),
-            App("はい"),
+        items = listOf(
+            GridItem(App("وأصدقاؤك"), 2),
+            GridItem(App("123"), 2),
+            GridItem(App("#1231"), 2),
+            GridItem(App("$$$$"), 2),
+            GridItem(App("FooBar"), 2),
+            GridItem(App("Aaaa"), 2),
+            GridItem(App("AAb"), 2),
+            GridItem(App("はい"), 2),
         )
     )
 }

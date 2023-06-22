@@ -1,8 +1,11 @@
 package tgo1014.gridlauncher.ui.home
 
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -22,6 +25,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,24 +37,35 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInRoot
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Popup
 import coil.compose.AsyncImage
+import tgo1014.gridlauncher.R
 import tgo1014.gridlauncher.domain.models.App
 import tgo1014.gridlauncher.ui.theme.GridLauncherTheme
 import tgo1014.gridlauncher.ui.theme.detectConsumedVerticalDragGestures
+import tgo1014.gridlauncher.ui.theme.isPreview
 import tgo1014.gridlauncher.ui.theme.isScrollingDown
 import tgo1014.gridlauncher.ui.theme.isScrollingUp
 import tgo1014.gridlauncher.ui.theme.plus
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AppListScreen(
     appList: List<App>,
     onAppClicked: (App) -> Unit = {},
+    onAddToGrid: (App) -> Unit = {},
     onOpenNotificationShade: () -> Unit = {},
 ) {
     val state = rememberLazyListState()
@@ -64,6 +79,7 @@ fun AppListScreen(
         label = "Inclination"
     )
     var isOnTop by remember { mutableStateOf(false) }
+    val mainColor = MaterialTheme.colorScheme.secondaryContainer
     LazyColumn(
         state = state,
         contentPadding = PaddingValues(8.dp) + WindowInsets.systemBars.asPaddingValues(),
@@ -94,7 +110,7 @@ fun AppListScreen(
                 Card(
                     shape = shape,
                     colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer
+                        containerColor = mainColor
                     ),
                     modifier = Modifier
                         .graphicsLayer { rotationX = angle }
@@ -114,20 +130,61 @@ fun AppListScreen(
                 }
             }
             items(group.value) { app ->
+                var isPopUpShowing by remember { mutableStateOf(false) }
+                var offset by remember { mutableStateOf(Offset.Zero) }
+                if (isPopUpShowing) {
+                    Popup(
+                        offset = IntOffset(offset.x.toInt(), offset.y.toInt()),
+                        onDismissRequest = { isPopUpShowing = false }
+                    ) {
+                        ElevatedCard {
+                            Text(
+                                text = "Add To Grid",
+                                modifier = Modifier
+                                    .clickable {
+                                        onAddToGrid(app)
+                                        isPopUpShowing = false
+                                    }
+                                    .padding(16.dp)
+                            )
+                        }
+                    }
+                }
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { onAppClicked(app) }) {
-                    AsyncImage(
-                        model = app.iconFile,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .graphicsLayer { rotationX = angle }
-                            .size(50.dp)
-                            .border(2.dp, MaterialTheme.colorScheme.primaryContainer, shape)
-                            .clip(shape)
-                            .padding(8.dp)
+                        .clickable { onAppClicked(app) }
+                        .combinedClickable(
+                            onLongClick = { isPopUpShowing = true },
+                            onClick = { onAppClicked(app) }
+                        )
+                        .onGloballyPositioned { offset = it.positionInRoot() }
+                ) {
+                    val iconModifier = Modifier
+                        .graphicsLayer { rotationX = angle }
+                        .size(50.dp)
+                        .border(2.dp, mainColor, shape)
+                        .clip(shape)
+                        .padding(8.dp)
+                    val filter = ColorFilter.lighting(
+                        multiply = mainColor,
+                        add = Color.Black
                     )
+                    if (isPreview) {
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_launcher_foreground),
+                            contentDescription = null,
+                            colorFilter = filter,
+                            modifier = iconModifier
+                        )
+                    } else {
+                        AsyncImage(
+                            model = app.iconFile,
+                            contentDescription = null,
+                            colorFilter = filter,
+                            modifier = iconModifier
+                        )
+                    }
                     Spacer(Modifier.width(8.dp))
                     Text(
                         text = app.name,

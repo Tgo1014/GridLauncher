@@ -5,8 +5,11 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import tgo1014.gridlauncher.domain.AddToGridUseCase
 import tgo1014.gridlauncher.domain.AppsManager
 import tgo1014.gridlauncher.domain.GetAppListUseCase
 import tgo1014.gridlauncher.domain.OpenNotificationShadeUseCase
@@ -17,6 +20,7 @@ import javax.inject.Inject
 class HomeScreenViewModel @Inject constructor(
     private val getAppListUseCase: GetAppListUseCase,
     private val openNotificationShadeUseCase: OpenNotificationShadeUseCase,
+    private val addToGridUseCase: AddToGridUseCase,
     private val appsManager: AppsManager,
 ) : ViewModel() {
 
@@ -27,6 +31,10 @@ class HomeScreenViewModel @Inject constructor(
         init()
     }
 
+    fun onHomePressed() = viewModelScope.launch {
+        _stateFlow.update { it.copy(goToHome = true) }
+    }
+
     fun onOpenApp(app: App) {
         appsManager.openApp(app)
     }
@@ -35,10 +43,21 @@ class HomeScreenViewModel @Inject constructor(
         openNotificationShadeUseCase()
     }
 
+    fun onSwitchedToHome() {
+        _stateFlow.update { it.copy(goToHome = false) }
+    }
+
+    fun onAddToGrid(app: App) = viewModelScope.launch {
+        addToGridUseCase(app)
+    }
+
     private fun init() = viewModelScope.launch {
-        getAppListUseCase().collect { appList ->
-            _stateFlow.update { it.copy(appList = appList) }
-        }
+        getAppListUseCase()
+            .onEach { appList -> _stateFlow.update { it.copy(appList = appList) } }
+            .launchIn(this)
+        appsManager.homeGridFlow
+            .onEach { grid -> _stateFlow.update { it.copy(grid = grid) } }
+            .launchIn(this)
     }
 
 }

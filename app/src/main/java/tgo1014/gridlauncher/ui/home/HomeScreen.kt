@@ -1,6 +1,5 @@
 package tgo1014.gridlauncher.ui.home
 
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -8,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,12 +26,16 @@ import tgo1014.gridlauncher.domain.models.App
 import tgo1014.gridlauncher.ui.theme.GridLauncherTheme
 
 @Composable
-fun HomeScreen(viewModel: HomeScreenViewModel = hiltViewModel()) {
+fun HomeScreen(
+    viewModel: HomeScreenViewModel = hiltViewModel()
+) {
     val state by viewModel.stateFlow.collectAsStateWithLifecycle()
     HomeScreen(
         state = state,
         onAppClicked = viewModel::onOpenApp,
-        onOpenNotificationShade = viewModel::openNotificationShade
+        onOpenNotificationShade = viewModel::openNotificationShade,
+        onHome = viewModel::onSwitchedToHome,
+        onAddToGrid = viewModel::onAddToGrid
     )
 }
 
@@ -40,7 +44,9 @@ fun HomeScreen(viewModel: HomeScreenViewModel = hiltViewModel()) {
 private fun HomeScreen(
     state: HomeState,
     onAppClicked: (App) -> Unit = {},
+    onAddToGrid: (App) -> Unit = {},
     onOpenNotificationShade: () -> Unit = {},
+    onHome: () -> Unit = {},
 ) = BoxWithConstraints {
     val pagerState = rememberPagerState()
     val scope = rememberCoroutineScope()
@@ -53,6 +59,16 @@ private fun HomeScreen(
         stop = 0.7f,
         fraction = (scrollOffset / pagerWidth.toFloat()).coerceIn(0f, 1f)
     )
+    LaunchedEffect(state.goToHome) {
+        if (state.goToHome) {
+            pagerState.animateScrollToPage(0)
+        }
+    }
+    LaunchedEffect(pagerState.settledPage) {
+        if (pagerState.settledPage == 0) {
+            onHome()
+        }
+    }
     HorizontalPager(
         state = pagerState,
         pageCount = 2,
@@ -64,12 +80,12 @@ private fun HomeScreen(
     ) {
         when (it) {
             0 -> GridScreenScreen(
-                appList = state.appList,
+                items = state.grid,
                 onAppClicked = onAppClicked,
                 onOpenNotificationShade = onOpenNotificationShade,
                 onFooterClicked = {
                     scope.launch {
-                        pagerState.animateScrollToPage(1, animationSpec = tween(1000))
+                        pagerState.animateScrollToPage(1)
                     }
                 }
             )
@@ -77,7 +93,8 @@ private fun HomeScreen(
             1 -> AppListScreen(
                 appList = state.appList,
                 onAppClicked = onAppClicked,
-                onOpenNotificationShade = onOpenNotificationShade
+                onOpenNotificationShade = onOpenNotificationShade,
+                onAddToGrid = onAddToGrid,
             )
         }
     }

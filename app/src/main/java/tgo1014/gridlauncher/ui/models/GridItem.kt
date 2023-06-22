@@ -1,10 +1,13 @@
 package tgo1014.gridlauncher.ui.models
 
+import kotlinx.serialization.Serializable
+import tgo1014.gridlauncher.domain.models.App
+
+@Serializable
 data class GridItem(
-    val name: String,
+    val app: App,
     val gridWidth: Int,
     val gridHeight: Int = gridWidth,
-    val column: Int = 0,
-    val row: Int = 0,
-    val icon: String = "",
+    val x: Int = 0,
+    val y: Int = 0,
 )

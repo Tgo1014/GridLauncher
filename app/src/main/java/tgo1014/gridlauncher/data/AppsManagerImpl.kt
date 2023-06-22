@@ -14,6 +14,7 @@ import tgo1014.gridlauncher.domain.AppIconManager
 import tgo1014.gridlauncher.domain.AppsManager
 import tgo1014.gridlauncher.domain.AppsManagerDataSource
 import tgo1014.gridlauncher.domain.models.App
+import tgo1014.gridlauncher.ui.models.GridItem
 import javax.inject.Inject
 
 class AppsManagerImpl @Inject constructor(
@@ -25,6 +26,7 @@ class AppsManagerImpl @Inject constructor(
 ) : AppsManager {
 
     override val installedAppsFlow = appsManagerDataSource.installedAppsList
+    override val homeGridFlow = appsManagerDataSource.homeGridFlow
 
     init {
         scope.launch {
@@ -36,7 +38,10 @@ class AppsManagerImpl @Inject constructor(
         context.startActivity(packageManager.getLaunchIntentForPackage(app.packageName))
     }
 
-    private suspend fun getAllPackages(): List<App> {
+    override suspend fun setGrid(grid: List<GridItem>)  = appsManagerDataSource.setGrid(grid)
+
+
+        private suspend fun getAllPackages(): List<App> {
         val intent = Intent(Intent.ACTION_MAIN, null).addCategory(Intent.CATEGORY_LAUNCHER)
         val resolveInfoList = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             packageManager.queryIntentActivities(

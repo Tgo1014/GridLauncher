@@ -11,6 +11,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import tgo1014.gridlauncher.domain.AppsManagerDataSource
 import tgo1014.gridlauncher.domain.models.App
+import tgo1014.gridlauncher.ui.models.GridItem
 import javax.inject.Inject
 
 class AppsManagerDataSourceImpl @Inject constructor(
@@ -19,10 +20,15 @@ class AppsManagerDataSourceImpl @Inject constructor(
 ) : AppsManagerDataSource {
 
     private val appListKey = stringPreferencesKey("appListKey")
+    private val gridKey = stringPreferencesKey("gridKey")
 
     override var installedAppsList: Flow<List<App>> = dataStore.data
         .map { json.decodeFromString<List<App>>(it[appListKey]!!) }
         .catch { emptyList<List<App>>() }
+
+    override val homeGridFlow: Flow<List<GridItem>> = dataStore.data
+        .map { json.decodeFromString<List<GridItem>>(it[gridKey]!!) }
+        .catch { emptyList<List<GridItem>>() }
 
     override suspend fun setAppList(appList: List<App>) {
         dataStore.edit {
@@ -30,4 +36,9 @@ class AppsManagerDataSourceImpl @Inject constructor(
         }
     }
 
+    override suspend fun setGrid(grid: List<GridItem>) {
+        dataStore.edit {
+            it[gridKey] = json.encodeToString(grid)
+        }
+    }
 }
