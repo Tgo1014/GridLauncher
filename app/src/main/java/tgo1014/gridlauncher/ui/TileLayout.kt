@@ -1,9 +1,11 @@
 package tgo1014.gridlauncher.ui
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
@@ -26,6 +28,7 @@ import tgo1014.gridlauncher.app.Constants
 import tgo1014.gridlauncher.domain.models.App
 import tgo1014.gridlauncher.ui.composables.GridTile
 import tgo1014.gridlauncher.ui.models.GridItem
+import tgo1014.gridlauncher.ui.theme.plus
 
 @Composable
 fun TileLayout(
@@ -33,12 +36,14 @@ fun TileLayout(
     modifier: Modifier = Modifier,
     columns: Int = Constants.gridColumns,
     isOnTop: (Boolean) -> Unit = {},
+    onAppClicked: (App) -> Unit = {},
     footer: @Composable () -> Unit = {},
 ) = BoxWithConstraints(modifier = modifier) {
-    val gridItemSize = maxWidth / columns
+    val padding = 4.dp
+    val gridItemSize = (maxWidth - (padding * 2)) / columns
     key(grid) {
         LazyTable(
-            contentPadding = WindowInsets.systemBars.asPaddingValues(),
+            contentPadding = WindowInsets.systemBars.asPaddingValues() + PaddingValues(padding),
             dimensions = lazyTableDimensions({ gridItemSize }, { gridItemSize }),
         ) {
             items(
@@ -60,6 +65,7 @@ fun TileLayout(
                 }
                 Box(
                     modifier = Modifier
+                        .clickable { onAppClicked(it.app) }
                         .padding(2.dp)
                         .fillMaxSize()
                 ) {
@@ -72,7 +78,7 @@ fun TileLayout(
                 layoutInfo = {
                     LazyTableItem(
                         column = 0,
-                        row = grid.maxOf { it.y } + 2,
+                        row = (grid.maxOfOrNull { it.y } ?: -2) + 2,
                         columnsCount = columns,
                         rowsCount = 2
                     )

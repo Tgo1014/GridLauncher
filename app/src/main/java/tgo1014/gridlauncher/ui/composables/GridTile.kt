@@ -1,21 +1,22 @@
 package tgo1014.gridlauncher.ui.composables
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.style.TextOverflow
@@ -30,17 +31,24 @@ import tgo1014.gridlauncher.ui.theme.isPreview
 
 @Composable
 fun GridTile(item: GridItem, modifier: Modifier = Modifier) {
-    Card(
-        colors = CardDefaults.cardColors(
-            MaterialTheme.colorScheme.primaryContainer
-        ),
-        modifier = modifier
+    val shape = RoundedCornerShape(12.dp)
+    Box(
+        modifier = Modifier
+            .background(MaterialTheme.colorScheme.primaryContainer, shape)
+            .clip(shape)
+            .then(modifier)
     ) {
+        AsyncImage(
+            model = item.app.icon.bgFile,
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize()
+        )
         Box(modifier = Modifier.fillMaxSize()) {
             Text(
                 text = item.app.name,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
                 modifier = Modifier
                     .align(Alignment.BottomStart)
                     .fillMaxWidth()
@@ -62,7 +70,7 @@ fun GridTile(item: GridItem, modifier: Modifier = Modifier) {
                 )
             } else {
                 AsyncImage(
-                    model = item.app.iconFile,
+                    model = item.app.icon.iconFile,
                     contentDescription = null,
                     //colorFilter = filter,
                     //colorFilter = ColorFilter.tint(Color.Red, BlendMode.Modulate),

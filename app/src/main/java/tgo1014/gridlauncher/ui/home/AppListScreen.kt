@@ -179,7 +179,7 @@ fun AppListScreen(
                         )
                     } else {
                         AsyncImage(
-                            model = app.iconFile,
+                            model = app.icon.iconFile,
                             contentDescription = null,
                             // colorFilter = filter,
                             modifier = iconModifier

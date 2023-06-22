@@ -41,6 +41,7 @@ fun GridScreenScreen(
     TileLayout(
         grid = items,
         footer = { Footer(onFooterClicked) },
+        onAppClicked = onAppClicked,
         isOnTop = { isOnTop = it },
         modifier = Modifier
             .fillMaxSize()

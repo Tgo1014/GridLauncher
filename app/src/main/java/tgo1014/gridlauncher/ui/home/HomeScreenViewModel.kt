@@ -31,12 +31,13 @@ class HomeScreenViewModel @Inject constructor(
         init()
     }
 
-    fun onHomePressed() = viewModelScope.launch {
+    fun onGoToHome() = viewModelScope.launch {
         _stateFlow.update { it.copy(goToHome = true) }
     }
 
     fun onOpenApp(app: App) {
         appsManager.openApp(app)
+        onGoToHome()
     }
 
     fun openNotificationShade() {

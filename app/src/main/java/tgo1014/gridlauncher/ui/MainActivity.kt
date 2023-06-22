@@ -39,7 +39,7 @@ class MainActivity : ComponentActivity() {
             val alreadyOnHome = intent.flags and
                     Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT == Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT
             if (!alreadyOnHome) {
-                homeScreenViewModel.onHomePressed()
+                homeScreenViewModel.onGoToHome()
             }
         }
     }

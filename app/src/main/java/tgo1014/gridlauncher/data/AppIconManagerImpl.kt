@@ -3,17 +3,15 @@ package tgo1014.gridlauncher.data
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.Canvas
 import android.graphics.drawable.AdaptiveIconDrawable
 import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
-import android.graphics.drawable.LayerDrawable
 import android.os.Build
 import androidx.core.graphics.drawable.toBitmap
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import tgo1014.gridlauncher.domain.AppIconManager
+import tgo1014.gridlauncher.domain.Icon
 import tgo1014.gridlauncher.domain.models.DispatcherProvider
 import java.io.File
 import java.io.FileOutputStream
@@ -25,45 +23,78 @@ class AppIconManagerImpl @Inject constructor(
     private val packageManager: PackageManager,
 ) : AppIconManager {
 
-    override suspend fun getIcon(packageName: String): File {
+    override suspend fun getIcon(packageName: String): Icon {
         return withContext(dispatcherProvider.io) {
             getIconFromCache(packageName) ?: cacheAngGetIcon(packageName)
         }
     }
 
-    private fun getIconFromCache(packageName: String): File? {
-        return File(context.cacheDir, "$packageName.png").takeIf { it.exists() }
+    private fun getIconFromCache(packageName: String): Icon? {
+        val icon = File(context.cacheDir, packageName.appIconPath)
+        if (!icon.exists()) {
+            return null
+        }
+        val bg = File(context.cacheDir, packageName.appBgPath)
+        return Icon(
+            iconFilePath = icon.absolutePath,
+            bgFilePath = bg.takeIf { it.exists() }?.absolutePath
+        )
     }
 
-    private suspend fun cacheAngGetIcon(packageName: String): File {
+    private suspend fun cacheAngGetIcon(packageName: String): Icon {
         return withContext(Dispatchers.IO) {
-            val iconBitmap = getDynamicIconFromSystem(packageName) ?: getDefaultIconFromSystem(packageName)
-            val cacheFile = File(context.cacheDir, "$packageName.png")
-            if (cacheFile.exists()) {
-                cacheFile.delete()
-            }
-            FileOutputStream(cacheFile).use { fos ->
-                iconBitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
-            }
-            cacheFile
+            val icon = getDynamicIconFromSystem(packageName)
+                ?: getDefaultIconFromSystem(packageName)
+            val cachedIcon = icon.cache(packageName)
+            cachedIcon
         }
     }
 
-    private fun getDefaultIconFromSystem(packageName: String): Bitmap {
-        return packageManager.getApplicationIcon(packageName).toBitmap()
+    private suspend fun IconBitmap.cache(packageName: String): Icon {
+        return withContext(Dispatchers.IO) {
+            Icon(
+                iconFilePath = this@cache.icon?.cacheImage(packageName.appIconPath)?.absolutePath,
+                bgFilePath = this@cache.bg?.cacheImage(packageName.appBgPath)?.absolutePath,
+            )
+        }
     }
 
-    private fun getDynamicIconFromSystem(packageName: String): Bitmap? {
+    private val String.appIconPath get() = "${this}_icon.png"
+    private val String.appBgPath get() = "${this}_bg.png"
+
+    private fun Bitmap.cacheImage(fileName: String): File {
+        val cacheFile = File(context.cacheDir, fileName)
+        if (cacheFile.exists()) {
+            cacheFile.delete()
+        }
+        FileOutputStream(cacheFile).use { fos ->
+            this.trimmed().compress(Bitmap.CompressFormat.PNG, 100, fos)
+        }
+        return cacheFile
+    }
+
+    private fun getDefaultIconFromSystem(packageName: String): IconBitmap {
+        return IconBitmap(
+            icon = packageManager.getApplicationIcon(packageName).toBitmap()
+        )
+    }
+
+    private fun getDynamicIconFromSystem(packageName: String): IconBitmap? {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             return null
         }
         try {
             val drawable = packageManager.getApplicationIcon(packageName)
             if (drawable is BitmapDrawable) {
-                return drawable.bitmap
+                return IconBitmap(drawable.bitmap)
             }
             if (drawable is AdaptiveIconDrawable) {
-                val backgroundDr = drawable.background
+                return IconBitmap(
+                    icon = drawable.foreground.toBitmap(),
+                    bg = runCatching { drawable.background.toBitmap() }.getOrNull()
+                )
+                // Commented in case need to combine both
+                /*val backgroundDr = drawable.background
                 val foregroundDr = drawable.foreground
                 val drr = arrayOfNulls<Drawable>(2)
                 //drr[0] = backgroundDr
@@ -75,12 +106,17 @@ class AppIconManagerImpl @Inject constructor(
                 val canvas = Canvas(bitmap)
                 layerDrawable.setBounds(0, 0, canvas.width, canvas.height)
                 layerDrawable.draw(canvas)
-                return bitmap.trimmed()
+                return bitmap.trimmed()*/
             }
             return null
         } catch (e: Exception) {
             return null
         }
     }
+
+    private data class IconBitmap(
+        val icon: Bitmap? = null,
+        val bg: Bitmap? = null,
+    )
 
 }

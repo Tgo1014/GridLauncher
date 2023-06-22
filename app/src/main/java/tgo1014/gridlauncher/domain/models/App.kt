@@ -1,14 +1,13 @@
 package tgo1014.gridlauncher.domain.models
 
 import kotlinx.serialization.Serializable
-import java.io.File
+import tgo1014.gridlauncher.domain.Icon
 
 @Serializable
 data class App(
     val name: String = "",
-    val iconPath: String = "",
     val packageName: String = "",
+    val icon: Icon = Icon()
 ) {
-    val iconFile get() = File(iconPath)
     val nameFirstLetter = name.firstOrNull() ?: '#'
 }

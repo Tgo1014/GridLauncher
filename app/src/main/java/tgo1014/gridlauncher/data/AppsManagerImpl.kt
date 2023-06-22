@@ -38,10 +38,10 @@ class AppsManagerImpl @Inject constructor(
         context.startActivity(packageManager.getLaunchIntentForPackage(app.packageName))
     }
 
-    override suspend fun setGrid(grid: List<GridItem>)  = appsManagerDataSource.setGrid(grid)
+    override suspend fun setGrid(grid: List<GridItem>) = appsManagerDataSource.setGrid(grid)
 
 
-        private suspend fun getAllPackages(): List<App> {
+    private suspend fun getAllPackages(): List<App> {
         val intent = Intent(Intent.ACTION_MAIN, null).addCategory(Intent.CATEGORY_LAUNCHER)
         val resolveInfoList = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             packageManager.queryIntentActivities(
@@ -59,8 +59,7 @@ class AppsManagerImpl @Inject constructor(
                 App(
                     name = it.appName,
                     packageName = it.packageName,
-                    iconPath = appIconManager.getIcon(it.packageName)?.path
-                        ?: return@mapNotNull null,
+                    icon = appIconManager.getIcon(it.packageName)
                 )
             }
     }
