@@ -34,9 +34,6 @@ fun GridScreenScreen(
     onFooterClicked: () -> Unit = {},
     onOpenNotificationShade: () -> Unit = {},
 ) {
-    if (items.isEmpty()) {
-        return
-    }
     var isOnTop by remember { mutableStateOf(false) }
     TileLayout(
         grid = items,

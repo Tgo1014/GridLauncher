@@ -5,7 +5,6 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -23,12 +22,18 @@ class AppsManagerDataSourceImpl @Inject constructor(
     private val gridKey = stringPreferencesKey("gridKey")
 
     override var installedAppsList: Flow<List<App>> = dataStore.data
-        .map { json.decodeFromString<List<App>>(it[appListKey]!!) }
-        .catch { emptyList<List<App>>() }
+        .map {
+            runCatching {
+                json.decodeFromString<List<App>>(it[appListKey]!!)
+            }.getOrDefault(emptyList())
+        }
 
     override val homeGridFlow: Flow<List<GridItem>> = dataStore.data
-        .map { json.decodeFromString<List<GridItem>>(it[gridKey]!!) }
-        .catch { emptyList<List<GridItem>>() }
+        .map {
+            runCatching {
+                json.decodeFromString<List<GridItem>>(it[gridKey]!!)
+            }.getOrDefault(emptyList())
+        }
 
     override suspend fun setAppList(appList: List<App>) {
         dataStore.edit {

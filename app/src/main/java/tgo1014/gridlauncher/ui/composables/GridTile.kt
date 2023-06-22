@@ -14,16 +14,21 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.Wallpapers
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import tgo1014.gridlauncher.data.getDominantColor
+import tgo1014.gridlauncher.data.isColored
+import tgo1014.gridlauncher.data.toBitmap
 import tgo1014.gridlauncher.domain.models.App
 import tgo1014.gridlauncher.ui.models.GridItem
 import tgo1014.gridlauncher.ui.theme.GridLauncherTheme
@@ -31,7 +36,7 @@ import tgo1014.gridlauncher.ui.theme.isPreview
 
 @Composable
 fun GridTile(item: GridItem, modifier: Modifier = Modifier) {
-    val shape = RoundedCornerShape(12.dp)
+    val shape = RoundedCornerShape(4.dp)
     Box(
         modifier = Modifier
             .background(MaterialTheme.colorScheme.primaryContainer, shape)
@@ -43,12 +48,26 @@ fun GridTile(item: GridItem, modifier: Modifier = Modifier) {
             contentDescription = null,
             modifier = Modifier.fillMaxSize()
         )
+        val isLightBg = remember {
+            (item.app.icon.bgFile
+                ?.toBitmap()
+                ?.getDominantColor()
+                ?.luminance() ?: 0f) > 0.5f
+        }
+        val onContainer = MaterialTheme.colorScheme.onPrimaryContainer
+        val textColor = remember {
+            when {
+                item.app.icon.bgFile == null -> onContainer
+                isLightBg -> Color.Black
+                else -> Color.White
+            }
+        }
         Box(modifier = Modifier.fillMaxSize()) {
             Text(
                 text = item.app.name,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                color = textColor,
                 modifier = Modifier
                     .align(Alignment.BottomStart)
                     .fillMaxWidth()
@@ -57,10 +76,16 @@ fun GridTile(item: GridItem, modifier: Modifier = Modifier) {
             val iconModifier = Modifier
                 .fillMaxSize(0.4f)
                 .align(Alignment.Center)
-            val filter = ColorFilter.lighting(
-                multiply = MaterialTheme.colorScheme.primary,
-                add = Color.Transparent
-            )
+            val primary = MaterialTheme.colorScheme.primary
+            val filter = remember {
+                ColorFilter.lighting(
+                    multiply = primary,
+                    add = Color.Transparent
+                ).takeIf {
+                    item.app.icon.bgFile == null &&
+                            item.app.icon.iconFile?.toBitmap()?.isColored() == false
+                }
+            }
             if (isPreview) {
                 Image(
                     imageVector = Icons.Default.Settings,
@@ -72,7 +97,7 @@ fun GridTile(item: GridItem, modifier: Modifier = Modifier) {
                 AsyncImage(
                     model = item.app.icon.iconFile,
                     contentDescription = null,
-                    //colorFilter = filter,
+                    colorFilter = filter,
                     //colorFilter = ColorFilter.tint(Color.Red, BlendMode.Modulate),
                     modifier = iconModifier
                 )

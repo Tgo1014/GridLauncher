@@ -1,8 +1,34 @@
 package tgo1014.gridlauncher.data
 
 import android.graphics.Bitmap
-import android.graphics.Color
+import android.graphics.BitmapFactory
 import android.graphics.Matrix
+import androidx.compose.ui.graphics.Color
+import java.io.File
+
+fun File.toBitmap(): Bitmap = BitmapFactory.decodeFile(this.absolutePath)
+
+fun Bitmap.getDominantColor(): Color {
+    val newBitmap = Bitmap.createScaledBitmap(this, 1, 1, true)
+    val color = newBitmap.getPixel(0, 0)
+    newBitmap.recycle()
+    return Color(color)
+}
+
+fun Bitmap.isColored(): Boolean {
+    for (x in 0 until this.width) {
+        for (y in 0 until this.height) {
+            val color = Color(this.getPixel(x, y))
+            val blue = color.blue
+            val red = color.red
+            val green = color.green
+            if (blue != red || blue != green || red != green) {
+                return true
+            }
+        }
+    }
+    return false
+}
 
 fun Bitmap.resize(
     newHeight: Int,
@@ -24,7 +50,7 @@ fun Bitmap.trimmed(): Bitmap {
     this.getPixels(pixels, 0, this.width, 0, 0, this.width, this.height)
     loop@ for (x in 0 until this.width) {
         for (y in 0 until this.height) {
-            if (pixels[x + y * this.width] != Color.TRANSPARENT) {
+            if (pixels[x + y * this.width] != android.graphics.Color.TRANSPARENT) {
                 firstX = x
                 break@loop
             }
@@ -32,7 +58,7 @@ fun Bitmap.trimmed(): Bitmap {
     }
     loop@ for (y in 0 until this.height) {
         for (x in firstX until this.width) {
-            if (pixels[x + y * this.width] != Color.TRANSPARENT) {
+            if (pixels[x + y * this.width] != android.graphics.Color.TRANSPARENT) {
                 firstY = y
                 break@loop
             }
@@ -40,7 +66,7 @@ fun Bitmap.trimmed(): Bitmap {
     }
     loop@ for (x in this.width - 1 downTo firstX) {
         for (y in this.height - 1 downTo firstY) {
-            if (pixels[x + y * this.width] != Color.TRANSPARENT) {
+            if (pixels[x + y * this.width] != android.graphics.Color.TRANSPARENT) {
                 lastX = x
                 break@loop
             }
@@ -48,7 +74,7 @@ fun Bitmap.trimmed(): Bitmap {
     }
     loop@ for (y in this.height - 1 downTo firstY) {
         for (x in this.width - 1 downTo firstX) {
-            if (pixels[x + y * this.width] != Color.TRANSPARENT) {
+            if (pixels[x + y * this.width] != android.graphics.Color.TRANSPARENT) {
                 lastY = y
                 break@loop
             }

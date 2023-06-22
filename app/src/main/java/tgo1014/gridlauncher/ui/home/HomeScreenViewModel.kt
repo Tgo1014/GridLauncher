@@ -36,8 +36,8 @@ class HomeScreenViewModel @Inject constructor(
     }
 
     fun onOpenApp(app: App) {
-        appsManager.openApp(app)
         onGoToHome()
+        appsManager.openApp(app)
     }
 
     fun openNotificationShade() {

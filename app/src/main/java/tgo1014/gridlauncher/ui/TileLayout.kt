@@ -41,7 +41,8 @@ fun TileLayout(
 ) = BoxWithConstraints(modifier = modifier) {
     val padding = 4.dp
     val gridItemSize = (maxWidth - (padding * 2)) / columns
-    key(grid) {
+    println("Grid $grid ${grid.size}")
+    key(grid.size) {
         LazyTable(
             contentPadding = WindowInsets.systemBars.asPaddingValues() + PaddingValues(padding),
             dimensions = lazyTableDimensions({ gridItemSize }, { gridItemSize }),
