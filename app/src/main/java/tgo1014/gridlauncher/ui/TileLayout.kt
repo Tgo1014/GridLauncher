@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import eu.wewox.lazytable.LazyTable
 import eu.wewox.lazytable.LazyTableItem
 import eu.wewox.lazytable.lazyTableDimensions
+import tgo1014.gridlauncher.app.Constants
 import tgo1014.gridlauncher.domain.models.App
 import tgo1014.gridlauncher.ui.composables.GridTile
 import tgo1014.gridlauncher.ui.models.GridItem
@@ -30,7 +31,7 @@ import tgo1014.gridlauncher.ui.models.GridItem
 fun TileLayout(
     grid: List<GridItem>,
     modifier: Modifier = Modifier,
-    columns: Int = 6,
+    columns: Int = Constants.gridColumns,
     isOnTop: (Boolean) -> Unit = {},
     footer: @Composable () -> Unit = {},
 ) = BoxWithConstraints(modifier = modifier) {
