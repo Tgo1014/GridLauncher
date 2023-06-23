@@ -1,18 +1,27 @@
 package tgo1014.gridlauncher.ui.theme
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
+import kotlin.random.Random
 
 operator fun PaddingValues.plus(that: PaddingValues): PaddingValues = object : PaddingValues {
     override fun calculateBottomPadding(): Dp =
@@ -66,4 +75,22 @@ fun Modifier.onOpenNotificationShade(isOnTop: Boolean, onOpen: () -> Unit): Modi
             },
         )
     }
+}
+
+fun Modifier.flipRandomly() = composed {
+    val animatedFloat = remember { Animatable(0f) }
+    LaunchedEffect(animatedFloat) {
+        animatedFloat.animateTo(
+            targetValue = 360f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(
+                    1000,
+                    delayMillis = Random.nextInt(10000, 20000),
+                    easing = FastOutSlowInEasing
+                ),
+                repeatMode = RepeatMode.Restart
+            )
+        )
+    }
+    Modifier.graphicsLayer(rotationX = animatedFloat.value, cameraDistance = 300f)
 }
