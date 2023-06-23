@@ -1,5 +1,10 @@
 package tgo1014.gridlauncher.ui
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -15,12 +20,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,12 +36,14 @@ import eu.wewox.lazytable.LazyTable
 import eu.wewox.lazytable.LazyTableItem
 import eu.wewox.lazytable.lazyTableDimensions
 import eu.wewox.minabox.MinaBoxScrollDirection
+import kotlinx.coroutines.delay
 import tgo1014.gridlauncher.app.Constants
 import tgo1014.gridlauncher.domain.models.App
 import tgo1014.gridlauncher.ui.composables.GridTile
 import tgo1014.gridlauncher.ui.models.GridItem
 import tgo1014.gridlauncher.ui.theme.modifyIf
 import tgo1014.gridlauncher.ui.theme.plus
+import kotlin.random.Random
 
 @Composable
 fun TileLayout(
@@ -65,8 +74,29 @@ fun TileLayout(
                 )
             }
         ) {
-            Box(modifier = Modifier.padding(2.dp)) {
+            val animatedFloat = remember { Animatable(0f) }
+            LaunchedEffect(animatedFloat) {
+                delay(Random.nextLong(1000, 10000)) // to avoid repeated delays
+                animatedFloat.animateTo(
+                    targetValue = 360f,
+                    animationSpec = infiniteRepeatable(
+                        animation = tween(
+                            1000,
+                            delayMillis = 10000,
+                            easing = FastOutSlowInEasing
+                        ),
+                        repeatMode = RepeatMode.Restart
+                    )
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .padding(2.dp)
+                    .graphicsLayer(rotationX = animatedFloat.value, cameraDistance = 300f)
+            ) {
+
                 GridTile(item = it, modifier = Modifier
+
                     .clickable { onAppClicked(it.app) }
                     .fillMaxSize()
                     .modifyIf(it == grid.firstOrNull()) {
@@ -77,7 +107,8 @@ fun TileLayout(
                             }
                             isOnTop(firstItemPosition == y)
                         }
-                    })
+                    }
+                )
             }
         }
         // Footer
