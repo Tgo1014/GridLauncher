@@ -64,9 +64,6 @@ kapt { correctErrorTypes = true }
 hilt { enableAggregatingTask = true }
 
 dependencies {
-
-   // api(platform("dev.chrisbanes.compose:compose-bom:2023.04.00-beta02"))
-
     implementation(libs.core.ktx)
     implementation(libs.lifecycle.runtime.ktx)
     implementation(libs.lifecycle.runtime.compose)
@@ -93,5 +90,7 @@ dependencies {
     debugImplementation(libs.ui.tooling)
     debugImplementation(libs.ui.test.manifest)
 
-    implementation(libs.lazytable)
+    implementation(libs.lazytable) {
+        exclude("com.github.Tgo1014.lazytable", "lazybox")
+    }
 }

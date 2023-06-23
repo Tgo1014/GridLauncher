@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -48,9 +48,9 @@ private fun HomeScreen(
     onOpenNotificationShade: () -> Unit = {},
     onHome: () -> Unit = {},
 ) = BoxWithConstraints {
-    val pagerState = rememberPagerState()
+    val pagerState = rememberPagerState { 2 }
     val scope = rememberCoroutineScope()
-    var pagerWidth by remember { mutableStateOf(1) }
+    var pagerWidth by remember { mutableIntStateOf(1) }
     val scrollOffset by remember(pagerWidth) {
         derivedStateOf { (pagerState.currentPage + pagerState.currentPageOffsetFraction) * pagerWidth }
     }
@@ -71,7 +71,6 @@ private fun HomeScreen(
     }
     HorizontalPager(
         state = pagerState,
-        pageCount = 2,
         beyondBoundsPageCount = 1,
         modifier = Modifier
             .fillMaxSize()
