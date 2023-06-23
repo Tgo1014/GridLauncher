@@ -53,6 +53,7 @@ import androidx.compose.ui.window.Popup
 import coil.compose.AsyncImage
 import tgo1014.gridlauncher.R
 import tgo1014.gridlauncher.domain.models.App
+import tgo1014.gridlauncher.ui.composables.Search
 import tgo1014.gridlauncher.ui.theme.GridLauncherTheme
 import tgo1014.gridlauncher.ui.theme.detectConsumedVerticalDragGestures
 import tgo1014.gridlauncher.ui.theme.isPreview
@@ -94,6 +95,11 @@ fun AppListScreen(
                 }
             }
     ) {
+        item {
+            Search {
+
+            }
+        }
         val listByLetter = appList
             .sortedBy { it.nameFirstLetter.uppercase() }
             .groupBy { it.nameFirstLetter.uppercase() }
