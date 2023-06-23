@@ -65,10 +65,9 @@ fun TileLayout(
                 )
             }
         ) {
-            Box(
-                modifier = Modifier
+            Box(modifier = Modifier.padding(2.dp)) {
+                GridTile(item = it, modifier = Modifier
                     .clickable { onAppClicked(it.app) }
-                    .padding(2.dp)
                     .fillMaxSize()
                     .modifyIf(it == grid.firstOrNull()) {
                         onGloballyPositioned { coord ->
@@ -78,10 +77,7 @@ fun TileLayout(
                             }
                             isOnTop(firstItemPosition == y)
                         }
-                    }
-
-            ) {
-                GridTile(item = it)
+                    })
             }
         }
         // Footer
@@ -92,7 +88,7 @@ fun TileLayout(
                     column = 0,
                     row = (grid.maxOfOrNull { it.y } ?: -2) + 2,
                     columnsCount = columns,
-                    rowsCount = 2
+                    rowsCount = 1
                 )
             },
             itemContent = { footer() }
