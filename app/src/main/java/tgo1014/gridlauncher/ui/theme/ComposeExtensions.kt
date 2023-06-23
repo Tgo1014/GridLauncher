@@ -6,10 +6,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
@@ -55,3 +55,15 @@ fun LazyListState.isScrollingUp(): Boolean {
 
 @Composable
 fun LazyListState.isScrollingDown() = this.isScrollInProgress && !isScrollingUp()
+
+fun Modifier.onOpenNotificationShade(isOnTop: Boolean, onOpen: () -> Unit): Modifier {
+    return this.pointerInput(isOnTop) {
+        detectConsumedVerticalDragGestures(
+            onVerticalDrag = { _, dragAmount ->
+                if (isOnTop && dragAmount > 0) { // Swiping down
+                    onOpen()
+                }
+            },
+        )
+    }
+}
