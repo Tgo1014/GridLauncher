@@ -1,6 +1,8 @@
 package tgo1014.gridlauncher.ui
 
+import android.content.ComponentName
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -14,6 +16,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import tgo1014.gridlauncher.ui.home.HomeScreen
 import tgo1014.gridlauncher.ui.home.HomeScreenViewModel
 import tgo1014.gridlauncher.ui.theme.GridLauncherTheme
+
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -31,6 +34,7 @@ class MainActivity : ComponentActivity() {
                 HomeScreen(homeScreenViewModel)
             }
         }
+        askToBeDefaultLauncher()
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -42,6 +46,24 @@ class MainActivity : ComponentActivity() {
                 homeScreenViewModel.onGoToHome()
             }
         }
+    }
+
+    private fun askToBeDefaultLauncher() {
+        val componentName = ComponentName(this, MainActivity::class.java)
+        packageManager.setComponentEnabledSetting(
+            componentName,
+            PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+            PackageManager.DONT_KILL_APP
+        )
+        val selector = Intent(Intent.ACTION_MAIN)
+        selector.addCategory(Intent.CATEGORY_HOME)
+        selector.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(selector)
+        packageManager.setComponentEnabledSetting(
+            componentName,
+            PackageManager.COMPONENT_ENABLED_STATE_DEFAULT,
+            PackageManager.DONT_KILL_APP
+        )
     }
 
 }
