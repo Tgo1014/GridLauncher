@@ -35,7 +35,9 @@ fun HomeScreen(
         onAppClicked = viewModel::onOpenApp,
         onOpenNotificationShade = viewModel::openNotificationShade,
         onHome = viewModel::onSwitchedToHome,
-        onAddToGrid = viewModel::onAddToGrid
+        onAddToGrid = viewModel::onAddToGrid,
+        onFilterClearPressed = viewModel::onFilterCleared,
+        onFilterTextChanged = viewModel::onFilterTextChanged,
     )
 }
 
@@ -47,6 +49,8 @@ private fun HomeScreen(
     onAddToGrid: (App) -> Unit = {},
     onOpenNotificationShade: () -> Unit = {},
     onHome: () -> Unit = {},
+    onFilterTextChanged: (String) -> Unit = {},
+    onFilterClearPressed: () -> Unit = {},
 ) = BoxWithConstraints {
     val pagerState = rememberPagerState { 2 }
     val scope = rememberCoroutineScope()
@@ -89,10 +93,12 @@ private fun HomeScreen(
             )
 
             1 -> AppListScreen(
-                appList = state.appList,
+                state = state,
                 onAppClicked = onAppClicked,
                 onOpenNotificationShade = onOpenNotificationShade,
                 onAddToGrid = onAddToGrid,
+                onFilterTextChanged = onFilterTextChanged,
+                onFilterClearPressed = onFilterClearPressed,
             )
         }
     }

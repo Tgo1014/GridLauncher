@@ -44,6 +44,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
@@ -64,31 +65,35 @@ import tgo1014.gridlauncher.ui.theme.plus
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AppListScreen(
-    appList: List<App>,
+    state: HomeState,
     onAppClicked: (App) -> Unit = {},
     onAddToGrid: (App) -> Unit = {},
     onOpenNotificationShade: () -> Unit = {},
+    onFilterTextChanged: (String) -> Unit = {},
+    onFilterClearPressed: () -> Unit = {},
 ) {
-    val state = rememberLazyListState()
+    val lazyListState = rememberLazyListState()
     val angle by animateFloatAsState(
         targetValue = when {
-            !state.isScrollInProgress -> 0f
-            state.canScrollBackward && state.isScrollingUp() -> -25f
-            state.canScrollForward && state.isScrollingDown() -> 25f
+            !lazyListState.isScrollInProgress -> 0f
+            lazyListState.canScrollBackward && lazyListState.isScrollingUp() -> -25f
+            lazyListState.canScrollForward && lazyListState.isScrollingDown() -> 25f
             else -> 0f
         },
         label = "Inclination"
     )
     var isOnTop by remember { mutableStateOf(false) }
     val mainColor = MaterialTheme.colorScheme.secondaryContainer
+    val focusManager = LocalFocusManager.current
     LazyColumn(
-        state = state,
+        state = lazyListState,
         contentPadding = PaddingValues(8.dp) + WindowInsets.systemBars.asPaddingValues(),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier
             .fillMaxSize()
             .pointerInput(Unit) {
                 detectConsumedVerticalDragGestures { _, dragAmount ->
+                    focusManager.clearFocus()
                     if (isOnTop && dragAmount > 0) { // Swiping down
                         onOpenNotificationShade()
                     }
@@ -96,31 +101,30 @@ fun AppListScreen(
             }
     ) {
         item {
-            Search {
-
+            DisposableEffect(Unit) {
+                isOnTop = true
+                onDispose { isOnTop = false }
             }
+            Search(
+                text = state.filterString,
+                onTextChanged = onFilterTextChanged,
+                onClearPressed = onFilterClearPressed
+            )
         }
+        val appList = state.appList
         val listByLetter = appList
             .sortedBy { it.nameFirstLetter.uppercase() }
             .groupBy { it.nameFirstLetter.uppercase() }
         val shape = RoundedCornerShape(6.dp)
         listByLetter.forEach { group ->
-            item {
-                val firstLetter = group.key.uppercase()
-                if (firstLetter.first() == appList.firstOrNull()?.nameFirstLetter) {
-                    DisposableEffect(Unit) {
-                        isOnTop = true
-                        onDispose { isOnTop = false }
-                    }
-                }
+            item(key = group.key) {
                 Card(
                     shape = shape,
-                    colors = CardDefaults.cardColors(
-                        containerColor = mainColor
-                    ),
+                    colors = CardDefaults.cardColors(containerColor = mainColor),
                     modifier = Modifier
                         .graphicsLayer { rotationX = angle }
                         .size(50.dp)
+                        .animateItemPlacement()
                 ) {
                     Box(
                         modifier = Modifier
@@ -135,7 +139,7 @@ fun AppListScreen(
                     }
                 }
             }
-            items(group.value) { app ->
+            items(items = group.value, key = { it.packageName }) { app ->
                 var isPopUpShowing by remember { mutableStateOf(false) }
                 var offset by remember { mutableStateOf(Offset.Zero) }
                 if (isPopUpShowing) {
@@ -165,6 +169,7 @@ fun AppListScreen(
                             onClick = { onAppClicked(app) }
                         )
                         .onGloballyPositioned { offset = it.positionInRoot() }
+                        .animateItemPlacement()
                 ) {
                     val iconModifier = Modifier
                         .graphicsLayer { rotationX = angle }
@@ -206,8 +211,8 @@ fun AppListScreen(
 @Composable
 @Preview
 private fun Preview() = GridLauncherTheme {
-    AppListScreen(
-        appList = listOf(
+    val state = HomeState(
+        listOf(
             App("وأصدقاؤك"),
             App("123"),
             App("#1231"),
@@ -218,4 +223,5 @@ private fun Preview() = GridLauncherTheme {
             App("はい"),
         )
     )
+    AppListScreen(state = state)
 }

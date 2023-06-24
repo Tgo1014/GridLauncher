@@ -24,6 +24,8 @@ class HomeScreenViewModel @Inject constructor(
     private val appsManager: AppsManager,
 ) : ViewModel() {
 
+    private var fullAppList: List<App> = emptyList()
+
     private val _stateFlow = MutableStateFlow(HomeState())
     val stateFlow = _stateFlow.asStateFlow()
 
@@ -31,7 +33,7 @@ class HomeScreenViewModel @Inject constructor(
         init()
     }
 
-    fun onGoToHome() = viewModelScope.launch {
+    fun onGoToHome() {
         _stateFlow.update { it.copy(goToHome = true) }
     }
 
@@ -52,9 +54,25 @@ class HomeScreenViewModel @Inject constructor(
         addToGridUseCase(app)
     }
 
+    fun onFilterTextChanged(filter: String) {
+        if (filter.isBlank()) {
+            onFilterCleared()
+            return
+        }
+        val appList = fullAppList.filter { it.name.contains(filter, true) }
+        _stateFlow.update { it.copy(filterString = filter, appList = appList) }
+    }
+
+    fun onFilterCleared() {
+        _stateFlow.update { it.copy(filterString = "", appList = fullAppList) }
+    }
+
     private fun init() = viewModelScope.launch {
         getAppListUseCase()
-            .onEach { appList -> _stateFlow.update { it.copy(appList = appList) } }
+            .onEach { appList ->
+                fullAppList = appList
+                _stateFlow.update { it.copy(appList = appList) }
+            }
             .launchIn(this)
         appsManager.homeGridFlow
             .onEach { grid -> _stateFlow.update { it.copy(grid = grid) } }

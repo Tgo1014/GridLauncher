@@ -7,4 +7,5 @@ data class HomeState(
     val appList: List<App> = emptyList(),
     val grid: List<GridItem> = emptyList(),
     val goToHome: Boolean = false,
+    val filterString: String = "",
 )
