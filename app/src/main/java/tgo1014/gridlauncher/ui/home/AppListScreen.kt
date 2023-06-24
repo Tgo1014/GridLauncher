@@ -51,10 +51,10 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
-import coil.compose.AsyncImage
 import tgo1014.gridlauncher.R
 import tgo1014.gridlauncher.domain.models.App
 import tgo1014.gridlauncher.ui.composables.Search
+import tgo1014.gridlauncher.ui.theme.AsyncImage
 import tgo1014.gridlauncher.ui.theme.GridLauncherTheme
 import tgo1014.gridlauncher.ui.theme.detectConsumedVerticalDragGestures
 import tgo1014.gridlauncher.ui.theme.isPreview
@@ -176,7 +176,6 @@ fun AppListScreen(
                         .size(50.dp)
                         .border(2.dp, mainColor, shape)
                         .clip(shape)
-                        .padding(8.dp)
                     val filter = ColorFilter.lighting(
                         multiply = mainColor,
                         add = Color.Black
@@ -189,12 +188,10 @@ fun AppListScreen(
                             modifier = iconModifier
                         )
                     } else {
-                        AsyncImage(
-                            model = app.icon.iconFile,
-                            contentDescription = null,
-                            // colorFilter = filter,
-                            modifier = iconModifier
-                        )
+                        Box(iconModifier) {
+                            AsyncImage(app.icon.bgFile)
+                            AsyncImage(model = app.icon.iconFile)
+                        }
                     }
                     Spacer(Modifier.width(8.dp))
                     Text(

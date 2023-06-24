@@ -3,8 +3,10 @@ package tgo1014.gridlauncher.data
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.drawable.AdaptiveIconDrawable
 import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.os.Build
 import androidx.core.graphics.drawable.toBitmap
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -17,6 +19,7 @@ import java.io.File
 import java.io.FileOutputStream
 import javax.inject.Inject
 
+
 class AppIconManagerImpl @Inject constructor(
     @ApplicationContext private val context: Context,
     private val dispatcherProvider: DispatcherProvider,
@@ -25,7 +28,7 @@ class AppIconManagerImpl @Inject constructor(
 
     override suspend fun getIcon(packageName: String): Icon {
         return withContext(dispatcherProvider.io) {
-            getIconFromCache(packageName) ?: cacheAngGetIcon(packageName)
+            /*getIconFromCache(packageName) ?: */cacheAngGetIcon(packageName)
         }
     }
 
@@ -68,7 +71,7 @@ class AppIconManagerImpl @Inject constructor(
             cacheFile.delete()
         }
         FileOutputStream(cacheFile).use { fos ->
-            this.trimmed().compress(Bitmap.CompressFormat.PNG, 100, fos)
+            this.compress(Bitmap.CompressFormat.PNG, 100, fos)
         }
         return cacheFile
     }
@@ -83,15 +86,15 @@ class AppIconManagerImpl @Inject constructor(
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             return null
         }
-        try {
+        return runCatching {
             val drawable = packageManager.getApplicationIcon(packageName)
             if (drawable is BitmapDrawable) {
                 return IconBitmap(drawable.bitmap)
             }
             if (drawable is AdaptiveIconDrawable) {
                 return IconBitmap(
-                    icon = drawable.foreground.toBitmap(),
-                    bg = runCatching { drawable.background.toBitmap() }.getOrNull()
+                    icon = drawable.foreground.asBitmap(),
+                    bg = drawable.background.asBitmap()
                 )
                 // Commented in case need to combine both
                 /*val backgroundDr = drawable.background
@@ -108,15 +111,24 @@ class AppIconManagerImpl @Inject constructor(
                 layerDrawable.draw(canvas)
                 return bitmap.trimmed()*/
             }
-            return null
-        } catch (e: Exception) {
-            return null
-        }
+            null
+        }.getOrNull()
     }
 
     private data class IconBitmap(
         val icon: Bitmap? = null,
         val bg: Bitmap? = null,
     )
+
+    fun Drawable.asBitmap(
+        widthPixels: Int = 500,
+        heightPixels: Int = 500
+    ): Bitmap {
+        val bitmap = Bitmap.createBitmap(widthPixels, heightPixels, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        this.setBounds(0, 0, widthPixels, heightPixels)
+        this.draw(canvas)
+        return bitmap
+    }
 
 }

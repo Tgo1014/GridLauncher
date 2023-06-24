@@ -48,7 +48,6 @@ fun TileLayout(
 ) = BoxWithConstraints(modifier = modifier) {
     val padding = 4.dp
     val gridItemSize = (maxWidth - (padding * 2)) / columns
-    println("Grid $grid ${grid.size}")
     var firstItemPosition: Float? by remember { mutableStateOf(null) }
     LazyTable(
         scrollDirection = MinaBoxScrollDirection.VERTICAL,

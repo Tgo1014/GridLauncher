@@ -74,7 +74,7 @@ fun GridTile(item: GridItem, modifier: Modifier = Modifier) {
                     .padding(8.dp),
             )
             val iconModifier = Modifier
-                .fillMaxSize(0.4f)
+                .fillMaxSize(0.8f)
                 .align(Alignment.Center)
             val primary = MaterialTheme.colorScheme.primary
             val filter = remember {

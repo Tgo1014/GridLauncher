@@ -14,13 +14,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.DefaultAlpha
+import androidx.compose.ui.graphics.FilterQuality
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
+import coil.compose.AsyncImagePainter
 import kotlin.random.Random
 
 operator fun PaddingValues.plus(that: PaddingValues): PaddingValues = object : PaddingValues {
@@ -94,3 +101,28 @@ fun Modifier.flipRandomly() = composed {
     }
     Modifier.graphicsLayer(rotationX = animatedFloat.value, cameraDistance = 300f)
 }
+
+@Composable
+fun AsyncImage(
+    model: Any?,
+    contentDescription: String? = null,
+    modifier: Modifier = Modifier,
+    transform: (AsyncImagePainter.State) -> AsyncImagePainter.State = AsyncImagePainter.DefaultTransform,
+    onState: ((AsyncImagePainter.State) -> Unit)? = null,
+    alignment: Alignment = Alignment.Center,
+    contentScale: ContentScale = ContentScale.Fit,
+    alpha: Float = DefaultAlpha,
+    colorFilter: ColorFilter? = null,
+    filterQuality: FilterQuality = DrawScope.DefaultFilterQuality,
+) = coil.compose.AsyncImage(
+    model = model,
+    contentDescription = contentDescription,
+    modifier,
+    transform,
+    onState,
+    alignment,
+    contentScale,
+    alpha,
+    colorFilter,
+    filterQuality
+)
