@@ -54,6 +54,10 @@ class HomeScreenViewModel @Inject constructor(
         addToGridUseCase(app)
     }
 
+    fun uninstallApp(app: App) {
+        appsManager.uninstallApp(app)
+    }
+
     fun onFilterTextChanged(filter: String) {
         if (filter.isBlank()) {
             onFilterCleared()

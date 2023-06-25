@@ -8,6 +8,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -71,6 +72,7 @@ fun AppListScreen(
     onOpenNotificationShade: () -> Unit = {},
     onFilterTextChanged: (String) -> Unit = {},
     onFilterClearPressed: () -> Unit = {},
+    onUninstall: (App) -> Unit = {},
 ) {
     val lazyListState = rememberLazyListState()
     val angle by animateFloatAsState(
@@ -148,15 +150,28 @@ fun AppListScreen(
                         onDismissRequest = { isPopUpShowing = false }
                     ) {
                         ElevatedCard {
-                            Text(
-                                text = "Add To Grid",
-                                modifier = Modifier
-                                    .clickable {
-                                        onAddToGrid(app)
-                                        isPopUpShowing = false
-                                    }
-                                    .padding(16.dp)
-                            )
+                            Column {
+                                Text(
+                                    text = "Add To Grid",
+                                    modifier = Modifier
+                                        .clickable {
+                                            onAddToGrid(app)
+                                            isPopUpShowing = false
+                                        }
+                                        .padding(16.dp)
+                                )
+                                if (!app.isSystemApp) {
+                                    Text(
+                                        text = "Uninstall",
+                                        modifier = Modifier
+                                            .clickable {
+                                                onUninstall(app)
+                                                isPopUpShowing = false
+                                            }
+                                            .padding(16.dp)
+                                    )
+                                }
+                            }
                         }
                     }
                 }

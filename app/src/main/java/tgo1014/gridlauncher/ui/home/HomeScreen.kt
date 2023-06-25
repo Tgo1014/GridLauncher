@@ -38,6 +38,7 @@ fun HomeScreen(
         onAddToGrid = viewModel::onAddToGrid,
         onFilterClearPressed = viewModel::onFilterCleared,
         onFilterTextChanged = viewModel::onFilterTextChanged,
+        onUninstall = viewModel::uninstallApp,
     )
 }
 
@@ -51,6 +52,7 @@ private fun HomeScreen(
     onHome: () -> Unit = {},
     onFilterTextChanged: (String) -> Unit = {},
     onFilterClearPressed: () -> Unit = {},
+    onUninstall: (App) -> Unit = {},
 ) = BoxWithConstraints {
     val pagerState = rememberPagerState { 2 }
     val scope = rememberCoroutineScope()
@@ -99,6 +101,7 @@ private fun HomeScreen(
                 onAddToGrid = onAddToGrid,
                 onFilterTextChanged = onFilterTextChanged,
                 onFilterClearPressed = onFilterClearPressed,
+                onUninstall = onUninstall
             )
         }
     }

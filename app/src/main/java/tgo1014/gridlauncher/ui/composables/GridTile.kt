@@ -19,7 +19,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,83 +26,94 @@ import androidx.compose.ui.tooling.preview.Wallpapers
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import tgo1014.gridlauncher.data.getDominantColor
-import tgo1014.gridlauncher.data.isColored
 import tgo1014.gridlauncher.data.toBitmap
 import tgo1014.gridlauncher.domain.models.App
 import tgo1014.gridlauncher.ui.models.GridItem
 import tgo1014.gridlauncher.ui.theme.GridLauncherTheme
 import tgo1014.gridlauncher.ui.theme.isPreview
+import tgo1014.gridlauncher.ui.theme.modifyIf
 
 @Composable
-fun GridTile(item: GridItem, modifier: Modifier = Modifier) {
+fun GridTile(
+    item: GridItem,
+    isEditMode: Boolean = false,
+    modifier: Modifier = Modifier
+) {
     val shape = RoundedCornerShape(4.dp)
     Box(
-        modifier = Modifier
-            .background(MaterialTheme.colorScheme.primaryContainer, shape)
-            .clip(shape)
-            .then(modifier)
+        modifier = Modifier.modifyIf(isEditMode) {
+            padding(12.dp)
+        }
     ) {
-        AsyncImage(
-            model = item.app.icon.bgFile,
-            contentDescription = null,
-            modifier = Modifier.fillMaxSize()
-        )
-        val isLightBg = remember {
-            (item.app.icon.bgFile
-                ?.toBitmap()
-                ?.getDominantColor()
-                ?.luminance() ?: 0f) > 0.5f
-        }
-        val onContainer = MaterialTheme.colorScheme.onPrimaryContainer
-        val textColor = remember {
-            when {
-                item.app.icon.bgFile == null -> onContainer
-                isLightBg -> Color.Black
-                else -> Color.White
-            }
-        }
-        Box(modifier = Modifier.fillMaxSize()) {
-            Text(
-                text = item.app.name,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                color = textColor,
-                modifier = Modifier
-                    .align(Alignment.BottomStart)
-                    .fillMaxWidth()
-                    .padding(8.dp),
+        Box(
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.primaryContainer, shape)
+                .clip(shape)
+                .then(modifier)
+        ) {
+            AsyncImage(
+                model = item.app.icon.bgFile,
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize()
             )
-            val iconModifier = Modifier
-                .fillMaxSize(0.8f)
-                .align(Alignment.Center)
-            val primary = MaterialTheme.colorScheme.primary
-            val filter = remember {
-                ColorFilter.lighting(
-                    multiply = primary,
-                    add = Color.Transparent
-                ).takeIf {
-                    item.app.icon.bgFile == null &&
-                            item.app.icon.iconFile?.toBitmap()?.isColored() == false
+            val isLightBg = remember {
+                (item.app.icon.bgFile
+                    ?.toBitmap()
+                    ?.getDominantColor()
+                    ?.luminance() ?: 0f) > 0.5f
+            }
+            val onContainer = MaterialTheme.colorScheme.onPrimaryContainer
+            val textColor = remember {
+                when {
+                    item.app.icon.bgFile == null -> onContainer
+                    isLightBg -> Color.Black
+                    else -> Color.White
                 }
             }
-            if (isPreview) {
-                Image(
-                    imageVector = Icons.Default.Settings,
-                    contentDescription = null,
-                    modifier = iconModifier,
-                    //colorFilter = filter
-                )
-            } else {
-                AsyncImage(
-                    model = item.app.icon.iconFile,
-                    contentDescription = null,
-                    colorFilter = filter,
-                    //colorFilter = ColorFilter.tint(Color.Red, BlendMode.Modulate),
-                    modifier = iconModifier
+            Box(modifier = Modifier.fillMaxSize()) {
+                val iconModifier = Modifier.align(Alignment.Center)
+                val primary = MaterialTheme.colorScheme.primary
+                if (isPreview) {
+                    Image(
+                        imageVector = Icons.Default.Settings,
+                        contentDescription = null,
+                        modifier = iconModifier,
+                    )
+                } else {
+                    AsyncImage(
+                        model = item.app.icon.iconFile,
+                        contentDescription = null,
+                        modifier = iconModifier
+                    )
+                }
+                Text(
+                    text = item.app.name,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    color = textColor,
+                    modifier = Modifier
+                        .align(Alignment.BottomStart)
+                        .fillMaxWidth()
+                        .padding(8.dp),
                 )
             }
         }
     }
+}
+
+@Composable
+@Preview
+private fun PreviewEdit() = GridLauncherTheme {
+    val gridCellSize = 100.dp
+    val item = GridItem(App("Foobar"), 1)
+    Box(
+        Modifier
+            .height(gridCellSize * item.gridHeight)
+            .width(gridCellSize * item.gridWidth)
+    ) {
+        GridTile(item = item, isEditMode = true)
+    }
+
 }
 
 @Composable

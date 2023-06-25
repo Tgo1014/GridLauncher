@@ -1,4 +1,4 @@
-package tgo1014.gridlauncher.domain
+package tgo1014.gridlauncher.domain.models
 
 import kotlinx.serialization.Serializable
 import java.io.File

@@ -13,8 +13,8 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import tgo1014.gridlauncher.domain.AppIconManager
-import tgo1014.gridlauncher.domain.Icon
 import tgo1014.gridlauncher.domain.models.DispatcherProvider
+import tgo1014.gridlauncher.domain.models.Icon
 import java.io.File
 import java.io.FileOutputStream
 import javax.inject.Inject
@@ -28,7 +28,7 @@ class AppIconManagerImpl @Inject constructor(
 
     override suspend fun getIcon(packageName: String): Icon {
         return withContext(dispatcherProvider.io) {
-            /*getIconFromCache(packageName) ?: */cacheAngGetIcon(packageName)
+            getIconFromCache(packageName) ?: cacheAngGetIcon(packageName)
         }
     }
 

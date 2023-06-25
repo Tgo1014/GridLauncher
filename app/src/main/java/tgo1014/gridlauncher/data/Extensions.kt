@@ -6,7 +6,8 @@ import android.graphics.Matrix
 import androidx.compose.ui.graphics.Color
 import java.io.File
 
-fun File.toBitmap(): Bitmap = BitmapFactory.decodeFile(this.absolutePath)
+fun File.toBitmap(): Bitmap? =
+    runCatching { BitmapFactory.decodeFile(this.absolutePath) }.getOrNull()
 
 fun Bitmap.getDominantColor(): Color {
     val newBitmap = Bitmap.createScaledBitmap(this, 1, 1, true)

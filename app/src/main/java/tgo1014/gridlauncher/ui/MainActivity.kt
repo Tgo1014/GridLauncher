@@ -13,14 +13,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.core.view.WindowCompat
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
+import tgo1014.gridlauncher.domain.AppsManager
 import tgo1014.gridlauncher.ui.home.HomeScreen
 import tgo1014.gridlauncher.ui.home.HomeScreenViewModel
 import tgo1014.gridlauncher.ui.theme.GridLauncherTheme
+import javax.inject.Inject
 
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
+    @Inject
+    lateinit var appsManager: AppsManager
     private val homeScreenViewModel: HomeScreenViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,6 +39,12 @@ class MainActivity : ComponentActivity() {
             }
         }
         askToBeDefaultLauncher()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        println("onResume")
+        appsManager.updateAppsList()
     }
 
     override fun onNewIntent(intent: Intent?) {
