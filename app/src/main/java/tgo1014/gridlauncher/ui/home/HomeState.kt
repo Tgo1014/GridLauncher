@@ -8,4 +8,5 @@ data class HomeState(
     val grid: List<GridItem> = emptyList(),
     val goToHome: Boolean = false,
     val filterString: String = "",
+    val isEditMode: Boolean = false,
 )

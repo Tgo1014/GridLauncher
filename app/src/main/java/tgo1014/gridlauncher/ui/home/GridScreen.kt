@@ -28,17 +28,20 @@ import tgo1014.gridlauncher.ui.theme.onOpenNotificationShade
 
 @Composable
 fun GridScreenScreen(
-    items: List<GridItem>,
-    onAppClicked: (App) -> Unit = {},
+    state: HomeState,
+    onItemClicked: (item: GridItem) -> Unit = {},
+    onItemLongClicked: (item: GridItem) -> Unit = {},
     onFooterClicked: () -> Unit = {},
     onOpenNotificationShade: () -> Unit = {},
 ) {
     var isOnTop by remember { mutableStateOf(false) }
     TileLayout(
-        grid = items,
+        grid = state.grid,
+        isEditMode = state.isEditMode,
         footer = { Footer(onFooterClicked) },
-        onAppClicked = onAppClicked,
+        onItemLongClicked = onItemLongClicked,
         isOnTop = { isOnTop = it },
+        onItemClicked = onItemClicked,
         modifier = Modifier
             .fillMaxSize()
             .onOpenNotificationShade(isOnTop, onOpenNotificationShade)
@@ -69,15 +72,17 @@ private fun Footer(onFooterClicked: () -> Unit = {}) {
 @Preview
 private fun Preview() = GridLauncherTheme {
     GridScreenScreen(
-        items = listOf(
-            GridItem(App("وأصدقاؤك"), 2),
-            GridItem(App("123"), 2),
-            GridItem(App("#1231"), 2),
-            GridItem(App("$$$$"), 2),
-            GridItem(App("FooBar"), 2),
-            GridItem(App("Aaaa"), 2),
-            GridItem(App("AAb"), 2),
-            GridItem(App("はい"), 2),
+        state = HomeState(
+            grid = listOf(
+                GridItem(App("وأصدقاؤك"), 2),
+                GridItem(App("123"), 2),
+                GridItem(App("#1231"), 2),
+                GridItem(App("$$$$"), 2),
+                GridItem(App("FooBar"), 2),
+                GridItem(App("Aaaa"), 2),
+                GridItem(App("AAb"), 2),
+                GridItem(App("はい"), 2),
+            )
         )
     )
 }

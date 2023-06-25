@@ -13,7 +13,9 @@ import tgo1014.gridlauncher.domain.AddToGridUseCase
 import tgo1014.gridlauncher.domain.AppsManager
 import tgo1014.gridlauncher.domain.GetAppListUseCase
 import tgo1014.gridlauncher.domain.OpenNotificationShadeUseCase
+import tgo1014.gridlauncher.domain.RemoveFromGridUseCase
 import tgo1014.gridlauncher.domain.models.App
+import tgo1014.gridlauncher.ui.models.GridItem
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,6 +23,7 @@ class HomeScreenViewModel @Inject constructor(
     private val getAppListUseCase: GetAppListUseCase,
     private val openNotificationShadeUseCase: OpenNotificationShadeUseCase,
     private val addToGridUseCase: AddToGridUseCase,
+    private val removeFromGridUseCase: RemoveFromGridUseCase,
     private val appsManager: AppsManager,
 ) : ViewModel() {
 
@@ -40,6 +43,19 @@ class HomeScreenViewModel @Inject constructor(
     fun onOpenApp(app: App) {
         onGoToHome()
         appsManager.openApp(app)
+    }
+
+    fun onGridItemClicked(gridItem: GridItem) = viewModelScope.launch {
+        if (!_stateFlow.value.isEditMode) {
+            onOpenApp(gridItem.app)
+        } else {
+            removeFromGridUseCase(gridItem)
+        }
+    }
+
+    fun onGridItemLongClicked(gridItem: GridItem) {
+        val editMode = _stateFlow.value.isEditMode
+        _stateFlow.update { it.copy(isEditMode = !editMode) }
     }
 
     fun openNotificationShade() {

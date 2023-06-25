@@ -23,6 +23,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.launch
 import tgo1014.gridlauncher.domain.models.App
+import tgo1014.gridlauncher.ui.models.GridItem
 import tgo1014.gridlauncher.ui.theme.GridLauncherTheme
 
 @Composable
@@ -39,6 +40,8 @@ fun HomeScreen(
         onFilterClearPressed = viewModel::onFilterCleared,
         onFilterTextChanged = viewModel::onFilterTextChanged,
         onUninstall = viewModel::uninstallApp,
+        onItemClicked = viewModel::onGridItemClicked,
+        onItemLongClicked = viewModel::onGridItemLongClicked,
     )
 }
 
@@ -53,6 +56,8 @@ private fun HomeScreen(
     onFilterTextChanged: (String) -> Unit = {},
     onFilterClearPressed: () -> Unit = {},
     onUninstall: (App) -> Unit = {},
+    onItemClicked: (item: GridItem) -> Unit = {},
+    onItemLongClicked: (item: GridItem) -> Unit = {},
 ) = BoxWithConstraints {
     val pagerState = rememberPagerState { 2 }
     val scope = rememberCoroutineScope()
@@ -84,9 +89,10 @@ private fun HomeScreen(
     ) {
         when (it) {
             0 -> GridScreenScreen(
-                items = state.grid,
-                onAppClicked = onAppClicked,
+                state = state,
                 onOpenNotificationShade = onOpenNotificationShade,
+                onItemClicked = onItemClicked,
+                onItemLongClicked = onItemLongClicked,
                 onFooterClicked = {
                     scope.launch {
                         pagerState.animateScrollToPage(1)

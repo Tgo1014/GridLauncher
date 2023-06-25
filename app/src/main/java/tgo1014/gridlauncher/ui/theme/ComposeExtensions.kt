@@ -2,6 +2,7 @@ package tgo1014.gridlauncher.ui.theme
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
@@ -17,6 +18,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.DefaultAlpha
 import androidx.compose.ui.graphics.FilterQuality
@@ -100,6 +102,26 @@ fun Modifier.flipRandomly() = composed {
         )
     }
     Modifier.graphicsLayer(rotationX = animatedFloat.value, cameraDistance = 300f)
+}
+
+fun Modifier.tileEditMode(isEditMode: Boolean) = composed {
+    if (!isEditMode) {
+        return@composed Modifier
+    }
+    val animatedFloat = remember { Animatable(1f) }
+    LaunchedEffect(animatedFloat) {
+        animatedFloat.animateTo(
+            targetValue = 0.95f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(
+                    600,
+                    easing = LinearOutSlowInEasing
+                ),
+                repeatMode = RepeatMode.Reverse
+            )
+        )
+    }
+    Modifier.scale(animatedFloat.value)
 }
 
 @Composable
