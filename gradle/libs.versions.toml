@@ -1,15 +1,18 @@
 [versions]
-accompanist-systemuicontroller = "0.31.3-beta"
+accompanist-systemuicontroller = "0.31.4-beta"
 activity-compose = "1.8.0-alpha06"
 agp = "8.0.2"
 androidx-test-ext-junit = "1.2.0-alpha01"
+app-turbine = "1.0.0"
 coil-compose = "2.4.0"
 core-ktx = "1.12.0-alpha05"
 datastore = "1.1.0-alpha04"
 espresso-core = "3.6.0-alpha01"
-compose-bom = "2023.06.00"
+#compose-bom = "2023.06.00"
+compose-bom = "2023.06.00-alpha01"
 hilt = "2.46.1"
 junit = "4.13.2"
+kotlinx-coroutines-test = "1.7.1"
 kotlinx-serialization-json = "1.5.1"
 lazytable = "main-SNAPSHOT"
 lifecycle-runtime-ktx = "2.6.1"
@@ -21,28 +24,30 @@ accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-
 activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activity-compose" }
 androidx-datastore = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 androidx-test-ext-junit = { module = "androidx.test.ext:junit", version.ref = "androidx-test-ext-junit" }
+app-turbine = { module = "app.cash.turbine:turbine", version.ref = "app-turbine" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil-compose" }
+#compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
+compose-bom = { group = "dev.chrisbanes.compose", name = "compose-bom", version.ref = "compose-bom" }
 core-ktx = { module = "androidx.core:core-ktx", version.ref = "core-ktx" }
 espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espresso-core" }
 hilt = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-kapt = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
 hilt-navigation = "androidx.hilt:hilt-navigation-compose:1.1.0-alpha01"
 junit = { module = "junit:junit", version.ref = "junit" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines-test" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
 lazytable = { module = "com.github.Tgo1014:lazytable", version.ref = "lazytable" }
 lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle-runtime-ktx" }
 lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle-runtime-ktx" }
 # ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 material3 = { module = "androidx.compose.material3:material3" }
-#compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
-compose-bom = { group = "dev.chrisbanes.compose", name = "compose-bom", version = "2023.06.00-alpha01" }
 reorderable = { module = "org.burnoutcrew.composereorderable:reorderable", version.ref = "reorderable" }
 ui = { module = "androidx.compose.ui:ui" }
-ui-util = { module = "androidx.compose.ui:ui-util" }
 ui-graphics = { module = "androidx.compose.ui:ui-graphics" }
 ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
 ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
+ui-util = { module = "androidx.compose.ui:ui-util" }
 
 [bundles]
 hilt = [

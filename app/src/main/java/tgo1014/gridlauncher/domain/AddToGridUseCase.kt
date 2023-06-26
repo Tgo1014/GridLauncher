@@ -15,6 +15,20 @@ class AddToGridUseCase @Inject constructor(
             addGridItem(currentGrid, app, 0, 0)
             return@runCatching
         }
+        // Todo find fit logic
+//        val maxY = currentGrid.maxOf { it.y + it.gridHeight }
+//        repeat(maxY) { y ->
+//            val xGridItems = currentGrid.filter { it.y == y }
+//            if (xGridItems.sumOf { it.gridWidth } >= Constants.gridColumns) {
+//                // This row doesn't fit, skip
+//                if (y == maxY) {
+//                    val y = currentGrid.maxOf { it.y + it.gridHeight } + 1
+//                    addGridItem(grid = currentGrid, app = app, x = 0, y = y)
+//                }
+//                return@repeat
+//            }
+//
+//        }
         val lowestRow = currentGrid.maxBy { it.y }
         val coord = currentGrid
             .filter { it.y == lowestRow.y }
