@@ -1,5 +1,8 @@
 package tgo1014.gridlauncher.domain
 
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.Size
 import kotlinx.coroutines.flow.firstOrNull
 import tgo1014.gridlauncher.app.Constants
 import tgo1014.gridlauncher.domain.models.App
@@ -15,33 +18,47 @@ class AddToGridUseCase @Inject constructor(
             addGridItem(currentGrid, app, 0, 0)
             return@runCatching
         }
-        // Todo find fit logic
-//        val maxY = currentGrid.maxOf { it.y + it.gridHeight }
-//        repeat(maxY) { y ->
-//            val xGridItems = currentGrid.filter { it.y == y }
-//            if (xGridItems.sumOf { it.gridWidth } >= Constants.gridColumns) {
-//                // This row doesn't fit, skip
-//                if (y == maxY) {
-//                    val y = currentGrid.maxOf { it.y + it.gridHeight } + 1
-//                    addGridItem(grid = currentGrid, app = app, x = 0, y = y)
-//                }
-//                return@repeat
-//            }
-//
-//        }
-        val lowestRow = currentGrid.maxBy { it.y }
-        val coord = currentGrid
-            .filter { it.y == lowestRow.y }
-            .maxBy { it.x }
-        val fitInTheRow = coord.x + coord.gridWidth < Constants.gridColumns
-        val x = if (fitInTheRow) coord.x + coord.gridWidth else 0
-        val y = if (fitInTheRow) coord.y else coord.y + coord.gridHeight
-        addGridItem(currentGrid, app, x, y)
+        val rectGrid = currentGrid.map {
+            Rect(
+                offset = Offset(x = it.x.toFloat(), y = it.y.toFloat()),
+                size = Size(width = it.width.toFloat(), height = it.height.toFloat())
+            )
+        }
+        var finalPosition: Rect? = null
+        run repeatBlock@{ // need to make a label outside of the repeat!
+            repeat(currentGrid.maxOf { it.y } + 1) { y ->
+                repeat(Constants.gridColumns) { x ->
+                    val newPosition = Rect(
+                        offset = Offset(x = x.toFloat(), y = y.toFloat()),
+                        size = Size(2f, 2f)
+                    )
+                    if (rectGrid.none { it.overlaps(newPosition) }) {
+                        finalPosition = newPosition
+                        return@repeatBlock
+                    }
+                }
+            }
+        }
+        if (finalPosition == null) {
+            addGridItem(
+                currentGrid = currentGrid,
+                app = app,
+                x = 0,
+                y = currentGrid.maxOf { it.y + it.height },
+            )
+        } else {
+            addGridItem(
+                currentGrid = currentGrid,
+                app = app,
+                x = finalPosition!!.left.toInt(),
+                y = finalPosition!!.top.toInt(),
+            )
+        }
     }
 
-    private suspend fun addGridItem(grid: List<GridItem>, app: App, x: Int, y: Int) {
-        val newList = grid.toMutableList()
-        val gridItem = GridItem(app = app, gridWidth = 2, gridHeight = 2, x = x, y = y)
+    private suspend fun addGridItem(currentGrid: List<GridItem>, app: App, x: Int, y: Int) {
+        val newList = currentGrid.toMutableList()
+        val gridItem = GridItem(app = app, width = 2, height = 2, x = x, y = y)
         newList.add(gridItem)
         appsManager.setGrid(newList)
     }

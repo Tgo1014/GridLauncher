@@ -107,8 +107,8 @@ private fun PreviewEdit() = GridLauncherTheme {
     val item = GridItem(App("Foobar"), 1)
     Box(
         Modifier
-            .height(gridCellSize * item.gridHeight)
-            .width(gridCellSize * item.gridWidth)
+            .height(gridCellSize * item.height)
+            .width(gridCellSize * item.width)
     ) {
         GridTile(item = item, isEditMode = true)
     }
@@ -121,8 +121,8 @@ private fun PreviewSmallSquare() = GridLauncherTheme {
     val item = GridItem(App("Foobar"), 1)
     Box(
         Modifier
-            .height(gridCellSize * item.gridHeight)
-            .width(gridCellSize * item.gridWidth)
+            .height(gridCellSize * item.height)
+            .width(gridCellSize * item.width)
     ) {
         GridTile(item = item)
     }
@@ -136,8 +136,8 @@ private fun PreviewMediumSquare() = GridLauncherTheme {
     val item = GridItem(App("Foobar"), 2)
     Box(
         Modifier
-            .height(gridCellSize * item.gridHeight)
-            .width(gridCellSize * item.gridWidth)
+            .height(gridCellSize * item.height)
+            .width(gridCellSize * item.width)
     ) {
         GridTile(item = item)
     }
@@ -150,8 +150,8 @@ private fun PreviewLargeRectangle() = GridLauncherTheme {
     val item = GridItem(App("Foobar"), 4, 2)
     Box(
         Modifier
-            .height(gridCellSize * item.gridHeight)
-            .width(gridCellSize * item.gridWidth)
+            .height(gridCellSize * item.height)
+            .width(gridCellSize * item.width)
     ) {
         GridTile(item = item)
     }

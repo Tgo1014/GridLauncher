@@ -60,8 +60,8 @@ fun TileLayout(
                 LazyTableItem(
                     column = tile.x,
                     row = tile.y,
-                    columnsCount = tile.gridWidth,
-                    rowsCount = tile.gridHeight
+                    columnsCount = tile.width,
+                    rowsCount = tile.height
                 )
             }
         ) {
