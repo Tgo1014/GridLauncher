@@ -1,6 +1,9 @@
 package tgo1014.gridlauncher.ui.home
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.expandIn
+import androidx.compose.animation.shrinkOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -31,6 +34,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,6 +56,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
+import kotlinx.coroutines.delay
 import tgo1014.gridlauncher.R
 import tgo1014.gridlauncher.domain.models.App
 import tgo1014.gridlauncher.ui.composables.Search
@@ -149,27 +154,38 @@ fun AppListScreen(
                         offset = IntOffset(offset.x.toInt(), offset.y.toInt()),
                         onDismissRequest = { isPopUpShowing = false }
                     ) {
-                        ElevatedCard {
-                            Column {
-                                Text(
-                                    text = "Add To Grid",
-                                    modifier = Modifier
-                                        .clickable {
-                                            onAddToGrid(app)
-                                            isPopUpShowing = false
-                                        }
-                                        .padding(16.dp)
-                                )
-                                if (!app.isSystemApp) {
+                        var expand by remember { mutableStateOf(false) }
+                        LaunchedEffect(Unit) {
+                            delay(100)
+                            expand = true
+                        }
+                        AnimatedVisibility(
+                            visible = expand,
+                            enter = expandIn(),
+                            exit = shrinkOut(),
+                        ) {
+                            ElevatedCard {
+                                Column {
                                     Text(
-                                        text = "Uninstall",
+                                        text = "Add To Grid",
                                         modifier = Modifier
                                             .clickable {
-                                                onUninstall(app)
+                                                onAddToGrid(app)
                                                 isPopUpShowing = false
                                             }
                                             .padding(16.dp)
                                     )
+                                    if (!app.isSystemApp) {
+                                        Text(
+                                            text = "Uninstall",
+                                            modifier = Modifier
+                                                .clickable {
+                                                    onUninstall(app)
+                                                    isPopUpShowing = false
+                                                }
+                                                .padding(16.dp)
+                                        )
+                                    }
                                 }
                             }
                         }

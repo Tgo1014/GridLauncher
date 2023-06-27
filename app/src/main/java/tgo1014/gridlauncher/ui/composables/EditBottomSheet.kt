@@ -19,29 +19,53 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import tgo1014.gridlauncher.domain.Direction
 import tgo1014.gridlauncher.ui.theme.GridLauncherTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditBottomSheet(isEditMode: Boolean) {
+fun EditBottomSheet(
+    isEditMode: Boolean,
+    onItemMoved: (Direction) -> Unit = {},
+    onDismissed: () -> Unit = {},
+) {
     if (!isEditMode) {
         return
     }
-    val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val state = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true,
+    )
     ModalBottomSheet(
         sheetState = state,
         windowInsets = WindowInsets(0.dp),
-        onDismissRequest = { /*TODO*/ }
-    ) {
-        Content()
-    }
+        onDismissRequest = onDismissed,
+        scrimColor = Color.Transparent,
+        content = {
+            Content(
+                onTopClicked = { onItemMoved(Direction.Up) },
+                onDownClicked = { onItemMoved(Direction.Down) },
+                onLeftClicked = { onItemMoved(Direction.Left) },
+                onRightClicked = { onItemMoved(Direction.Right) },
+            )
+        }
+    )
 }
 
 @Composable
-private fun Content() {
+private fun Content(
+    onTopClicked: () -> Unit = {},
+    onDownClicked: () -> Unit = {},
+    onLeftClicked: () -> Unit = {},
+    onRightClicked: () -> Unit = {},
+) {
     Row(
         Modifier
             .padding(WindowInsets.navigationBars.asPaddingValues())
@@ -49,7 +73,7 @@ private fun Content() {
     ) {
         FilledIconButton(
             shape = RoundedCornerShape(6.dp),
-            onClick = { /*TODO*/ },
+            onClick = onLeftClicked,
             modifier = Modifier.weight(1f)
         ) {
             Icon(Icons.Default.KeyboardArrowLeft, null)
@@ -57,7 +81,7 @@ private fun Content() {
         Spacer(Modifier.width(4.dp))
         FilledIconButton(
             shape = RoundedCornerShape(6.dp),
-            onClick = { /*TODO*/ },
+            onClick = onDownClicked,
             modifier = Modifier.weight(1f)
         ) {
             Icon(Icons.Default.KeyboardArrowDown, null)
@@ -65,7 +89,7 @@ private fun Content() {
         Spacer(Modifier.width(4.dp))
         FilledIconButton(
             shape = RoundedCornerShape(6.dp),
-            onClick = { /*TODO*/ },
+            onClick = onTopClicked,
             modifier = Modifier.weight(1f)
         ) {
             Icon(Icons.Default.KeyboardArrowUp, null)
@@ -73,7 +97,7 @@ private fun Content() {
         Spacer(Modifier.width(4.dp))
         FilledIconButton(
             shape = RoundedCornerShape(6.dp),
-            onClick = { /*TODO*/ },
+            onClick = onRightClicked,
             modifier = Modifier.weight(1f)
         ) {
             Icon(Icons.Default.KeyboardArrowRight, null)
@@ -84,5 +108,6 @@ private fun Content() {
 @Composable
 @Preview
 private fun Preview() = GridLauncherTheme {
-    Content()
+    var isShowing by remember { mutableStateOf(true) }
+    EditBottomSheet(isEditMode = isShowing, { isShowing = false })
 }

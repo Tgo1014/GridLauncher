@@ -40,7 +40,7 @@ fun TileLayout(
     grid: List<GridItem>,
     modifier: Modifier = Modifier,
     columns: Int = Constants.gridColumns,
-    isEditMode: Boolean = false,
+    itemBeingEdited: GridItem? = null,
     isOnTop: (Boolean) -> Unit = {},
     onItemClicked: (item: GridItem) -> Unit = {},
     onItemLongClicked: (item: GridItem) -> Unit = {},
@@ -68,7 +68,7 @@ fun TileLayout(
             Box(modifier = Modifier.padding(2.dp)) {
                 GridTile(
                     item = it,
-                    isEditMode = isEditMode,
+                    isEditMode = it.id == itemBeingEdited?.id,
                     onItemClicked = onItemClicked,
                     onItemLongClicked = onItemLongClicked,
                     modifier = Modifier
@@ -106,9 +106,9 @@ fun TileLayout(
 private fun Preview() {
     TileLayout(
         grid = listOf(
-            GridItem(App(name = "FooBar 1"), 4, 2, x = 1, y = 0),
-            GridItem(App(name = "FooBar 2"), 1, x = 1, y = 0),
-            GridItem(App(name = "FooBar 3"), 4, x = 0, y = 1),
+            GridItem(app = App(name = "FooBar 1"), width = 4, height = 2, x = 1, y = 0),
+            GridItem(app = App(name = "FooBar 2"), width = 1, x = 1, y = 0),
+            GridItem(app = App(name = "FooBar 3"), width = 4, x = 0, y = 1),
         ),
         footer = {
             Row(
@@ -136,7 +136,7 @@ private fun PreviewScroll() {
             .fillMaxSize()
             .padding(8.dp),
         grid = List(items.size) { index ->
-            GridItem(App(name = "FooBar 1"), 3, x = 0, y = index * 3)
+            GridItem(app = App(name = "FooBar 1"), width = 3, x = 0, y = index * 3)
         }
     )
 }

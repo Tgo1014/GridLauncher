@@ -104,7 +104,7 @@ fun GridTile(
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
 private fun PreviewEdit() = GridLauncherTheme {
     val gridCellSize = 100.dp
-    val item = GridItem(App("Foobar"), 1)
+    val item = GridItem(app = App("Foobar"), width = 1)
     Box(
         Modifier
             .height(gridCellSize * item.height)
@@ -118,7 +118,7 @@ private fun PreviewEdit() = GridLauncherTheme {
 @Preview(wallpaper = Wallpapers.BLUE_DOMINATED_EXAMPLE)
 private fun PreviewSmallSquare() = GridLauncherTheme {
     val gridCellSize = 100.dp
-    val item = GridItem(App("Foobar"), 1)
+    val item = GridItem(app = App("Foobar"), width = 1)
     Box(
         Modifier
             .height(gridCellSize * item.height)
@@ -133,7 +133,7 @@ private fun PreviewSmallSquare() = GridLauncherTheme {
 @Preview(wallpaper = Wallpapers.YELLOW_DOMINATED_EXAMPLE)
 private fun PreviewMediumSquare() = GridLauncherTheme {
     val gridCellSize = 100.dp
-    val item = GridItem(App("Foobar"), 2)
+    val item = GridItem(app = App("Foobar"), width = 2)
     Box(
         Modifier
             .height(gridCellSize * item.height)
@@ -147,7 +147,7 @@ private fun PreviewMediumSquare() = GridLauncherTheme {
 @Preview(wallpaper = Wallpapers.RED_DOMINATED_EXAMPLE)
 private fun PreviewLargeRectangle() = GridLauncherTheme {
     val gridCellSize = 100.dp
-    val item = GridItem(App("Foobar"), 4, 2)
+    val item = GridItem(app = App("Foobar"), width = 4, height = 2)
     Box(
         Modifier
             .height(gridCellSize * item.height)

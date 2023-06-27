@@ -58,7 +58,15 @@ class AddToGridUseCase @Inject constructor(
 
     private suspend fun addGridItem(currentGrid: List<GridItem>, app: App, x: Int, y: Int) {
         val newList = currentGrid.toMutableList()
-        val gridItem = GridItem(app = app, width = 2, height = 2, x = x, y = y)
+        val maxId = currentGrid.maxOfOrNull { it.id }
+        val gridItem = GridItem(
+            id = if (maxId != null) maxId + 1 else 0,
+            app = app,
+            width = 2,
+            height = 2,
+            x = x,
+            y = y
+        )
         newList.add(gridItem)
         appsManager.setGrid(newList)
     }

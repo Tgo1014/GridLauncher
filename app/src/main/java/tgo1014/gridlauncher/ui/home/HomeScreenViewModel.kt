@@ -11,7 +11,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import tgo1014.gridlauncher.domain.AddToGridUseCase
 import tgo1014.gridlauncher.domain.AppsManager
+import tgo1014.gridlauncher.domain.Direction
 import tgo1014.gridlauncher.domain.GetAppListUseCase
+import tgo1014.gridlauncher.domain.MoveGridItemUseCase
 import tgo1014.gridlauncher.domain.OpenNotificationShadeUseCase
 import tgo1014.gridlauncher.domain.RemoveFromGridUseCase
 import tgo1014.gridlauncher.domain.models.App
@@ -23,6 +25,7 @@ class HomeScreenViewModel @Inject constructor(
     private val getAppListUseCase: GetAppListUseCase,
     private val openNotificationShadeUseCase: OpenNotificationShadeUseCase,
     private val addToGridUseCase: AddToGridUseCase,
+    private val moveGridItemUseCase: MoveGridItemUseCase,
     private val removeFromGridUseCase: RemoveFromGridUseCase,
     private val appsManager: AppsManager,
 ) : ViewModel() {
@@ -49,13 +52,13 @@ class HomeScreenViewModel @Inject constructor(
         if (!_stateFlow.value.isEditMode) {
             onOpenApp(gridItem.app)
         } else {
-            removeFromGridUseCase(gridItem)
+            _stateFlow.update { it.copy(itemBeingEdited = gridItem) }
+            //removeFromGridUseCase(gridItem)
         }
     }
 
     fun onGridItemLongClicked(gridItem: GridItem) {
-        val editMode = _stateFlow.value.isEditMode
-        _stateFlow.update { it.copy(isEditMode = !editMode) }
+        _stateFlow.update { it.copy(itemBeingEdited = gridItem) }
     }
 
     fun openNotificationShade() {
@@ -85,6 +88,15 @@ class HomeScreenViewModel @Inject constructor(
 
     fun onFilterCleared() {
         _stateFlow.update { it.copy(filterString = "", appList = fullAppList) }
+    }
+
+    fun onEditSheetDismissed() {
+        _stateFlow.update { it.copy(itemBeingEdited = null) }
+    }
+
+    fun onItemMoved(direction: Direction) = viewModelScope.launch {
+        val item = _stateFlow.value.itemBeingEdited ?: return@launch
+        moveGridItemUseCase(item.id, direction)
     }
 
     private fun init() = viewModelScope.launch {

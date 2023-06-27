@@ -5,6 +5,7 @@ import tgo1014.gridlauncher.domain.models.App
 
 @Serializable
 data class GridItem(
+    val id: Int = -1,
     val app: App,
     val width: Int,
     val height: Int = width,

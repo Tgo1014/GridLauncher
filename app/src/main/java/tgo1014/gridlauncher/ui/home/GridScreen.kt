@@ -2,28 +2,14 @@ package tgo1014.gridlauncher.ui.home
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,14 +19,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import tgo1014.gridlauncher.domain.Direction
 import tgo1014.gridlauncher.domain.models.App
 import tgo1014.gridlauncher.ui.TileLayout
+import tgo1014.gridlauncher.ui.composables.EditBottomSheet
 import tgo1014.gridlauncher.ui.models.GridItem
 import tgo1014.gridlauncher.ui.theme.GridLauncherTheme
 import tgo1014.gridlauncher.ui.theme.onOpenNotificationShade
 
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GridScreenScreen(
     state: HomeState,
@@ -48,11 +34,13 @@ fun GridScreenScreen(
     onItemLongClicked: (item: GridItem) -> Unit = {},
     onFooterClicked: () -> Unit = {},
     onOpenNotificationShade: () -> Unit = {},
+    onEditSheetDismiss: () -> Unit = {},
+    onItemMoved: (Direction) -> Unit = {},
 ) {
     var isOnTop by remember { mutableStateOf(false) }
     TileLayout(
         grid = state.grid,
-        isEditMode = state.isEditMode,
+        itemBeingEdited = state.itemBeingEdited,
         footer = { Footer(onFooterClicked) },
         onItemLongClicked = onItemLongClicked,
         isOnTop = { isOnTop = it },
@@ -61,52 +49,11 @@ fun GridScreenScreen(
             .fillMaxSize()
             .onOpenNotificationShade(isOnTop, onOpenNotificationShade)
     )
-    if (state.isEditMode) {
-        val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-        ModalBottomSheet(
-            sheetState = state,
-            windowInsets = WindowInsets(0.dp),
-            onDismissRequest = { /*TODO*/ }
-        ) {
-            Row(
-                Modifier
-                    .padding(WindowInsets.navigationBars.asPaddingValues())
-                    .padding(8.dp)
-            ) {
-                FilledIconButton(
-                    shape = RoundedCornerShape(6.dp),
-                    onClick = { /*TODO*/ },
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Icon(Icons.Default.KeyboardArrowLeft, null)
-                }
-                Spacer(Modifier.width(4.dp))
-                FilledIconButton(
-                    shape = RoundedCornerShape(6.dp),
-                    onClick = { /*TODO*/ },
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Icon(Icons.Default.KeyboardArrowDown, null)
-                }
-                Spacer(Modifier.width(4.dp))
-                FilledIconButton(
-                    shape = RoundedCornerShape(6.dp),
-                    onClick = { /*TODO*/ },
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Icon(Icons.Default.KeyboardArrowUp, null)
-                }
-                Spacer(Modifier.width(4.dp))
-                FilledIconButton(
-                    shape = RoundedCornerShape(6.dp),
-                    onClick = { /*TODO*/ },
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Icon(Icons.Default.KeyboardArrowRight, null)
-                }
-            }
-        }
-    }
+    EditBottomSheet(
+        isEditMode = state.isEditMode,
+        onItemMoved = onItemMoved,
+        onDismissed = onEditSheetDismiss,
+    )
 }
 
 @Composable
@@ -135,14 +82,14 @@ private fun Preview() = GridLauncherTheme {
     GridScreenScreen(
         state = HomeState(
             grid = listOf(
-                GridItem(App("وأصدقاؤك"), 2),
-                GridItem(App("123"), 2),
-                GridItem(App("#1231"), 2),
-                GridItem(App("$$$$"), 2),
-                GridItem(App("FooBar"), 2),
-                GridItem(App("Aaaa"), 2),
-                GridItem(App("AAb"), 2),
-                GridItem(App("はい"), 2),
+                GridItem(app = App("وأصدقاؤك"), width = 2),
+                GridItem(app = App("123"), width = 2),
+                GridItem(app = App("#1231"), width = 2),
+                GridItem(app = App("$$$$"), width = 2),
+                GridItem(app = App("FooBar"), width = 2),
+                GridItem(app = App("Aaaa"), width = 2),
+                GridItem(app = App("AAb"), width = 2),
+                GridItem(app = App("はい"), width = 2),
             )
         )
     )
@@ -151,18 +98,19 @@ private fun Preview() = GridLauncherTheme {
 @Composable
 @Preview
 private fun PreviewEditMode() = GridLauncherTheme {
+    val edit = GridItem(app = App("وأصدقاؤك"), width = 2)
     GridScreenScreen(
         state = HomeState(
-            isEditMode = true,
+            itemBeingEdited = edit,
             grid = listOf(
-                GridItem(App("وأصدقاؤك"), 2),
-                GridItem(App("123"), 2),
-                GridItem(App("#1231"), 2),
-                GridItem(App("$$$$"), 2),
-                GridItem(App("FooBar"), 2),
-                GridItem(App("Aaaa"), 2),
-                GridItem(App("AAb"), 2),
-                GridItem(App("はい"), 2),
+                GridItem(app = App("وأصدقاؤك"), width = 2),
+                GridItem(app = App("123"), width = 2),
+                GridItem(app = App("#1231"), width = 2),
+                GridItem(app = App("$$$$"), width = 2),
+                GridItem(app = App("FooBar"), width = 2),
+                GridItem(app = App("Aaaa"), width = 2),
+                GridItem(app = App("AAb"), width = 2),
+                GridItem(app = App("はい"), width = 2),
             )
         )
     )
