@@ -13,12 +13,15 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.SheetValue
+import androidx.compose.material3.rememberBottomSheetScaffoldState
+import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,26 +39,38 @@ fun EditBottomSheet(
     isEditMode: Boolean,
     onItemMoved: (Direction) -> Unit = {},
     onDismissed: () -> Unit = {},
+    content: @Composable () -> Unit,
 ) {
-    if (!isEditMode) {
-        return
-    }
-    val state = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true,
+    val sheetState = rememberStandardBottomSheetState(
+        initialValue = SheetValue.Hidden,
+        skipHiddenState = false,
     )
-    ModalBottomSheet(
-        sheetState = state,
-        windowInsets = WindowInsets(0.dp),
-        onDismissRequest = onDismissed,
-        scrimColor = Color.Transparent,
-        content = {
+    val state = rememberBottomSheetScaffoldState(sheetState)
+    LaunchedEffect(isEditMode) {
+        if (isEditMode) {
+            sheetState.expand()
+        } else {
+            sheetState.hide()
+        }
+    }
+    LaunchedEffect(sheetState.currentValue) {
+        if (sheetState.currentValue == SheetValue.Hidden) {
+            onDismissed()
+        }
+    }
+    BottomSheetScaffold(
+        scaffoldState = state,
+        containerColor = Color.Transparent,
+        sheetPeekHeight = 0.dp,
+        sheetContent = {
             Content(
                 onTopClicked = { onItemMoved(Direction.Up) },
                 onDownClicked = { onItemMoved(Direction.Down) },
                 onLeftClicked = { onItemMoved(Direction.Left) },
                 onRightClicked = { onItemMoved(Direction.Right) },
             )
-        }
+        },
+        content = { content() },
     )
 }
 
@@ -109,5 +124,7 @@ private fun Content(
 @Preview
 private fun Preview() = GridLauncherTheme {
     var isShowing by remember { mutableStateOf(true) }
-    EditBottomSheet(isEditMode = isShowing, { isShowing = false })
+    EditBottomSheet(isEditMode = isShowing) {
+
+    }
 }

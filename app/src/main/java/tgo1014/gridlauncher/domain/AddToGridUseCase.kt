@@ -27,10 +27,10 @@ class AddToGridUseCase @Inject constructor(
         var finalPosition: Rect? = null
         run repeatBlock@{ // need to make a label outside of the repeat!
             repeat(currentGrid.maxOf { it.y } + 1) { y ->
-                repeat(Constants.gridColumns) { x ->
+                repeat(Constants.gridColumns - 1) { x ->
                     val newPosition = Rect(
                         offset = Offset(x = x.toFloat(), y = y.toFloat()),
-                        size = Size(2f, 2f)
+                        size = Size(2f, 2f) // item width
                     )
                     if (rectGrid.none { it.overlaps(newPosition) }) {
                         finalPosition = newPosition

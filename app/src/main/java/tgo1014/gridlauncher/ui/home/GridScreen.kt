@@ -38,22 +38,28 @@ fun GridScreenScreen(
     onItemMoved: (Direction) -> Unit = {},
 ) {
     var isOnTop by remember { mutableStateOf(false) }
-    TileLayout(
-        grid = state.grid,
-        itemBeingEdited = state.itemBeingEdited,
-        footer = { Footer(onFooterClicked) },
-        onItemLongClicked = onItemLongClicked,
-        isOnTop = { isOnTop = it },
-        onItemClicked = onItemClicked,
-        modifier = Modifier
-            .fillMaxSize()
-            .onOpenNotificationShade(isOnTop, onOpenNotificationShade)
-    )
     EditBottomSheet(
         isEditMode = state.isEditMode,
         onItemMoved = onItemMoved,
         onDismissed = onEditSheetDismiss,
-    )
+    ) {
+        TileLayout(
+            grid = state.grid,
+            itemBeingEdited = state.itemBeingEdited,
+            footer = { Footer(onFooterClicked) },
+            onItemLongClicked = onItemLongClicked,
+            isOnTop = { isOnTop = it },
+            onItemClicked = onItemClicked,
+            modifier = Modifier
+                .fillMaxSize()
+                .onOpenNotificationShade(isOnTop, onOpenNotificationShade)
+        )
+    }
+//    EditBottomSheet(
+//        isEditMode = state.isEditMode,
+//        onItemMoved = onItemMoved,
+//        onDismissed = onEditSheetDismiss,
+//    )
 }
 
 @Composable
