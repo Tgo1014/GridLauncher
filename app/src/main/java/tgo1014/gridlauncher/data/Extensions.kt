@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import androidx.compose.ui.graphics.Color
 import java.io.File
+import java.text.Normalizer
 
 fun File.toBitmap(): Bitmap? =
     runCatching { BitmapFactory.decodeFile(this.absolutePath) }.getOrNull()
@@ -83,3 +84,9 @@ fun Bitmap.trimmed(): Bitmap {
     }
     return Bitmap.createBitmap(this, firstX, firstY, lastX - firstX, lastY - firstY)
 }
+
+val String.withoutAccents: String
+    get() {
+        val norm = Normalizer.normalize(this, Normalizer.Form.NFD)
+        return norm.replace("\\p{InCombiningDiacriticalMarks}+".toRegex(), "")
+    }

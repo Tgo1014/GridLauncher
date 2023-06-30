@@ -107,7 +107,7 @@ fun AppListScreen(
                 }
             }
     ) {
-        item {
+        item(key = "Search") {
             DisposableEffect(Unit) {
                 isOnTop = true
                 onDispose { isOnTop = false }
@@ -115,7 +115,8 @@ fun AppListScreen(
             Search(
                 text = state.filterString,
                 onTextChanged = onFilterTextChanged,
-                onClearPressed = onFilterClearPressed
+                onClearPressed = onFilterClearPressed,
+                modifier = Modifier.animateItemPlacement()
             )
         }
         val appList = state.appList

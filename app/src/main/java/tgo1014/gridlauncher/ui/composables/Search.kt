@@ -22,7 +22,8 @@ import tgo1014.gridlauncher.ui.theme.GridLauncherTheme
 
 @Composable
 fun Search(
-    text: String = "",
+    text: String,
+    modifier: Modifier = Modifier,
     color: Color = MaterialTheme.colorScheme.secondaryContainer,
     onTextChanged: (String) -> Unit = {},
     onClearPressed: () -> Unit = {},
@@ -64,14 +65,16 @@ fun Search(
             cursorColor = color,
             unfocusedTextColor = color,
         ),
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .then(modifier)
     )
 }
 
 @Composable
 @Preview
 private fun Preview() = GridLauncherTheme {
-    Search()
+    Search("")
 }
 
 @Composable

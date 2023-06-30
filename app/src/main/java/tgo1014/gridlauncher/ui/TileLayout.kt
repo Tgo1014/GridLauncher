@@ -41,6 +41,7 @@ fun TileLayout(
     modifier: Modifier = Modifier,
     columns: Int = Constants.gridColumns,
     itemBeingEdited: GridItem? = null,
+    contentPadding: PaddingValues = PaddingValues(0.dp),
     isOnTop: (Boolean) -> Unit = {},
     onItemClicked: (item: GridItem) -> Unit = {},
     onItemLongClicked: (item: GridItem) -> Unit = {},
@@ -51,7 +52,7 @@ fun TileLayout(
     var firstItemPosition: Float? by remember { mutableStateOf(null) }
     LazyTable(
         scrollDirection = MinaBoxScrollDirection.VERTICAL,
-        contentPadding = WindowInsets.systemBars.asPaddingValues() + PaddingValues(padding),
+        contentPadding = WindowInsets.systemBars.asPaddingValues() + PaddingValues(padding) + contentPadding,
         dimensions = lazyTableDimensions({ gridItemSize }, { gridItemSize }),
     ) {
         items(

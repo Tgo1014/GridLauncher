@@ -23,6 +23,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.launch
 import tgo1014.gridlauncher.domain.Direction
+import tgo1014.gridlauncher.domain.TileSize
 import tgo1014.gridlauncher.domain.models.App
 import tgo1014.gridlauncher.ui.models.GridItem
 import tgo1014.gridlauncher.ui.theme.GridLauncherTheme
@@ -45,6 +46,7 @@ fun HomeScreen(
         onItemLongClicked = viewModel::onGridItemLongClicked,
         onEditSheetDismiss = viewModel::onEditSheetDismissed,
         onItemMoved = viewModel::onItemMoved,
+        onSizeChange = viewModel::onSizeChanged,
     )
 }
 
@@ -63,6 +65,7 @@ private fun HomeScreen(
     onItemLongClicked: (item: GridItem) -> Unit = {},
     onEditSheetDismiss: () -> Unit = {},
     onItemMoved: (Direction) -> Unit = {},
+    onSizeChange: (tileSize: TileSize) -> Unit = {},
 ) = BoxWithConstraints {
     val pagerState = rememberPagerState { 2 }
     val scope = rememberCoroutineScope()
@@ -77,7 +80,7 @@ private fun HomeScreen(
     )
     LaunchedEffect(state.goToHome) {
         if (state.goToHome) {
-            pagerState.animateScrollToPage(0)
+            pagerState.scrollToPage(0)
         }
     }
     LaunchedEffect(pagerState.settledPage) {
@@ -87,6 +90,7 @@ private fun HomeScreen(
     }
     HorizontalPager(
         state = pagerState,
+        beyondBoundsPageCount = 1,
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black.copy(alpha))
@@ -100,6 +104,7 @@ private fun HomeScreen(
                 onItemLongClicked = onItemLongClicked,
                 onEditSheetDismiss = onEditSheetDismiss,
                 onItemMoved = onItemMoved,
+                onSizeChange = onSizeChange,
                 onFooterClicked = {
                     scope.launch {
                         pagerState.animateScrollToPage(1)

@@ -3,19 +3,23 @@ package tgo1014.gridlauncher.ui.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import tgo1014.gridlauncher.data.withoutAccents
 import tgo1014.gridlauncher.domain.AddToGridUseCase
 import tgo1014.gridlauncher.domain.AppsManager
 import tgo1014.gridlauncher.domain.Direction
 import tgo1014.gridlauncher.domain.GetAppListUseCase
+import tgo1014.gridlauncher.domain.ItemGridSizeChangeUseCase
 import tgo1014.gridlauncher.domain.MoveGridItemUseCase
 import tgo1014.gridlauncher.domain.OpenNotificationShadeUseCase
 import tgo1014.gridlauncher.domain.RemoveFromGridUseCase
+import tgo1014.gridlauncher.domain.TileSize
 import tgo1014.gridlauncher.domain.models.App
 import tgo1014.gridlauncher.ui.models.GridItem
 import javax.inject.Inject
@@ -27,6 +31,7 @@ class HomeScreenViewModel @Inject constructor(
     private val addToGridUseCase: AddToGridUseCase,
     private val moveGridItemUseCase: MoveGridItemUseCase,
     private val removeFromGridUseCase: RemoveFromGridUseCase,
+    private val itemGridSizeChangeUseCase: ItemGridSizeChangeUseCase,
     private val appsManager: AppsManager,
 ) : ViewModel() {
 
@@ -44,16 +49,22 @@ class HomeScreenViewModel @Inject constructor(
     }
 
     fun onOpenApp(app: App) {
-        onGoToHome()
-        appsManager.openApp(app)
+        viewModelScope.launch {
+            delay(200)
+            _stateFlow.update { it.copy(goToHome = true) }
+            resetState()
+        }
+        viewModelScope.launch { appsManager.openApp(app) }
     }
 
     fun onGridItemClicked(gridItem: GridItem) = viewModelScope.launch {
-        if (!_stateFlow.value.isEditMode) {
-            onOpenApp(gridItem.app)
-        } else {
-            _stateFlow.update { it.copy(itemBeingEdited = gridItem) }
-            //removeFromGridUseCase(gridItem)
+        when {
+            !_stateFlow.value.isEditMode -> onOpenApp(gridItem.app)
+            gridItem == _stateFlow.value.itemBeingEdited -> {
+                removeFromGridUseCase(gridItem)
+                    .onSuccess { _stateFlow.update { it.copy(itemBeingEdited = null) } }
+            }
+            else -> _stateFlow.update { it.copy(itemBeingEdited = gridItem) }
         }
     }
 
@@ -82,7 +93,9 @@ class HomeScreenViewModel @Inject constructor(
             onFilterCleared()
             return
         }
-        val appList = fullAppList.filter { it.name.contains(filter, true) }
+        val appList = fullAppList.filter {
+            it.name.withoutAccents.contains(filter.withoutAccents, true)
+        }
         _stateFlow.update { it.copy(filterString = filter, appList = appList) }
     }
 
@@ -99,6 +112,11 @@ class HomeScreenViewModel @Inject constructor(
         moveGridItemUseCase(item.id, direction)
     }
 
+    fun onSizeChanged(tileSize: TileSize) = viewModelScope.launch {
+        val item = _stateFlow.value.itemBeingEdited ?: return@launch
+        itemGridSizeChangeUseCase(item.id, tileSize)
+    }
+
     private fun init() = viewModelScope.launch {
         getAppListUseCase()
             .onEach { appList ->
@@ -109,6 +127,11 @@ class HomeScreenViewModel @Inject constructor(
         appsManager.homeGridFlow
             .onEach { grid -> _stateFlow.update { it.copy(grid = grid) } }
             .launchIn(this)
+    }
+
+    private fun resetState() {
+        _stateFlow.update { it.copy(itemBeingEdited = null) }
+        onFilterTextChanged("")
     }
 
 }
