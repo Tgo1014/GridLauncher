@@ -54,10 +54,8 @@ fun EditBottomSheet(
             sheetState.hide()
         }
     }
-    LaunchedEffect(sheetState.currentValue) {
-        if (sheetState.currentValue == SheetValue.Hidden) {
-            onDismissed()
-        }
+    LaunchedIfTrueEffect(sheetState.currentValue == SheetValue.Hidden) {
+        onDismissed()
     }
     BottomSheetScaffold(
         scaffoldState = state,

@@ -1,22 +1,22 @@
 [versions]
-accompanist-systemuicontroller = "0.31.4-beta"
+accompanist-systemuicontroller = "0.31.6-rc"
 activity-compose = "1.8.0-alpha06"
-agp = "8.0.2"
+agp = "8.1.0"
 androidx-test-ext-junit = "1.2.0-alpha01"
 app-turbine = "1.0.0"
 coil-compose = "2.4.0"
-core-ktx = "1.12.0-alpha05"
+#compose-bom = "2023.06.00"
+compose-bom = "2023.07.00-alpha02"
+core-ktx = "1.12.0-beta01"
 datastore = "1.1.0-alpha04"
 espresso-core = "3.6.0-alpha01"
-#compose-bom = "2023.06.00"
-compose-bom = "2023.06.00-alpha01"
-hilt = "2.46.1"
+hilt = "2.47"
 junit = "4.13.2"
-kotlinx-coroutines-test = "1.7.1"
+kotlinx-coroutines-test = "1.7.3"
 kotlinx-serialization-json = "1.5.1"
 lazytable = "main-SNAPSHOT"
-lifecycle-runtime-ktx = "2.6.1"
-org-jetbrains-kotlin-android = "1.8.21"
+lifecycle-runtime-ktx = "2.7.0-alpha01"
+org-jetbrains-kotlin-android = "1.9.0"
 reorderable = "0.9.6"
 
 [libraries]
@@ -27,7 +27,7 @@ androidx-test-ext-junit = { module = "androidx.test.ext:junit", version.ref = "a
 app-turbine = { module = "app.cash.turbine:turbine", version.ref = "app-turbine" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil-compose" }
 #compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
-compose-bom = { group = "dev.chrisbanes.compose", name = "compose-bom", version.ref = "compose-bom" }
+compose-bom = { module = "dev.chrisbanes.compose:compose-bom", version.ref = "compose-bom" }
 core-ktx = { module = "androidx.core:core-ktx", version.ref = "core-ktx" }
 espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espresso-core" }
 hilt = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }

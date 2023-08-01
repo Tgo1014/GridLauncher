@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -25,6 +24,7 @@ import kotlinx.coroutines.launch
 import tgo1014.gridlauncher.domain.Direction
 import tgo1014.gridlauncher.domain.TileSize
 import tgo1014.gridlauncher.domain.models.App
+import tgo1014.gridlauncher.ui.composables.LaunchedIfTrueEffect
 import tgo1014.gridlauncher.ui.models.GridItem
 import tgo1014.gridlauncher.ui.theme.GridLauncherTheme
 
@@ -78,15 +78,11 @@ private fun HomeScreen(
         stop = 0.7f,
         fraction = (scrollOffset / pagerWidth.toFloat()).coerceIn(0f, 1f)
     )
-    LaunchedEffect(state.goToHome) {
-        if (state.goToHome) {
-            pagerState.scrollToPage(0)
-        }
+    LaunchedIfTrueEffect(state.goToHome) {
+        pagerState.scrollToPage(0)
     }
-    LaunchedEffect(pagerState.settledPage) {
-        if (pagerState.settledPage == 0) {
-            onHome()
-        }
+    LaunchedIfTrueEffect(pagerState.settledPage == 0) {
+        onHome()
     }
     HorizontalPager(
         state = pagerState,
@@ -119,7 +115,10 @@ private fun HomeScreen(
                 onAddToGrid = onAddToGrid,
                 onFilterTextChanged = onFilterTextChanged,
                 onFilterClearPressed = onFilterClearPressed,
-                onUninstall = onUninstall
+                onUninstall = onUninstall,
+                onBackPressed = {
+                    scope.launch { pagerState.animateScrollToPage(0) }
+                }
             )
         }
     }

@@ -11,9 +11,11 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.lifecycleScope
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
-import tgo1014.gridlauncher.domain.AppsManager
+import kotlinx.coroutines.launch
+import tgo1014.gridlauncher.domain.UpdateAppListUseCase
 import tgo1014.gridlauncher.ui.home.HomeScreen
 import tgo1014.gridlauncher.ui.home.HomeScreenViewModel
 import tgo1014.gridlauncher.ui.theme.GridLauncherTheme
@@ -24,7 +26,8 @@ import javax.inject.Inject
 class MainActivity : ComponentActivity() {
 
     @Inject
-    lateinit var appsManager: AppsManager
+    lateinit var updateAppListUseCase: UpdateAppListUseCase
+
     private val homeScreenViewModel: HomeScreenViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,8 +46,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
-        println("onResume")
-        appsManager.updateAppsList()
+        lifecycleScope.launch { updateAppListUseCase() }
     }
 
     override fun onNewIntent(intent: Intent?) {

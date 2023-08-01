@@ -20,6 +20,7 @@ import tgo1014.gridlauncher.domain.MoveGridItemUseCase
 import tgo1014.gridlauncher.domain.OpenNotificationShadeUseCase
 import tgo1014.gridlauncher.domain.RemoveFromGridUseCase
 import tgo1014.gridlauncher.domain.TileSize
+import tgo1014.gridlauncher.domain.UpdateAppListUseCase
 import tgo1014.gridlauncher.domain.models.App
 import tgo1014.gridlauncher.ui.models.GridItem
 import javax.inject.Inject
@@ -32,6 +33,7 @@ class HomeScreenViewModel @Inject constructor(
     private val moveGridItemUseCase: MoveGridItemUseCase,
     private val removeFromGridUseCase: RemoveFromGridUseCase,
     private val itemGridSizeChangeUseCase: ItemGridSizeChangeUseCase,
+    private val updateAppListUseCase: UpdateAppListUseCase,
     private val appsManager: AppsManager,
 ) : ViewModel() {
 

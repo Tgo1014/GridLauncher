@@ -1,5 +1,6 @@
 package tgo1014.gridlauncher.ui.home
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.expandIn
@@ -34,7 +35,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -59,6 +59,7 @@ import androidx.compose.ui.window.Popup
 import kotlinx.coroutines.delay
 import tgo1014.gridlauncher.R
 import tgo1014.gridlauncher.domain.models.App
+import tgo1014.gridlauncher.ui.composables.LaunchedUnitEffect
 import tgo1014.gridlauncher.ui.composables.Search
 import tgo1014.gridlauncher.ui.theme.AsyncImage
 import tgo1014.gridlauncher.ui.theme.GridLauncherTheme
@@ -78,7 +79,9 @@ fun AppListScreen(
     onFilterTextChanged: (String) -> Unit = {},
     onFilterClearPressed: () -> Unit = {},
     onUninstall: (App) -> Unit = {},
+    onBackPressed: () -> Unit = {},
 ) {
+    BackHandler(onBack = onBackPressed)
     val lazyListState = rememberLazyListState()
     val angle by animateFloatAsState(
         targetValue = when {
@@ -156,7 +159,7 @@ fun AppListScreen(
                         onDismissRequest = { isPopUpShowing = false }
                     ) {
                         var expand by remember { mutableStateOf(false) }
-                        LaunchedEffect(Unit) {
+                        LaunchedUnitEffect {
                             delay(100)
                             expand = true
                         }

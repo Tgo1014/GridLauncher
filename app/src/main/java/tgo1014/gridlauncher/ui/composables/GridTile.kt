@@ -44,7 +44,7 @@ fun GridTile(
     onItemClicked: (item: GridItem) -> Unit = {},
     onItemLongClicked: (item: GridItem) -> Unit = {},
 ) {
-    val shape = RoundedCornerShape(4.dp)
+    val shape = RoundedCornerShape(8.dp)
     val app = item.app
     Box(
         modifier = Modifier
