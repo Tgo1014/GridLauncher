@@ -1,7 +1,7 @@
 @Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
     kotlin("kapt")
-    kotlin("plugin.serialization") version "1.9.0"
+    kotlin("plugin.serialization") version "1.9.22"
     alias(libs.plugins.com.android.application)
     alias(libs.plugins.org.jetbrains.kotlin.android)
     alias(libs.plugins.google.hilt)
@@ -43,7 +43,7 @@ android {
     }
     kotlinOptions.jvmTarget = "17"
     buildFeatures.compose = true
-    composeOptions.kotlinCompilerExtensionVersion = "1.5.1"
+    composeOptions.kotlinCompilerExtensionVersion = "1.5.8"
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -83,7 +83,5 @@ dependencies {
     debugImplementation(libs.ui.tooling)
     debugImplementation(libs.ui.test.manifest)
 
-    implementation(libs.lazytable) {
-        exclude("com.github.Tgo1014.lazytable", "lazybox")
-    }
+    implementation(libs.lazytable)
 }

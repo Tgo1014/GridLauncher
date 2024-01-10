@@ -1,22 +1,22 @@
 [versions]
 accompanist-systemuicontroller = "0.31.6-rc"
-activity-compose = "1.8.0-alpha06"
-agp = "8.1.0"
-androidx-test-ext-junit = "1.2.0-alpha01"
+activity-compose = "1.9.0-alpha01"
+agp = "8.2.1"
+androidx-test-ext-junit = "1.2.0-alpha02"
 app-turbine = "1.0.0"
-coil-compose = "2.4.0"
+coil-compose = "2.5.0"
 #compose-bom = "2023.06.00"
-compose-bom = "2023.07.00-alpha02"
-core-ktx = "1.12.0-beta01"
-datastore = "1.1.0-alpha04"
-espresso-core = "3.6.0-alpha01"
-hilt = "2.47"
+compose-bom = "2024.01.00-alpha01"
+core-ktx = "1.13.0-alpha03"
+datastore = "1.1.0-beta01"
+espresso-core = "3.6.0-alpha02"
+hilt = "2.49"
 junit = "4.13.2"
 kotlinx-coroutines-test = "1.7.3"
-kotlinx-serialization-json = "1.5.1"
-lazytable = "main-SNAPSHOT"
-lifecycle-runtime-ktx = "2.7.0-alpha01"
-org-jetbrains-kotlin-android = "1.9.0"
+kotlinx-serialization-json = "1.6.2"
+lazytable = "1.6.0"
+lifecycle-runtime-ktx = "2.7.0-rc02"
+org-jetbrains-kotlin-android = "1.9.22"
 reorderable = "0.9.6"
 
 [libraries]
@@ -32,11 +32,11 @@ core-ktx = { module = "androidx.core:core-ktx", version.ref = "core-ktx" }
 espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espresso-core" }
 hilt = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-kapt = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
-hilt-navigation = "androidx.hilt:hilt-navigation-compose:1.1.0-alpha01"
+hilt-navigation = "androidx.hilt:hilt-navigation-compose:1.2.0-alpha01"
 junit = { module = "junit:junit", version.ref = "junit" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines-test" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
-lazytable = { module = "com.github.Tgo1014:lazytable", version.ref = "lazytable" }
+lazytable = { module = "io.github.oleksandrbalan:lazytable", version.ref = "lazytable" }
 lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle-runtime-ktx" }
 lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle-runtime-ktx" }
 # ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }

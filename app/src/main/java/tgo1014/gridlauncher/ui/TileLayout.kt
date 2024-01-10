@@ -28,8 +28,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import eu.wewox.lazytable.LazyTable
 import eu.wewox.lazytable.LazyTableItem
+import eu.wewox.lazytable.LazyTableScrollDirection
 import eu.wewox.lazytable.lazyTableDimensions
-import eu.wewox.minabox.MinaBoxScrollDirection
 import tgo1014.gridlauncher.app.Constants
 import tgo1014.gridlauncher.domain.models.App
 import tgo1014.gridlauncher.ui.composables.GridTile
@@ -67,7 +67,7 @@ fun TileLayout(
         base = basePadding
     }
     LazyTable(
-        scrollDirection = MinaBoxScrollDirection.VERTICAL,
+        scrollDirection = LazyTableScrollDirection.VERTICAL,
         contentPadding = base,
         dimensions = lazyTableDimensions({ gridItemSize }, { gridItemSize }),
     ) {

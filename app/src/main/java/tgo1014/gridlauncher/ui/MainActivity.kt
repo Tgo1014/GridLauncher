@@ -49,9 +49,9 @@ class MainActivity : ComponentActivity() {
         lifecycleScope.launch { updateAppListUseCase() }
     }
 
-    override fun onNewIntent(intent: Intent?) {
+    override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        if (intent?.action == Intent.ACTION_MAIN) {
+        if (intent.action == Intent.ACTION_MAIN) {
             val alreadyOnHome = intent.flags and
                     Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT == Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT
             if (!alreadyOnHome) {
