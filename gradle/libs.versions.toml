@@ -15,7 +15,7 @@ junit = "4.13.2"
 kotlinx-coroutines-test = "1.7.3"
 kotlinx-serialization-json = "1.6.2"
 lazytable = "1.6.0"
-lifecycle-runtime-ktx = "2.7.0-rc02"
+lifecycle-runtime-ktx = "2.7.0"
 org-jetbrains-kotlin-android = "1.9.22"
 reorderable = "0.9.6"
 
