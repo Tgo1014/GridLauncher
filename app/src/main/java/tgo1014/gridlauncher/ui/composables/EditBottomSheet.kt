@@ -10,19 +10,17 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.SheetValue
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberBottomSheetScaffoldState
-import androidx.compose.material3.rememberStandardBottomSheetState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -42,26 +40,16 @@ fun EditBottomSheet(
     onDismissed: () -> Unit = {},
     content: @Composable (PaddingValues) -> Unit,
 ) {
-    val sheetState = rememberStandardBottomSheetState(
-        initialValue = SheetValue.Hidden,
-        skipHiddenState = false,
-    )
-    val state = rememberBottomSheetScaffoldState(sheetState)
+    val sheetState = rememberModalBottomSheetState()
     LaunchedEffect(isEditMode) {
-        if (isEditMode) {
-            sheetState.expand()
-        } else {
-            sheetState.hide()
-        }
+        if (isEditMode) sheetState.show() else sheetState.hide()
     }
-    LaunchedIfTrueEffect(sheetState.currentValue == SheetValue.Hidden) {
-        onDismissed()
-    }
-    BottomSheetScaffold(
-        scaffoldState = state,
-        containerColor = Color.Transparent,
-        sheetPeekHeight = 0.dp,
-        sheetContent = {
+    if (isEditMode) {
+        ModalBottomSheet(
+            scrimColor = Color.Transparent,
+            onDismissRequest = onDismissed,
+            sheetState = sheetState
+        ) {
             Content(
                 onSizeChange = onSizeChange,
                 onTopClicked = { onItemMoved(Direction.Up) },
@@ -69,9 +57,9 @@ fun EditBottomSheet(
                 onLeftClicked = { onItemMoved(Direction.Left) },
                 onRightClicked = { onItemMoved(Direction.Right) },
             )
-        },
-        content = content,
-    )
+        }
+    }
+    content(PaddingValues(0.dp))
 }
 
 @Composable
@@ -118,7 +106,7 @@ private fun Content(
                 onClick = onLeftClicked,
                 modifier = Modifier.weight(1f)
             ) {
-                Icon(Icons.Default.KeyboardArrowLeft, null)
+                Icon(Icons.AutoMirrored.Default.KeyboardArrowLeft, null)
             }
             Spacer(Modifier.width(4.dp))
             FilledIconButton(
@@ -139,7 +127,7 @@ private fun Content(
                 onClick = onRightClicked,
                 modifier = Modifier.weight(1f)
             ) {
-                Icon(Icons.Default.KeyboardArrowRight, null)
+                Icon(Icons.AutoMirrored.Default.KeyboardArrowRight, null)
             }
         }
     }

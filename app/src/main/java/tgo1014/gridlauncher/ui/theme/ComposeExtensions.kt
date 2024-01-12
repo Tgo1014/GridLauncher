@@ -101,17 +101,17 @@ fun Modifier.flipRandomly() = composed {
             )
         )
     }
-    Modifier.graphicsLayer(rotationX = animatedFloat.value, cameraDistance = 300f)
+    this.graphicsLayer(rotationX = animatedFloat.value, cameraDistance = 300f)
 }
 
 fun Modifier.tileEditMode(isEditMode: Boolean) = composed {
     if (!isEditMode) {
-        return@composed Modifier
+        return@composed this
     }
     val animatedFloat = remember { Animatable(1f) }
     LaunchedEffect(animatedFloat) {
         animatedFloat.animateTo(
-            targetValue = 0.95f,
+            targetValue = 0.85f,
             animationSpec = infiniteRepeatable(
                 animation = tween(
                     600,
@@ -121,14 +121,14 @@ fun Modifier.tileEditMode(isEditMode: Boolean) = composed {
             )
         )
     }
-    Modifier.scale(animatedFloat.value)
+    this.scale(animatedFloat.value)
 }
 
 @Composable
 fun AsyncImage(
     model: Any?,
-    contentDescription: String? = null,
     modifier: Modifier = Modifier,
+    contentDescription: String? = null,
     transform: (AsyncImagePainter.State) -> AsyncImagePainter.State = AsyncImagePainter.DefaultTransform,
     onState: ((AsyncImagePainter.State) -> Unit)? = null,
     alignment: Alignment = Alignment.Center,
