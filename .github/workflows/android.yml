@@ -31,10 +31,10 @@ jobs:
 
     - name: Build apk debug project (APK)
       run: ./gradlew assembleDebug
-      
-    - name: Get Apk Info
+
+    - name: Get Apk Version
       id: apk
-      uses: JantHsueh/get-apk-version-action@master
+      uses: JantHsueh/get-apk-info-action@1.0
       with:
        apkPath: app/build/outputs/apk/debug/app-debug.apk
 
