@@ -49,6 +49,8 @@ jobs:
 
     - name: Upload Build to Artifacts
       uses: actions/upload-artifact@v3
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: ${{ steps.tag.outputs.release_tag }}
         name: 'gridlauncher-${{ steps.apk.outputs.versionCode }}-${{ steps.apk.outputs.versionNum }}-${{github.run_number}}.apk'
