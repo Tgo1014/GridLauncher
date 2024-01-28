@@ -47,6 +47,7 @@ fun HomeScreen(
         onEditSheetDismiss = viewModel::onEditSheetDismissed,
         onItemMoved = viewModel::onItemMoved,
         onSizeChange = viewModel::onSizeChanged,
+        onRemoveClicked = viewModel::onRemoveClicked
     )
 }
 
@@ -66,6 +67,7 @@ private fun HomeScreen(
     onEditSheetDismiss: () -> Unit = {},
     onItemMoved: (Direction) -> Unit = {},
     onSizeChange: (tileSize: TileSize) -> Unit = {},
+    onRemoveClicked: () -> Unit = {},
 ) = Box {
     val pagerState = rememberPagerState { 2 }
     val scope = rememberCoroutineScope()
@@ -101,6 +103,7 @@ private fun HomeScreen(
                 onEditSheetDismiss = onEditSheetDismiss,
                 onItemMoved = onItemMoved,
                 onSizeChange = onSizeChange,
+                onRemoveClicked = onRemoveClicked,
                 onFooterClicked = {
                     scope.launch {
                         pagerState.animateScrollToPage(1)

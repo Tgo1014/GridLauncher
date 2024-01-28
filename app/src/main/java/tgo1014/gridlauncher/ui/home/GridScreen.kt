@@ -38,6 +38,7 @@ fun GridScreenScreen(
     onEditSheetDismiss: () -> Unit = {},
     onItemMoved: (Direction) -> Unit = {},
     onSizeChange: (tileSize: TileSize) -> Unit = {},
+    onRemoveClicked: () -> Unit = {},
 ) {
     var isOnTop by remember { mutableStateOf(false) }
     EditBottomSheet(
@@ -45,6 +46,7 @@ fun GridScreenScreen(
         onItemMoved = onItemMoved,
         onDismissed = onEditSheetDismiss,
         onSizeChange = onSizeChange,
+        onRemoveClicked = onRemoveClicked,
     ) {
         TileLayout(
             grid = state.grid,

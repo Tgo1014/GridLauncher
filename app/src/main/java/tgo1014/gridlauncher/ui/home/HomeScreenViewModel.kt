@@ -62,10 +62,10 @@ class HomeScreenViewModel @Inject constructor(
     fun onGridItemClicked(gridItem: GridItem) = viewModelScope.launch {
         when {
             !_stateFlow.value.isEditMode -> onOpenApp(gridItem.app)
-            gridItem == _stateFlow.value.itemBeingEdited -> {
-                removeFromGridUseCase(gridItem)
-                    .onSuccess { _stateFlow.update { it.copy(itemBeingEdited = null) } }
-            }
+//            gridItem == _stateFlow.value.itemBeingEdited -> {
+//                removeFromGridUseCase(gridItem)
+//                    .onSuccess { _stateFlow.update { it.copy(itemBeingEdited = null) } }
+//            }
             else -> _stateFlow.update { it.copy(itemBeingEdited = gridItem) }
         }
     }
@@ -117,6 +117,14 @@ class HomeScreenViewModel @Inject constructor(
     fun onSizeChanged(tileSize: TileSize) = viewModelScope.launch {
         val item = _stateFlow.value.itemBeingEdited ?: return@launch
         itemGridSizeChangeUseCase(item.id, tileSize)
+    }
+
+    fun onRemoveClicked() = viewModelScope.launch {
+        val item = _stateFlow.value.itemBeingEdited ?: return@launch
+        removeFromGridUseCase(item)
+            .onSuccess {
+                _stateFlow.update { it.copy(itemBeingEdited = null) }
+            }
     }
 
     private fun init() = viewModelScope.launch {

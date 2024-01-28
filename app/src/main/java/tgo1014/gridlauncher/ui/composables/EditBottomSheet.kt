@@ -1,11 +1,13 @@
 package tgo1014.gridlauncher.ui.composables
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -37,6 +39,7 @@ fun EditBottomSheet(
     isEditMode: Boolean,
     onItemMoved: (Direction) -> Unit = {},
     onSizeChange: (tileSize: TileSize) -> Unit = {},
+    onRemoveClicked: () -> Unit = {},
     onDismissed: () -> Unit = {},
     content: @Composable (PaddingValues) -> Unit,
 ) {
@@ -56,6 +59,7 @@ fun EditBottomSheet(
                 onDownClicked = { onItemMoved(Direction.Down) },
                 onLeftClicked = { onItemMoved(Direction.Left) },
                 onRightClicked = { onItemMoved(Direction.Right) },
+                onRemoveClicked = onRemoveClicked
             )
         }
     }
@@ -69,12 +73,15 @@ private fun Content(
     onDownClicked: () -> Unit = {},
     onLeftClicked: () -> Unit = {},
     onRightClicked: () -> Unit = {},
+    onRemoveClicked: () -> Unit = {},
 ) {
-    Column {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+        modifier = Modifier.padding(8.dp)
+    ) {
         Row(
-            Modifier
+            modifier = Modifier
                 .padding(WindowInsets.navigationBars.asPaddingValues())
-                .padding(8.dp)
         ) {
             Button(
                 onClick = { onSizeChange(TileSize.Small) },
@@ -98,9 +105,9 @@ private fun Content(
             }
         }
         Row(
-            Modifier
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            modifier = Modifier
                 .padding(WindowInsets.navigationBars.asPaddingValues())
-                .padding(8.dp)
         ) {
             FilledIconButton(
                 onClick = onLeftClicked,
@@ -108,27 +115,30 @@ private fun Content(
             ) {
                 Icon(Icons.AutoMirrored.Default.KeyboardArrowLeft, null)
             }
-            Spacer(Modifier.width(4.dp))
             FilledIconButton(
                 onClick = onDownClicked,
                 modifier = Modifier.weight(1f)
             ) {
                 Icon(Icons.Default.KeyboardArrowDown, null)
             }
-            Spacer(Modifier.width(4.dp))
             FilledIconButton(
                 onClick = onTopClicked,
                 modifier = Modifier.weight(1f)
             ) {
                 Icon(Icons.Default.KeyboardArrowUp, null)
             }
-            Spacer(Modifier.width(4.dp))
             FilledIconButton(
                 onClick = onRightClicked,
                 modifier = Modifier.weight(1f)
             ) {
                 Icon(Icons.AutoMirrored.Default.KeyboardArrowRight, null)
             }
+        }
+        FilledIconButton(
+            onClick = onRemoveClicked,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Remove")
         }
     }
 }
