@@ -9,6 +9,10 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
 
@@ -38,12 +42,11 @@ jobs:
       with:
        apkPath: app/build/outputs/apk/debug/app-debug.apk
 
-    - name: Upload Release Build to Artifacts
+    - name: Upload Build to Artifacts
       uses: actions/upload-artifact@v3
       with:
         name: 'gridlauncher-${{ steps.apk.outputs.versionCode }}-${{ steps.apk.outputs.versionNum }}-${{github.run_number}}.apk'
-        paths: |
-          app/build/outputs/apk/debug/
+        path: app/build/outputs/apk/debug/app-debug.apk
 
     - name: Create Github Release
       uses: softprops/action-gh-release@v1
