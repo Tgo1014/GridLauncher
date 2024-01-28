@@ -31,15 +31,15 @@ jobs:
 
     - name: Build apk debug project (APK)
       run: ./gradlew assembleDebug
-
+      
     - name: Get app version
-      id: get_version
-      uses: eriknyk/android-get-app-version-action@v1.0.1
+      id: versionReader
+      uses: Devofure/version-reader-action@v1.0.1 
 
     - name: Upload Release Build to Artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: 'gridlauncher-v${{ steps.get_version.outputs.versionName }}-${{ steps.get_version.outputs.versionCode }}-${{github.run_number}}.apk'
+        name: 'gridlauncher-${{ steps.versionReader.outputs.versionName }}-${{ steps.versionReader.outputs.versionCode }}-${{github.run_number}}.apk'
         paths: |
           app/build/outputs/apk/debug/
 
