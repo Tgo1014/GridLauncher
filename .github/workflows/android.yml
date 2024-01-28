@@ -1,0 +1,53 @@
+name: Android CI
+
+on:
+  push:
+    branches: [ "develop" ]
+  pull_request:
+    branches: [ "develop" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: set up JDK 11
+      uses: actions/setup-java@v3
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+        cache: gradle
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+      
+    - name: Run gradle tests
+      run: ./gradlew test
+
+    - name: Build apk debug project (APK)
+      run: ./gradlew assembleDebug
+
+    - name: Get app version
+      id: get_version
+      uses: eriknyk/android-get-app-version-action@v1.0.1
+
+    - name: Upload Release Build to Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: 'gridlauncher-v${{ steps.get_version.outputs.versionName }}-${{ steps.get_version.outputs.versionCode }}-${{github.run_number}}.apk'
+        paths: |
+          app/build/outputs/apk/debug/
+
+    - name: Create Github Release
+      uses: softprops/action-gh-release@v1
+      with:
+        generate_release_notes: true
+        prerelease: true
+        files: |
+          app/build/outputs/apk/debug/app-debug.apk
+   
