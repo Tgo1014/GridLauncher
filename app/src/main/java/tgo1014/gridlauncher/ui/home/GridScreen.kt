@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -22,8 +22,8 @@ import androidx.compose.ui.unit.dp
 import tgo1014.gridlauncher.domain.Direction
 import tgo1014.gridlauncher.domain.TileSize
 import tgo1014.gridlauncher.domain.models.App
-import tgo1014.gridlauncher.ui.TileLayout
 import tgo1014.gridlauncher.ui.composables.EditBottomSheet
+import tgo1014.gridlauncher.ui.composables.TileLayout
 import tgo1014.gridlauncher.ui.models.GridItem
 import tgo1014.gridlauncher.ui.theme.GridLauncherTheme
 import tgo1014.gridlauncher.ui.theme.onOpenNotificationShade
@@ -74,11 +74,23 @@ private fun Footer(onFooterClicked: () -> Unit = {}) {
         ) {
             Text(text = "All apps")
             Icon(
-                imageVector = Icons.Default.KeyboardArrowRight,
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                 contentDescription = null
             )
         }
     }
+}
+
+@Composable
+@Preview
+private fun PreviewSmallTile() = GridLauncherTheme {
+    GridScreenScreen(
+        state = HomeState(
+            grid = listOf(
+                GridItem(app = App("はい"), width = 1),
+            )
+        )
+    )
 }
 
 @Composable

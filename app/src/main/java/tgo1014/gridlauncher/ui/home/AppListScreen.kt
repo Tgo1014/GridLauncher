@@ -1,10 +1,7 @@
 package tgo1014.gridlauncher.ui.home
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.expandIn
-import androidx.compose.animation.shrinkOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -156,18 +153,18 @@ fun AppListScreen(
                 if (isPopUpShowing) {
                     Popup(
                         offset = IntOffset(offset.x.toInt(), offset.y.toInt()),
-                        onDismissRequest = { isPopUpShowing = false }
+                        onDismissRequest = { isPopUpShowing = false },
                     ) {
                         var expand by remember { mutableStateOf(false) }
                         LaunchedUnitEffect {
                             delay(100)
                             expand = true
                         }
-                        AnimatedVisibility(
-                            visible = expand,
-                            enter = expandIn(),
-                            exit = shrinkOut(),
-                        ) {
+//                        AnimatedVisibility(
+//                            visible = expand,
+//                            enter = expandIn(),
+//                            exit = shrinkOut(),
+//                        ) {
                             ElevatedCard {
                                 Column {
                                     Text(
@@ -192,7 +189,7 @@ fun AppListScreen(
                                     }
                                 }
                             }
-                        }
+                        //}
                     }
                 }
                 Row(

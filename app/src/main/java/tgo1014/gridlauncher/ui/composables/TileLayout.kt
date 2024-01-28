@@ -1,4 +1,4 @@
-package tgo1014.gridlauncher.ui
+package tgo1014.gridlauncher.ui.composables
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -26,14 +26,13 @@ import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.fastMaxOfOrNull
 import eu.wewox.lazytable.LazyTable
 import eu.wewox.lazytable.LazyTableItem
 import eu.wewox.lazytable.LazyTableScrollDirection
 import eu.wewox.lazytable.lazyTableDimensions
 import tgo1014.gridlauncher.app.Constants
 import tgo1014.gridlauncher.domain.models.App
-import tgo1014.gridlauncher.ui.composables.GridTile
-import tgo1014.gridlauncher.ui.composables.LaunchedIfTrueEffect
 import tgo1014.gridlauncher.ui.models.GridItem
 import tgo1014.gridlauncher.ui.theme.modifyIf
 import tgo1014.gridlauncher.ui.theme.plus
@@ -103,12 +102,16 @@ fun TileLayout(
             }
         }
         // Footer
+        val maxY = grid.maxOfOrNull { it.y } ?: 0
+        val rowOffset = grid.filter { it.y == maxY }
+            .fastMaxOfOrNull { it.height }
+            ?: 0
         items(
             count = 1,
             layoutInfo = {
                 LazyTableItem(
                     column = 0,
-                    row = (grid.maxOfOrNull { it.y } ?: -2) + 2,
+                    row = maxY + rowOffset,
                     columnsCount = columns,
                     rowsCount = 1
                 )

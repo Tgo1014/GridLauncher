@@ -86,7 +86,7 @@ private fun HomeScreen(
     }
     HorizontalPager(
         state = pagerState,
-        beyondBoundsPageCount = 1,
+        outOfBoundsPageCount = 1,
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black.copy(alpha))

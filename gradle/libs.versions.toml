@@ -1,13 +1,13 @@
 [versions]
 accompanist-systemuicontroller = "0.31.6-rc"
-activity-compose = "1.9.0-alpha01"
-agp = "8.2.1"
+activity-compose = "1.9.0-alpha02"
+agp = "8.2.2"
 androidx-test-ext-junit = "1.2.0-alpha02"
 app-turbine = "1.0.0"
 coil-compose = "2.5.0"
 #compose-bom = "2023.10.01"
-compose-bom = "2024.01.00-alpha01"
-core-ktx = "1.13.0-alpha03"
+compose-bom = "2024.01.00-alpha03"
+core-ktx = "1.13.0-alpha04"
 datastore = "1.1.0-beta01"
 espresso-core = "3.6.0-alpha02"
 hilt = "2.49"
@@ -32,7 +32,7 @@ core-ktx = { module = "androidx.core:core-ktx", version.ref = "core-ktx" }
 espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espresso-core" }
 hilt = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-kapt = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
-hilt-navigation = "androidx.hilt:hilt-navigation-compose:1.2.0-alpha01"
+hilt-navigation = "androidx.hilt:hilt-navigation-compose:1.2.0-beta01"
 junit = { module = "junit:junit", version.ref = "junit" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines-test" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
