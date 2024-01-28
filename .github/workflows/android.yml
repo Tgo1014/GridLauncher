@@ -42,17 +42,20 @@ jobs:
       with:
        apkPath: app/build/outputs/apk/debug/app-debug.apk
 
-    - name: Generate release tag
+    - name: Tag the repository
       id: tag
       run: |
-        echo "::set-output name=release_tag::build_$(date +"%Y.%m.%d_%H-%M")"
+        # See https://docs.github.com/en/get-started/using-git/dealing-with-special-characters-in-branch-and-tag-names
+        TAG=v$(date -Iseconds | sed 's/[T:\+]/-/g')
+        echo "$TAG"
+        echo "tag=$TAG" >> $GITHUB_OUTPUT
+        git tag -a $TAG -m "Published version $TAG" ${GITHUB_SHA}
+        git push origin $TAG
 
     - name: Upload Build to Artifacts
       uses: actions/upload-artifact@v3
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ steps.tag.outputs.release_tag }}
+        tag_name: ${{ steps.tag.outputs.tag }}
         name: 'gridlauncher-${{ steps.apk.outputs.versionCode }}-${{ steps.apk.outputs.versionNum }}-${{github.run_number}}.apk'
         path: app/build/outputs/apk/debug/app-debug.apk
 
