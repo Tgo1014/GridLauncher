@@ -32,14 +32,16 @@ jobs:
     - name: Build apk debug project (APK)
       run: ./gradlew assembleDebug
       
-    - name: Get app version
-      id: versionReader
-      uses: Devofure/version-reader-action@v1.0.1 
+    - name: Get Apk Info
+      id: apk
+      uses: JantHsueh/get-apk-version-action@master
+      with:
+       apkPath: app/build/outputs/apk/debug/app-debug.apk
 
     - name: Upload Release Build to Artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: 'gridlauncher-${{ steps.versionReader.outputs.versionName }}-${{ steps.versionReader.outputs.versionCode }}-${{github.run_number}}.apk'
+        name: 'gridlauncher-${{ steps.apk.outputs.versionCode }}-${{ steps.apk.outputs.versionNum }}-${{github.run_number}}.apk'
         paths: |
           app/build/outputs/apk/debug/
 
