@@ -44,7 +44,7 @@ jobs:
 
     - name: Tag the repository
       id: tag
-      uses: actions-ecosystem/action-push-tag@v1
+      uses: thejeff77/action-push-tag@v1.0.0
       with:
         tag: '${{ steps.apk.outputs.versionCode }}-${{ steps.apk.outputs.versionNum }}-${{github.run_number}}'
         message: '${{ steps.bump-semver.outputs.new_version }}: PR #${{ github.event.pull_request.number }} ${{ github.event.pull_request.title }}'
