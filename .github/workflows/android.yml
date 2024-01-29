@@ -51,7 +51,6 @@ jobs:
     - name: Upload Build to Artifacts
       uses: actions/upload-artifact@v3
       with:
-        tag_name: ${{ steps.tag.outputs.tag }}
         name: 'gridlauncher-${{ steps.apk.outputs.versionCode }}-${{ steps.apk.outputs.versionNum }}-${{github.run_number}}.apk'
         path: app/build/outputs/apk/debug/app-debug.apk
 
@@ -60,7 +59,7 @@ jobs:
       with:
         generate_release_notes: true
         prerelease: true
-        tag_name: ${{ steps.tag.outputs.tag }}
+        tag_name: '${{ steps.apk.outputs.versionCode }}-${{ steps.apk.outputs.versionNum }}-${{github.run_number}}'
         files: |
           app/build/outputs/apk/debug/app-debug.apk
    
