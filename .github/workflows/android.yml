@@ -44,13 +44,10 @@ jobs:
 
     - name: Tag the repository
       id: tag
-      run: |
-        # See https://docs.github.com/en/get-started/using-git/dealing-with-special-characters-in-branch-and-tag-names
-        TAG=v$(date -Iseconds | sed 's/[T:\+]/-/g')
-        echo "$TAG"
-        echo "tag=$TAG" >> $GITHUB_OUTPUT
-        git tag -a $TAG -m "Published version $TAG" ${GITHUB_SHA}
-        git push origin $TAG
+      uses: actions-ecosystem/action-push-tag@v1
+      with:
+        tag: '${{ steps.apk.outputs.versionCode }}-${{ steps.apk.outputs.versionNum }}-${{github.run_number}}'
+        message: '${{ steps.bump-semver.outputs.new_version }}: PR #${{ github.event.pull_request.number }} ${{ github.event.pull_request.title }}'
 
     - name: Upload Build to Artifacts
       uses: actions/upload-artifact@v3
