@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
@@ -31,6 +32,7 @@ import tgo1014.gridlauncher.ui.theme.onOpenNotificationShade
 @Composable
 fun GridScreenScreen(
     state: HomeState,
+    modifier: Modifier = Modifier,
     onItemClicked: (item: GridItem) -> Unit = {},
     onItemLongClicked: (item: GridItem) -> Unit = {},
     onFooterClicked: () -> Unit = {},
@@ -40,13 +42,14 @@ fun GridScreenScreen(
     onSizeChange: (tileSize: TileSize) -> Unit = {},
     onRemoveClicked: () -> Unit = {},
 ) {
-    var isOnTop by remember { mutableStateOf(false) }
+    var isOnTop by remember { mutableStateOf(true) }
     EditBottomSheet(
         isEditMode = state.isEditMode,
         onItemMoved = onItemMoved,
         onDismissed = onEditSheetDismiss,
         onSizeChange = onSizeChange,
         onRemoveClicked = onRemoveClicked,
+        contentModifier = modifier,
     ) {
         TileLayout(
             grid = state.grid,
@@ -91,7 +94,8 @@ private fun PreviewSmallTile() = GridLauncherTheme {
             grid = listOf(
                 GridItem(app = App("はい"), width = 1),
             )
-        )
+        ),
+        modifier = Modifier.height(140.dp)
     )
 }
 
@@ -102,35 +106,15 @@ private fun Preview() = GridLauncherTheme {
         state = HomeState(
             grid = listOf(
                 GridItem(app = App("وأصدقاؤك"), width = 2),
-                GridItem(app = App("123"), width = 2),
-                GridItem(app = App("#1231"), width = 2),
-                GridItem(app = App("$$$$"), width = 2),
-                GridItem(app = App("FooBar"), width = 2),
-                GridItem(app = App("Aaaa"), width = 2),
-                GridItem(app = App("AAb"), width = 2),
-                GridItem(app = App("はい"), width = 2),
+                GridItem(app = App("123"), width = 2, x = 2),
+                GridItem(app = App("#1231"), width = 2, x = 4),
+                GridItem(app = App("$$$$"), width = 2, y = 2),
+                GridItem(app = App("FooBar"), width = 2, y = 2, x = 2),
+                GridItem(app = App("Aaaa"), width = 2, y = 2, x = 4),
+                GridItem(app = App("AAb"), width = 2, y = 4),
+                GridItem(app = App("はい"), width = 2, y = 4, x = 2),
             )
-        )
-    )
-}
-
-@Composable
-@Preview
-private fun PreviewEditMode() = GridLauncherTheme {
-    val edit = GridItem(app = App("وأصدقاؤك"), width = 2)
-    GridScreenScreen(
-        state = HomeState(
-            itemBeingEdited = edit,
-            grid = listOf(
-                GridItem(app = App("وأصدقاؤك"), width = 2),
-                GridItem(app = App("123"), width = 2),
-                GridItem(app = App("#1231"), width = 2),
-                GridItem(app = App("$$$$"), width = 2),
-                GridItem(app = App("FooBar"), width = 2),
-                GridItem(app = App("Aaaa"), width = 2),
-                GridItem(app = App("AAb"), width = 2),
-                GridItem(app = App("はい"), width = 2),
-            )
-        )
+        ),
+        modifier = Modifier.height(500.dp)
     )
 }

@@ -35,13 +35,13 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -54,6 +54,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import tgo1014.gridlauncher.R
 import tgo1014.gridlauncher.domain.models.App
 import tgo1014.gridlauncher.ui.composables.LaunchedUnitEffect
@@ -92,6 +93,7 @@ fun AppListScreen(
     var isOnTop by remember { mutableStateOf(false) }
     val mainColor = MaterialTheme.colorScheme.secondaryContainer
     val focusManager = LocalFocusManager.current
+    val coroutineScope = rememberCoroutineScope()
     LazyColumn(
         state = lazyListState,
         contentPadding = PaddingValues(8.dp) + WindowInsets.systemBars.asPaddingValues(),
@@ -198,7 +200,14 @@ fun AppListScreen(
                         .clickable { onAppClicked(app) }
                         .combinedClickable(
                             onLongClick = { isPopUpShowing = true },
-                            onClick = { onAppClicked(app) }
+                            onClick = {
+                                onAppClicked(app)
+                                coroutineScope.launch {
+                                    // Small delay to avoid UI jumping when the app is opening
+                                    delay(200)
+                                    lazyListState.scrollToItem(0, 0)
+                                }
+                            }
                         )
                         .onGloballyPositioned { offset = it.positionInRoot() }
                         .animateItemPlacement()
@@ -208,10 +217,10 @@ fun AppListScreen(
                         .size(50.dp)
                         .border(2.dp, mainColor, shape)
                         .clip(shape)
-                    val filter = ColorFilter.lighting(
+                    /*val filter = ColorFilter.lighting(
                         multiply = mainColor,
                         add = Color.Black
-                    )
+                    )*/
                     if (isPreview) {
                         Image(
                             painter = painterResource(id = R.drawable.ic_launcher_foreground),

@@ -1,6 +1,8 @@
 package tgo1014.gridlauncher.ui.composables
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -34,9 +36,11 @@ import tgo1014.gridlauncher.domain.TileSize
 import tgo1014.gridlauncher.ui.theme.GridLauncherTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("ModifierParameter")
 @Composable
 fun EditBottomSheet(
     isEditMode: Boolean,
+    contentModifier: Modifier = Modifier,
     onItemMoved: (Direction) -> Unit = {},
     onSizeChange: (tileSize: TileSize) -> Unit = {},
     onRemoveClicked: () -> Unit = {},
@@ -53,7 +57,7 @@ fun EditBottomSheet(
             onDismissRequest = onDismissed,
             sheetState = sheetState
         ) {
-            Content(
+            EditSheetContent(
                 onSizeChange = onSizeChange,
                 onTopClicked = { onItemMoved(Direction.Up) },
                 onDownClicked = { onItemMoved(Direction.Down) },
@@ -63,11 +67,13 @@ fun EditBottomSheet(
             )
         }
     }
-    content(PaddingValues(0.dp))
+    Box(modifier = contentModifier) {
+        content(PaddingValues(0.dp))
+    }
 }
 
 @Composable
-private fun Content(
+private fun EditSheetContent(
     onSizeChange: (tileSize: TileSize) -> Unit = {},
     onTopClicked: () -> Unit = {},
     onDownClicked: () -> Unit = {},
@@ -146,5 +152,5 @@ private fun Content(
 @Composable
 @Preview
 private fun Preview() = GridLauncherTheme {
-    Content()
+    EditSheetContent()
 }
