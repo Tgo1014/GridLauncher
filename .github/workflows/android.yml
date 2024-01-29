@@ -27,12 +27,6 @@ jobs:
         distribution: 'temurin'
         cache: gradle
 
-    - name: Tag the repository
-      id: tag
-      uses: thejeff77/action-push-tag@v1.0.0
-      with:
-        tag: '${{ steps.apk.outputs.versionCode }}-${{ steps.apk.outputs.versionNum }}-${{github.run_number}}'
-
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
       
@@ -47,6 +41,12 @@ jobs:
       uses: JantHsueh/get-apk-info-action@1.0
       with:
        apkPath: app/build/outputs/apk/debug/app-debug.apk
+
+    - name: Tag the repository
+      id: tag
+      uses: thejeff77/action-push-tag@v1.0.0
+      with:
+        tag: '${{ steps.apk.outputs.versionCode }}-${{ steps.apk.outputs.versionNum }}-${{github.run_number}}'
 
     - name: Upload Build to Artifacts
       uses: actions/upload-artifact@v3
