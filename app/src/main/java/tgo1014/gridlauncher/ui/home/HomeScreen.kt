@@ -94,7 +94,7 @@ private fun HomeScreen(
             state = pagerState,
             pagerSnapDistance = PagerSnapDistance.atMost(2)
         ),
-        outOfBoundsPageCount = 1,
+        beyondViewportPageCount = 1,
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black.copy(alpha))

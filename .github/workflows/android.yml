@@ -34,13 +34,13 @@ jobs:
       run: ./gradlew test
 
     - name: Build apk debug project (APK)
-      run: ./gradlew assembleDebug
+      run: ./gradlew assembleRelease
 
     - name: Get Apk Version
       id: apk
       uses: JantHsueh/get-apk-info-action@1.0
       with:
-       apkPath: app/build/outputs/apk/debug/app-debug.apk
+        apkPath: app/build/outputs/apk/release/app-release.apk
 
     - name: Tag the repository
       id: tag
@@ -52,7 +52,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: 'gridlauncher-${{ steps.apk.outputs.versionCode }}-${{ steps.apk.outputs.versionNum }}-${{github.run_number}}.apk'
-        path: app/build/outputs/apk/debug/app-debug.apk
+        path: app/build/outputs/apk/release/app-release.apk
 
     - name: Create Github Release
       uses: softprops/action-gh-release@v1
@@ -61,5 +61,5 @@ jobs:
         prerelease: true
         tag_name: '${{ steps.apk.outputs.versionCode }}-${{ steps.apk.outputs.versionNum }}-${{github.run_number}}'
         files: |
-          app/build/outputs/apk/debug/app-debug.apk
+          app/build/outputs/apk/release/app-release.apk
    
