@@ -16,8 +16,7 @@ class GetAppListUseCase @Inject constructor(
     operator fun invoke() = appsManager.installedAppsFlow
         .map { appList ->
             appList
-                .filterNot { it.packageName == context.packageName }
-                .distinctBy { app -> app.name }
+                .filterNot { it.packageName == context.packageName } // Hide this app from the launcher list
                 .sortedBy { app -> app.name }
         }
         .flowOn(dispatcherProvider.io)

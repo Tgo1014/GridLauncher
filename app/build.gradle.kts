@@ -1,3 +1,5 @@
+import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
+
 @Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
     kotlin("kapt")
@@ -5,6 +7,7 @@ plugins {
     alias(libs.plugins.com.android.application)
     alias(libs.plugins.org.jetbrains.kotlin.android)
     alias(libs.plugins.google.hilt)
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -43,7 +46,6 @@ android {
     }
     kotlinOptions.jvmTarget = "17"
     buildFeatures.compose = true
-    composeOptions.kotlinCompilerExtensionVersion = "1.5.8"
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -51,14 +53,24 @@ android {
     }
 }
 
+composeCompiler {
+    enableStrongSkippingMode = true
+}
+
 kapt.correctErrorTypes = true
 hilt.enableAggregatingTask = true
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-    compilerOptions.freeCompilerArgs.addAll(
-        "-P",
-        "plugin:androidx.compose.compiler.plugins.kotlin:experimentalStrongSkipping=true",
-    )
+//tasks.withType<DependencyUpdatesTask> {
+//    rejectVersionIf {
+//        isNonStable(candidate.version) && candidate.group == "com.android.application"
+//    }
+//}
+
+private fun isNonStable(version: String): Boolean {
+    val stableKeyword = listOf("RELEASE", "FINAL", "GA").any { version.uppercase().contains(it) }
+    val regex = "^[0-9,.v-]+(-r)?$".toRegex()
+    val isStable = stableKeyword || regex.matches(version)
+    return isStable.not()
 }
 
 dependencies {

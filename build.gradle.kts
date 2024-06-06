@@ -4,7 +4,8 @@ plugins {
     alias(libs.plugins.com.android.application) apply false
     alias(libs.plugins.org.jetbrains.kotlin.android) apply false
     alias(libs.plugins.google.hilt) apply false
-    id("com.github.ben-manes.versions") version "0.47.0"
-    id("nl.littlerobots.version-catalog-update") version "0.8.0"
+    alias(libs.plugins.compose.compiler) apply false
+    id("com.github.ben-manes.versions") version "0.51.0"
+    id("nl.littlerobots.version-catalog-update") version "0.8.4"
 }
 true // Needed to make the Suppress annotation work for the plugins block

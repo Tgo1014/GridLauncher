@@ -1,7 +1,10 @@
 package tgo1014.gridlauncher.ui.home
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.expandIn
+import androidx.compose.animation.shrinkOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -53,6 +56,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import tgo1014.gridlauncher.R
@@ -118,7 +122,7 @@ fun AppListScreen(
                 text = state.filterString,
                 onTextChanged = onFilterTextChanged,
                 onClearPressed = onFilterClearPressed,
-                modifier = Modifier.animateItemPlacement()
+                modifier = Modifier.animateItem()
             )
         }
         val appList = state.appList
@@ -134,7 +138,7 @@ fun AppListScreen(
                     modifier = Modifier
                         .graphicsLayer { rotationX = angle }
                         .size(50.dp)
-                        .animateItemPlacement()
+                        .animateItem()
                 ) {
                     Box(
                         modifier = Modifier
@@ -157,41 +161,30 @@ fun AppListScreen(
                         offset = IntOffset(offset.x.toInt(), offset.y.toInt()),
                         onDismissRequest = { isPopUpShowing = false },
                     ) {
-                        var expand by remember { mutableStateOf(false) }
-                        LaunchedUnitEffect {
-                            delay(100)
-                            expand = true
-                        }
-//                        AnimatedVisibility(
-//                            visible = expand,
-//                            enter = expandIn(),
-//                            exit = shrinkOut(),
-//                        ) {
-                            ElevatedCard {
-                                Column {
+                        ElevatedCard {
+                            Column {
+                                Text(
+                                    text = "Add To Grid",
+                                    modifier = Modifier
+                                        .clickable {
+                                            onAddToGrid(app)
+                                            isPopUpShowing = false
+                                        }
+                                        .padding(16.dp)
+                                )
+                                if (!app.isSystemApp) {
                                     Text(
-                                        text = "Add To Grid",
+                                        text = "Uninstall",
                                         modifier = Modifier
                                             .clickable {
-                                                onAddToGrid(app)
+                                                onUninstall(app)
                                                 isPopUpShowing = false
                                             }
                                             .padding(16.dp)
                                     )
-                                    if (!app.isSystemApp) {
-                                        Text(
-                                            text = "Uninstall",
-                                            modifier = Modifier
-                                                .clickable {
-                                                    onUninstall(app)
-                                                    isPopUpShowing = false
-                                                }
-                                                .padding(16.dp)
-                                        )
-                                    }
                                 }
                             }
-                        //}
+                        }
                     }
                 }
                 Row(
@@ -202,7 +195,7 @@ fun AppListScreen(
                             onLongClick = { isPopUpShowing = true },
                             onClick = {
                                 onAppClicked(app)
-                                coroutineScope.launch {
+                                GlobalScope.launch {
                                     // Small delay to avoid UI jumping when the app is opening
                                     delay(200)
                                     lazyListState.scrollToItem(0, 0)
@@ -210,7 +203,7 @@ fun AppListScreen(
                             }
                         )
                         .onGloballyPositioned { offset = it.positionInRoot() }
-                        .animateItemPlacement()
+                        .animateItem()
                 ) {
                     val iconModifier = Modifier
                         .graphicsLayer { rotationX = angle }
