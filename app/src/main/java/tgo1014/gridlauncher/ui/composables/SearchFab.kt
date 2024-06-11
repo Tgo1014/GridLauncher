@@ -117,7 +117,7 @@ fun SearchFab(
             } else {
                 val singleLine = true
                 val colors = TextFieldDefaults.colors().copy(
-                    cursorColor = MaterialTheme.colorScheme.primary,
+                    cursorColor = MaterialTheme.colorScheme.tertiary,
                     focusedContainerColor = Color.Transparent,
                     focusedLabelColor = MaterialTheme.colorScheme.onSecondary,
                     focusedIndicatorColor = MaterialTheme.colorScheme.onSecondary,
@@ -133,7 +133,7 @@ fun SearchFab(
                         onValueChange = { onSearchTextChanged(it) },
                         interactionSource = interactionSource,
                         singleLine = singleLine,
-                        cursorBrush = SolidColor(MaterialTheme.colorScheme.secondary),
+                        cursorBrush = SolidColor(MaterialTheme.colorScheme.onSecondary),
                         textStyle = TextStyle.Default.copy(
                             fontSize = 20.sp,
                             color = MaterialTheme.colorScheme.onSecondary
