@@ -21,7 +21,14 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
-
+    signingConfigs {
+        create("release") {
+            storeFile = file("dummyKey")
+            storePassword = "123456"
+            keyAlias = "dummyKey"
+            keyPassword = "123456"
+        }
+    }
     buildTypes {
         debug {
             //isMinifyEnabled = true
@@ -36,7 +43,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.getByName("release")
         }
     }
     compileOptions {
@@ -58,19 +65,6 @@ composeCompiler {
 
 kapt.correctErrorTypes = true
 hilt.enableAggregatingTask = true
-
-//tasks.withType<DependencyUpdatesTask> {
-//    rejectVersionIf {
-//        isNonStable(candidate.version) && candidate.group == "com.android.application"
-//    }
-//}
-
-private fun isNonStable(version: String): Boolean {
-    val stableKeyword = listOf("RELEASE", "FINAL", "GA").any { version.uppercase().contains(it) }
-    val regex = "^[0-9,.v-]+(-r)?$".toRegex()
-    val isStable = stableKeyword || regex.matches(version)
-    return isStable.not()
-}
 
 dependencies {
     implementation(libs.core.ktx)
