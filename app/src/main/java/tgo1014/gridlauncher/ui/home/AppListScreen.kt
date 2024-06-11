@@ -55,6 +55,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -70,7 +71,7 @@ import tgo1014.gridlauncher.ui.theme.isScrollingDown
 import tgo1014.gridlauncher.ui.theme.isScrollingUp
 import tgo1014.gridlauncher.ui.theme.plus
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, DelicateCoroutinesApi::class)
 @Composable
 fun AppListScreen(
     state: HomeState,
@@ -94,7 +95,7 @@ fun AppListScreen(
         label = "Inclination"
     )
     val isOnTop = lazyListState.canScrollBackward
-    val mainColor = MaterialTheme.colorScheme.secondaryContainer
+    val mainColor = MaterialTheme.colorScheme.primary
     val focusManager = LocalFocusManager.current
     val searchInputTextPadding = 75.dp
     LazyColumn(

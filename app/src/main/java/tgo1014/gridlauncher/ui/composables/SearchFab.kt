@@ -1,7 +1,6 @@
 package tgo1014.gridlauncher.ui.composables
 
 import androidx.compose.animation.core.animateDp
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.clickable
@@ -93,8 +92,8 @@ fun SearchFab(
     )
     Surface(
         shape = shape,
-        color = MaterialTheme.colorScheme.primary,
-        //elevation = FloatingActionButtonDefaults.elevation().elevation(interactionSource).value,
+        color = MaterialTheme.colorScheme.secondary,
+        shadowElevation = 6.dp, // Fab default
         modifier = Modifier
             .width(width)
             .height(height)
@@ -106,27 +105,26 @@ fun SearchFab(
             horizontalArrangement = Arrangement.Center,
             modifier = Modifier.padding(12.dp)
         ) {
-            val paddingEnd by animateDpAsState(targetValue = if (buttonState == SearchFabState.FAB) 24.dp else 12.dp)
+            Icon(
+                imageVector = Icons.Default.Search,
+                contentDescription = null,
+                modifier = Modifier.requiredSize(itemsSize),
+                tint = MaterialTheme.colorScheme.onSecondary
+            )
             val focusRequest = remember { FocusRequester() }
             if (buttonState == SearchFabState.FAB) {
                 LocalFocusManager.current.clearFocus(true)
-                Icon(
-                    imageVector = Icons.Default.Search,
-                    contentDescription = null,
-                    modifier = Modifier.requiredSize(itemsSize),
-                    tint = MaterialTheme.colorScheme.onPrimary
-                )
             } else {
                 val singleLine = true
                 val colors = TextFieldDefaults.colors().copy(
-                    cursorColor = MaterialTheme.colorScheme.secondary,
+                    cursorColor = MaterialTheme.colorScheme.primary,
                     focusedContainerColor = Color.Transparent,
-                    focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                    focusedIndicatorColor = MaterialTheme.colorScheme.onPrimary,
+                    focusedLabelColor = MaterialTheme.colorScheme.onSecondary,
+                    focusedIndicatorColor = MaterialTheme.colorScheme.onSecondary,
                 )
                 val selectionColors = TextSelectionColors(
-                    handleColor = MaterialTheme.colorScheme.secondary,
-                    backgroundColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.4f)
+                    handleColor = MaterialTheme.colorScheme.primary,
+                    backgroundColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)
                 )
                 SideEffect { focusRequest.requestFocus() }
                 CompositionLocalProvider(LocalTextSelectionColors provides selectionColors) {
@@ -138,7 +136,7 @@ fun SearchFab(
                         cursorBrush = SolidColor(MaterialTheme.colorScheme.secondary),
                         textStyle = TextStyle.Default.copy(
                             fontSize = 20.sp,
-                            color = MaterialTheme.colorScheme.onPrimary
+                            color = MaterialTheme.colorScheme.onSecondary
                         ),
                         decorationBox = {
                             DecorationBox(
@@ -161,7 +159,7 @@ fun SearchFab(
                                             Icon(
                                                 imageVector = Icons.Default.Close,
                                                 contentDescription = null,
-                                                tint = MaterialTheme.colorScheme.onPrimary,
+                                                tint = MaterialTheme.colorScheme.onSecondary,
                                             )
                                         }
                                     )
@@ -174,6 +172,7 @@ fun SearchFab(
                         ),
                         keyboardActions = KeyboardActions(onDone = { keyboardController?.hide() }),
                         modifier = Modifier
+                            .padding(start = 8.dp)
                             .fillMaxWidth()
                             .requiredHeight(45.dp)
                             .focusRequester(focusRequest)

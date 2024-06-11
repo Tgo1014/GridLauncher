@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -58,7 +58,7 @@ fun GridScreenScreen(
             onItemLongClicked = onItemLongClicked,
             isOnTop = { isOnTop = it },
             onItemClicked = onItemClicked,
-            contentPadding = it,
+            contentPadding = if (state.itemBeingEdited == null) PaddingValues(0.dp) else PaddingValues(bottom = 200.dp),
             modifier = Modifier
                 .fillMaxSize()
                 .onOpenNotificationShade(isOnTop, onOpenNotificationShade)
@@ -70,7 +70,7 @@ fun GridScreenScreen(
 @Preview
 private fun Footer(onFooterClicked: () -> Unit = {}) {
     Box(Modifier.fillMaxWidth()) {
-        FilledTonalButton(
+        Button(
             onClick = { onFooterClicked() },
             contentPadding = PaddingValues(start = 16.dp, end = 6.dp),
             modifier = Modifier

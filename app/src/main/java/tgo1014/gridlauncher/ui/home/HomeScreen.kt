@@ -17,6 +17,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.util.lerp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -83,8 +84,10 @@ private fun HomeScreen(
     LaunchedIfTrueEffect(state.goToHome) {
         pagerState.scrollToPage(0)
     }
+    val keyboardController = LocalSoftwareKeyboardController.current
     LaunchedIfTrueEffect(pagerState.settledPage == 0) {
         onHome()
+        keyboardController?.hide()
     }
     HorizontalPager(
         state = pagerState,
@@ -92,7 +95,6 @@ private fun HomeScreen(
             state = pagerState,
             pagerSnapDistance = PagerSnapDistance.atMost(2)
         ),
-        beyondViewportPageCount = 1,
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black.copy(alpha))
