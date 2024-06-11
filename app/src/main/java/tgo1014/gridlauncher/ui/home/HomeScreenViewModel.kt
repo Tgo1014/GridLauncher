@@ -141,7 +141,7 @@ class HomeScreenViewModel @Inject constructor(
 
     private fun resetState() {
         _stateFlow.update { it.copy(itemBeingEdited = null) }
-        onFilterTextChanged("")
+        onFilterCleared()
     }
 
 }

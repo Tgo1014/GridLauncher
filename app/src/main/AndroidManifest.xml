@@ -23,6 +23,7 @@
             android:clearTaskOnLaunch="true"
             android:excludeFromRecents="true"
             android:exported="true"
+            android:windowSoftInputMode="adjustResize"
             android:launchMode="singleTask"
             android:stateNotNeeded="true"
             android:theme="@style/Theme.GridLauncher">

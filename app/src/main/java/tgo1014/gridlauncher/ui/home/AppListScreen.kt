@@ -1,10 +1,7 @@
 package tgo1014.gridlauncher.ui.home
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.expandIn
-import androidx.compose.animation.shrinkOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -20,6 +17,9 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
@@ -34,7 +34,6 @@ import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -61,8 +60,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import tgo1014.gridlauncher.R
 import tgo1014.gridlauncher.domain.models.App
-import tgo1014.gridlauncher.ui.composables.LaunchedUnitEffect
-import tgo1014.gridlauncher.ui.composables.Search
+import tgo1014.gridlauncher.ui.composables.SearchFab
+import tgo1014.gridlauncher.ui.composables.SearchFabState
 import tgo1014.gridlauncher.ui.theme.AsyncImage
 import tgo1014.gridlauncher.ui.theme.GridLauncherTheme
 import tgo1014.gridlauncher.ui.theme.detectConsumedVerticalDragGestures
@@ -82,7 +81,7 @@ fun AppListScreen(
     onFilterClearPressed: () -> Unit = {},
     onUninstall: (App) -> Unit = {},
     onBackPressed: () -> Unit = {},
-) {
+) = Box {
     BackHandler(onBack = onBackPressed)
     val lazyListState = rememberLazyListState()
     val angle by animateFloatAsState(
@@ -94,13 +93,16 @@ fun AppListScreen(
         },
         label = "Inclination"
     )
-    var isOnTop by remember { mutableStateOf(false) }
+    val isOnTop = lazyListState.canScrollBackward
     val mainColor = MaterialTheme.colorScheme.secondaryContainer
     val focusManager = LocalFocusManager.current
-    val coroutineScope = rememberCoroutineScope()
+    val searchInputTextPadding = 75.dp
     LazyColumn(
         state = lazyListState,
-        contentPadding = PaddingValues(8.dp) + WindowInsets.systemBars.asPaddingValues(),
+        contentPadding = PaddingValues(8.dp)
+                + WindowInsets.systemBars.asPaddingValues()
+                + WindowInsets.ime.asPaddingValues()
+                + PaddingValues(bottom = searchInputTextPadding),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier
             .fillMaxSize()
@@ -113,18 +115,6 @@ fun AppListScreen(
                 }
             }
     ) {
-        item(key = "Search") {
-            DisposableEffect(Unit) {
-                isOnTop = true
-                onDispose { isOnTop = false }
-            }
-            Search(
-                text = state.filterString,
-                onTextChanged = onFilterTextChanged,
-                onClearPressed = onFilterClearPressed,
-                modifier = Modifier.animateItem()
-            )
-        }
         val appList = state.appList
         val listByLetter = appList
             .sortedBy { it.nameFirstLetter.uppercase() }
@@ -237,6 +227,28 @@ fun AppListScreen(
             }
         }
     }
+    val scope = rememberCoroutineScope()
+    var fabState by remember { mutableStateOf(SearchFabState.FAB) }
+    SearchFab(
+        buttonState = fabState,
+        searchText = state.filterString,
+        onSearchTextChanged = {
+            scope.launch {
+                lazyListState.animateScrollToItem(0)
+            }
+            onFilterTextChanged(it)
+        },
+        onCloseClicked = {
+            fabState = SearchFabState.FAB
+            onFilterClearPressed()
+        },
+        onButtonClicked = { fabState = fabState.toggle() },
+        modifier = Modifier
+            .align(Alignment.BottomEnd)
+            .padding(16.dp)
+            .navigationBarsPadding()
+            .imePadding(),
+    )
 }
 
 @Composable
