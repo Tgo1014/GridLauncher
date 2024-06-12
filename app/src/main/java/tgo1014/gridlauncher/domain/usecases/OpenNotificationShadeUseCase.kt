@@ -1,4 +1,4 @@
-package tgo1014.gridlauncher.domain
+package tgo1014.gridlauncher.domain.usecases
 
 import javax.inject.Inject
 

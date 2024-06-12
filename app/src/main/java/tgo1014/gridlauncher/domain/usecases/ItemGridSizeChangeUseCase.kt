@@ -1,6 +1,8 @@
-package tgo1014.gridlauncher.domain
+package tgo1014.gridlauncher.domain.usecases
 
 import kotlinx.coroutines.flow.first
+import tgo1014.gridlauncher.domain.AppsManager
+import tgo1014.gridlauncher.domain.models.TileSize
 import javax.inject.Inject
 
 class ItemGridSizeChangeUseCase @Inject constructor(

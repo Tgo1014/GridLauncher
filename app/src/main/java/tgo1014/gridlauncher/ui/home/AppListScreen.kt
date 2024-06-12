@@ -56,6 +56,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -120,7 +121,7 @@ fun AppListScreen(
         val listByLetter = appList
             .sortedBy { it.nameFirstLetter.uppercase() }
             .groupBy { it.nameFirstLetter.uppercase() }
-        val shape = RoundedCornerShape(6.dp)
+        val shape = RoundedCornerShape(state.tileSettings.cornerRadius)
         listByLetter.forEach { group ->
             item(key = group.key) {
                 Card(
@@ -186,10 +187,10 @@ fun AppListScreen(
                             onLongClick = { isPopUpShowing = true },
                             onClick = {
                                 onAppClicked(app)
-                                GlobalScope.launch {
+                                GlobalScope.launch(Dispatchers.Main) {
                                     // Small delay to avoid UI jumping when the app is opening
                                     delay(200)
-                                    lazyListState.scrollToItem(0, 0)
+                                    runCatching { lazyListState.scrollToItem(0, 0) }
                                 }
                             }
                         )

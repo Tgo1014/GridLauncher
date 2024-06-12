@@ -2,12 +2,17 @@ package tgo1014.gridlauncher.ui
 
 import android.app.WallpaperManager
 import android.app.WallpaperManager.FLAG_SYSTEM
+import android.app.role.RoleManager
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.provider.Settings
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
@@ -26,7 +31,7 @@ import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import tgo1014.gridlauncher.domain.UpdateAppListUseCase
+import tgo1014.gridlauncher.domain.usecases.UpdateAppListUseCase
 import tgo1014.gridlauncher.ui.home.HomeScreen
 import tgo1014.gridlauncher.ui.home.HomeScreenViewModel
 import tgo1014.gridlauncher.ui.theme.GridLauncherTheme
@@ -43,9 +48,8 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        allowToUseAreBehindStatusBar()
         setContent {
-            SetupStatusBarIconsColor()
+            SetupStatusBarIconsColorEffect()
             GridLauncherTheme {
                 HomeScreen(homeScreenViewModel)
             }
@@ -70,42 +74,40 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun askToBeDefaultLauncher() {
-        // TODO review this
-//        val componentName = ComponentName(this, MainActivity::class.java)
-//        packageManager.setComponentEnabledSetting(
-//            componentName,
-//            PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-//            PackageManager.DONT_KILL_APP
-//        )
-//        val selector = Intent(Intent.ACTION_MAIN)
-//        selector.addCategory(Intent.CATEGORY_HOME)
-//        selector.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-//        startActivity(selector)
-//        packageManager.setComponentEnabledSetting(
-//            componentName,
-//            PackageManager.COMPONENT_ENABLED_STATE_DEFAULT,
-//            PackageManager.DONT_KILL_APP
-//        )
+        if (isDefaultLauncher()) return
+        val intent = Intent(Settings.ACTION_HOME_SETTINGS)
+        startActivity(intent)
     }
 
-    private fun allowToUseAreBehindStatusBar() {
-        // enableEdgeToEdge()
-        WindowCompat.setDecorFitsSystemWindows(window, false)
+    private fun isDefaultLauncher(): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val roleManager = getSystemService(Context.ROLE_SERVICE) as RoleManager
+            roleManager.isRoleHeld(RoleManager.ROLE_HOME)
+        } else {
+            val componentName = ComponentName(this, MainActivity::class.java)
+            val intentFilter = IntentFilter(Intent.ACTION_MAIN)
+            intentFilter.addCategory(Intent.CATEGORY_HOME)
+            val activities = ArrayList<ComponentName>()
+            packageManager.getPreferredActivities(listOf(intentFilter), activities, null)
+            activities.contains(componentName)
+        }
     }
 
     @Composable
-    private fun SetupStatusBarIconsColor() {
+    private fun SetupStatusBarIconsColorEffect() {
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O_MR1) {
             // TODO figure this for older versions where WallpaperManager is not available
             enableEdgeToEdge()
             return
         }
-        //val systemUiController = rememberSystemUiController()
-        var useDarkIcons by remember { mutableStateOf(false) } //!isSystemInDarkTheme()
+        var useDarkIcons by remember { mutableStateOf(false) }
         val context = LocalContext.current
         LaunchedEffect(useDarkIcons) {
+            // For some reason these two lines are needed
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
             val isDarkIcons = (getWallpaperColor(context)?.luminance() ?: 0f) <= 0.5f
-            //systemUiController.setStatusBarColor(Color(color))
             enableEdgeToEdge(
                 statusBarStyle = SystemBarStyle.auto(
                     android.graphics.Color.TRANSPARENT,

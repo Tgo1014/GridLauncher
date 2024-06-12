@@ -1,9 +1,10 @@
-package tgo1014.gridlauncher.domain
+package tgo1014.gridlauncher.domain.usecases
 
 import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import tgo1014.gridlauncher.domain.AppsManager
 import tgo1014.gridlauncher.domain.models.DispatcherProvider
 import javax.inject.Inject
 

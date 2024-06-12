@@ -18,17 +18,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.util.lerp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.launch
-import tgo1014.gridlauncher.domain.Direction
-import tgo1014.gridlauncher.domain.TileSize
 import tgo1014.gridlauncher.domain.models.App
+import tgo1014.gridlauncher.domain.models.Direction
+import tgo1014.gridlauncher.domain.models.TileSettings
+import tgo1014.gridlauncher.domain.models.TileSize
 import tgo1014.gridlauncher.ui.composables.LaunchedIfTrueEffect
 import tgo1014.gridlauncher.ui.models.GridItem
-import tgo1014.gridlauncher.ui.theme.GridLauncherTheme
 
 @Composable
 fun HomeScreen(
@@ -49,7 +48,8 @@ fun HomeScreen(
         onEditSheetDismiss = viewModel::onEditSheetDismissed,
         onItemMoved = viewModel::onItemMoved,
         onSizeChange = viewModel::onSizeChanged,
-        onRemoveClicked = viewModel::onRemoveClicked
+        onRemoveClicked = viewModel::onRemoveClicked,
+        onSettingsUpdated = viewModel::onSettingsUpdated
     )
 }
 
@@ -69,6 +69,7 @@ private fun HomeScreen(
     onItemMoved: (Direction) -> Unit = {},
     onSizeChange: (tileSize: TileSize) -> Unit = {},
     onRemoveClicked: () -> Unit = {},
+    onSettingsUpdated: (TileSettings) -> Unit = {}
 ) = Box {
     val pagerState = rememberPagerState { 2 }
     val scope = rememberCoroutineScope()
@@ -110,6 +111,7 @@ private fun HomeScreen(
                 onItemMoved = onItemMoved,
                 onSizeChange = onSizeChange,
                 onRemoveClicked = onRemoveClicked,
+                onSettingsUpdated = onSettingsUpdated,
                 onFooterClicked = {
                     scope.launch {
                         pagerState.animateScrollToPage(1)
@@ -131,10 +133,4 @@ private fun HomeScreen(
             )
         }
     }
-}
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-private fun HomeScreenPreview() = GridLauncherTheme {
-    HomeScreen(HomeState())
 }

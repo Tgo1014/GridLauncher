@@ -1,10 +1,11 @@
-package tgo1014.gridlauncher.domain
+package tgo1014.gridlauncher.domain.usecases
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import kotlinx.coroutines.flow.firstOrNull
 import tgo1014.gridlauncher.app.Constants
+import tgo1014.gridlauncher.domain.AppsManager
 import tgo1014.gridlauncher.domain.models.App
 import tgo1014.gridlauncher.ui.models.GridItem
 import javax.inject.Inject
