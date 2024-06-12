@@ -1,6 +1,7 @@
 package tgo1014.gridlauncher.ui.home
 
 import tgo1014.gridlauncher.domain.models.App
+import tgo1014.gridlauncher.domain.models.TileSettings
 import tgo1014.gridlauncher.ui.models.GridItem
 
 data class HomeState(
@@ -9,6 +10,7 @@ data class HomeState(
     val goToHome: Boolean = false,
     val filterString: String = "",
     val itemBeingEdited: GridItem? = null,
+    val tileSettings: TileSettings = TileSettings(),
 ) {
     val isEditMode get() = itemBeingEdited != null
 }

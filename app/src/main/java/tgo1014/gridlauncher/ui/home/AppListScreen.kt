@@ -121,7 +121,7 @@ fun AppListScreen(
         val listByLetter = appList
             .sortedBy { it.nameFirstLetter.uppercase() }
             .groupBy { it.nameFirstLetter.uppercase() }
-        val shape = RoundedCornerShape(6.dp)
+        val shape = RoundedCornerShape(state.tileSettings.cornerRadius)
         listByLetter.forEach { group ->
             item(key = group.key) {
                 Card(

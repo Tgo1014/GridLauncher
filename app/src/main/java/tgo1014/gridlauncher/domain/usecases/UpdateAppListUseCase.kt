@@ -1,6 +1,7 @@
-package tgo1014.gridlauncher.domain
+package tgo1014.gridlauncher.domain.usecases
 
 import kotlinx.coroutines.flow.firstOrNull
+import tgo1014.gridlauncher.domain.AppsManager
 import javax.inject.Inject
 
 class UpdateAppListUseCase @Inject constructor(

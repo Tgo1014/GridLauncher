@@ -1,7 +1,9 @@
-package tgo1014.gridlauncher.domain
+package tgo1014.gridlauncher.domain.usecases
 
 import kotlinx.coroutines.flow.first
 import tgo1014.gridlauncher.app.Constants
+import tgo1014.gridlauncher.domain.AppsManager
+import tgo1014.gridlauncher.domain.models.Direction
 import javax.inject.Inject
 
 class MoveGridItemUseCase @Inject constructor(

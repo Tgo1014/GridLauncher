@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Button
@@ -20,9 +21,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import tgo1014.gridlauncher.domain.Direction
-import tgo1014.gridlauncher.domain.TileSize
 import tgo1014.gridlauncher.domain.models.App
+import tgo1014.gridlauncher.domain.models.Direction
+import tgo1014.gridlauncher.domain.models.TileSettings
+import tgo1014.gridlauncher.domain.models.TileSize
 import tgo1014.gridlauncher.ui.composables.EditBottomSheet
 import tgo1014.gridlauncher.ui.composables.TileLayout
 import tgo1014.gridlauncher.ui.models.GridItem
@@ -41,24 +43,30 @@ fun GridScreenScreen(
     onItemMoved: (Direction) -> Unit = {},
     onSizeChange: (tileSize: TileSize) -> Unit = {},
     onRemoveClicked: () -> Unit = {},
+    onSettingsUpdated: (TileSettings) -> Unit = {}
 ) {
     var isOnTop by remember { mutableStateOf(true) }
     EditBottomSheet(
+        tileSettings = state.tileSettings,
         isEditMode = state.isEditMode,
         onItemMoved = onItemMoved,
         onDismissed = onEditSheetDismiss,
         onSizeChange = onSizeChange,
         onRemoveClicked = onRemoveClicked,
+        onSettingsUpdated = onSettingsUpdated,
         contentModifier = modifier,
     ) {
         TileLayout(
             grid = state.grid,
+            tileSettings = state.tileSettings,
             itemBeingEdited = state.itemBeingEdited,
-            footer = { Footer(onFooterClicked) },
+            footer = { Footer(onFooterClicked, state.tileSettings) },
             onItemLongClicked = onItemLongClicked,
             isOnTop = { isOnTop = it },
             onItemClicked = onItemClicked,
-            contentPadding = if (state.itemBeingEdited == null) PaddingValues(0.dp) else PaddingValues(bottom = 200.dp),
+            contentPadding = if (state.itemBeingEdited == null) PaddingValues(0.dp) else PaddingValues(
+                bottom = 200.dp
+            ),
             modifier = Modifier
                 .fillMaxSize()
                 .onOpenNotificationShade(isOnTop, onOpenNotificationShade)
@@ -68,9 +76,10 @@ fun GridScreenScreen(
 
 @Composable
 @Preview
-private fun Footer(onFooterClicked: () -> Unit = {}) {
+private fun Footer(onFooterClicked: () -> Unit = {}, tileSettings: TileSettings = TileSettings()) {
     Box(Modifier.fillMaxWidth()) {
         Button(
+            shape = RoundedCornerShape(tileSettings.cornerRadius),
             onClick = { onFooterClicked() },
             contentPadding = PaddingValues(start = 16.dp, end = 6.dp),
             modifier = Modifier

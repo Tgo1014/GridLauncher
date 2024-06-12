@@ -31,8 +31,9 @@ import eu.wewox.lazytable.LazyTable
 import eu.wewox.lazytable.LazyTableItem
 import eu.wewox.lazytable.LazyTableScrollDirection
 import eu.wewox.lazytable.lazyTableDimensions
-import tgo1014.gridlauncher.app.Constants
+import tgo1014.gridlauncher.app.Constants.gridColumns
 import tgo1014.gridlauncher.domain.models.App
+import tgo1014.gridlauncher.domain.models.TileSettings
 import tgo1014.gridlauncher.ui.models.GridItem
 import tgo1014.gridlauncher.ui.theme.modifyIf
 import tgo1014.gridlauncher.ui.theme.plus
@@ -41,7 +42,8 @@ import tgo1014.gridlauncher.ui.theme.plus
 fun TileLayout(
     grid: List<GridItem>,
     modifier: Modifier = Modifier,
-    columns: Int = Constants.gridColumns,
+    columns: Int = gridColumns,
+    tileSettings: TileSettings = TileSettings(),
     itemBeingEdited: GridItem? = null,
     contentPadding: PaddingValues = PaddingValues(0.dp),
     isOnTop: (Boolean) -> Unit = {},
@@ -84,6 +86,7 @@ fun TileLayout(
             Box(modifier = Modifier.padding(2.dp)) {
                 GridTile(
                     item = it,
+                    tileSettings = tileSettings,
                     isEditMode = it.id == itemBeingEdited?.id,
                     onItemClicked = onItemClicked,
                     onItemLongClicked = onItemLongClicked,

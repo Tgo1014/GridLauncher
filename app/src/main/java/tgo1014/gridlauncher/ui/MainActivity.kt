@@ -31,7 +31,7 @@ import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import tgo1014.gridlauncher.domain.UpdateAppListUseCase
+import tgo1014.gridlauncher.domain.usecases.UpdateAppListUseCase
 import tgo1014.gridlauncher.ui.home.HomeScreen
 import tgo1014.gridlauncher.ui.home.HomeScreenViewModel
 import tgo1014.gridlauncher.ui.theme.GridLauncherTheme

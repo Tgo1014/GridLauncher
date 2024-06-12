@@ -5,23 +5,26 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import tgo1014.gridlauncher.data.withoutAccents
-import tgo1014.gridlauncher.domain.AddToGridUseCase
 import tgo1014.gridlauncher.domain.AppsManager
-import tgo1014.gridlauncher.domain.Direction
-import tgo1014.gridlauncher.domain.GetAppListUseCase
-import tgo1014.gridlauncher.domain.ItemGridSizeChangeUseCase
-import tgo1014.gridlauncher.domain.MoveGridItemUseCase
-import tgo1014.gridlauncher.domain.OpenNotificationShadeUseCase
-import tgo1014.gridlauncher.domain.RemoveFromGridUseCase
-import tgo1014.gridlauncher.domain.TileSize
-import tgo1014.gridlauncher.domain.UpdateAppListUseCase
+import tgo1014.gridlauncher.domain.SettingsRepository
 import tgo1014.gridlauncher.domain.models.App
+import tgo1014.gridlauncher.domain.models.Direction
+import tgo1014.gridlauncher.domain.models.TileSettings
+import tgo1014.gridlauncher.domain.models.TileSize
+import tgo1014.gridlauncher.domain.usecases.AddToGridUseCase
+import tgo1014.gridlauncher.domain.usecases.GetAppListUseCase
+import tgo1014.gridlauncher.domain.usecases.ItemGridSizeChangeUseCase
+import tgo1014.gridlauncher.domain.usecases.MoveGridItemUseCase
+import tgo1014.gridlauncher.domain.usecases.OpenNotificationShadeUseCase
+import tgo1014.gridlauncher.domain.usecases.RemoveFromGridUseCase
 import tgo1014.gridlauncher.ui.models.GridItem
 import javax.inject.Inject
 
@@ -33,14 +36,16 @@ class HomeScreenViewModel @Inject constructor(
     private val moveGridItemUseCase: MoveGridItemUseCase,
     private val removeFromGridUseCase: RemoveFromGridUseCase,
     private val itemGridSizeChangeUseCase: ItemGridSizeChangeUseCase,
-    private val updateAppListUseCase: UpdateAppListUseCase,
     private val appsManager: AppsManager,
+    private val settingsRepository: SettingsRepository,
 ) : ViewModel() {
 
     private var fullAppList: List<App> = emptyList()
 
     private val _stateFlow = MutableStateFlow(HomeState())
-    val stateFlow = _stateFlow.asStateFlow()
+    val stateFlow = combine(_stateFlow, settingsRepository.tileSettingsFlow) { state, settings ->
+        state.copy(tileSettings = settings)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), HomeState())
 
     init {
         init()
@@ -125,6 +130,10 @@ class HomeScreenViewModel @Inject constructor(
             .onSuccess {
                 _stateFlow.update { it.copy(itemBeingEdited = null) }
             }
+    }
+
+    fun onSettingsUpdated(tileSettings: TileSettings) = viewModelScope.launch {
+        settingsRepository.updateSettings(tileSettings)
     }
 
     private fun init() = viewModelScope.launch {

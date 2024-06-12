@@ -23,28 +23,34 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Slider
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import tgo1014.gridlauncher.domain.Direction
-import tgo1014.gridlauncher.domain.TileSize
+import tgo1014.gridlauncher.domain.models.Direction
+import tgo1014.gridlauncher.domain.models.TileSettings
+import tgo1014.gridlauncher.domain.models.TileSize
 import tgo1014.gridlauncher.ui.theme.GridLauncherTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("ModifierParameter")
 @Composable
 fun EditBottomSheet(
+    tileSettings: TileSettings,
     isEditMode: Boolean,
     contentModifier: Modifier = Modifier,
     onItemMoved: (Direction) -> Unit = {},
     onSizeChange: (tileSize: TileSize) -> Unit = {},
     onRemoveClicked: () -> Unit = {},
     onDismissed: () -> Unit = {},
+    onSettingsUpdated: (TileSettings) -> Unit = {},
     content: @Composable (PaddingValues) -> Unit,
 ) {
     val sheetState = rememberModalBottomSheetState()
@@ -58,12 +64,14 @@ fun EditBottomSheet(
             sheetState = sheetState
         ) {
             EditSheetContent(
+                tileSettings = tileSettings,
                 onSizeChange = onSizeChange,
                 onTopClicked = { onItemMoved(Direction.Up) },
                 onDownClicked = { onItemMoved(Direction.Down) },
                 onLeftClicked = { onItemMoved(Direction.Left) },
                 onRightClicked = { onItemMoved(Direction.Right) },
-                onRemoveClicked = onRemoveClicked
+                onRemoveClicked = onRemoveClicked,
+                onSettingsUpdated = onSettingsUpdated,
             )
         }
     }
@@ -74,17 +82,42 @@ fun EditBottomSheet(
 
 @Composable
 private fun EditSheetContent(
+    tileSettings: TileSettings = TileSettings(),
     onSizeChange: (tileSize: TileSize) -> Unit = {},
     onTopClicked: () -> Unit = {},
     onDownClicked: () -> Unit = {},
     onLeftClicked: () -> Unit = {},
     onRightClicked: () -> Unit = {},
     onRemoveClicked: () -> Unit = {},
+    onSettingsUpdated: (TileSettings) -> Unit = {},
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(4.dp),
         modifier = Modifier.padding(8.dp)
     ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text("Tile Flipping Enabled:", modifier = Modifier.weight(1f))
+            Switch(
+                checked = tileSettings.isTileFlipEnabled,
+                onCheckedChange = { onSettingsUpdated(tileSettings.copy(isTileFlipEnabled = it)) },
+            )
+        }
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text("Hide app labels:", modifier = Modifier.weight(1f))
+            Switch(
+                checked = tileSettings.isAppLabelsHidden,
+                onCheckedChange = { onSettingsUpdated(tileSettings.copy(isAppLabelsHidden = it)) },
+            )
+        }
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text("Corners:", modifier = Modifier.align(Alignment.CenterVertically).weight(1f))
+            Slider(
+                value = tileSettings.cornerRadius.toFloat(),
+                onValueChange = { onSettingsUpdated(tileSettings.copy(cornerRadius = it.toInt())) },
+                valueRange = 0f..50f,
+                modifier = Modifier.weight(1f),
+            )
+        }
         Row(
             modifier = Modifier
                 .padding(WindowInsets.navigationBars.asPaddingValues())
@@ -150,7 +183,7 @@ private fun EditSheetContent(
 }
 
 @Composable
-@Preview
+@Preview(showBackground = true)
 private fun Preview() = GridLauncherTheme {
     EditSheetContent()
 }

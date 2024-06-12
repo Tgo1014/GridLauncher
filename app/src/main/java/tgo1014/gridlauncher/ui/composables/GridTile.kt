@@ -28,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Wallpapers
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import tgo1014.gridlauncher.domain.models.App
+import tgo1014.gridlauncher.domain.models.TileSettings
 import tgo1014.gridlauncher.ui.models.GridItem
 import tgo1014.gridlauncher.ui.theme.GridLauncherTheme
 import tgo1014.gridlauncher.ui.theme.flipRandomly
@@ -40,11 +41,12 @@ import tgo1014.gridlauncher.ui.theme.tileEditMode
 fun GridTile(
     item: GridItem,
     modifier: Modifier = Modifier,
+    tileSettings: TileSettings = TileSettings(),
     isEditMode: Boolean = false,
     onItemClicked: (item: GridItem) -> Unit = {},
     onItemLongClicked: (item: GridItem) -> Unit = {},
 ) {
-    val shape = RoundedCornerShape(8.dp)
+    val shape = RoundedCornerShape(tileSettings.cornerRadius)
     val app = item.app
     Box(
         modifier = Modifier
@@ -52,7 +54,9 @@ fun GridTile(
                 onClick = { onItemClicked(item) },
                 onLongClick = { onItemLongClicked(item) }
             )
-            .modifyIf(!isEditMode) { flipRandomly() }
+            .modifyIf(!isEditMode && tileSettings.isTileFlipEnabled) {
+                flipRandomly()
+            }
             .tileEditMode(isEditMode)
             .background(MaterialTheme.colorScheme.primaryContainer, shape)
             .clip(shape)
@@ -87,7 +91,7 @@ fun GridTile(
                     modifier = iconModifier
                 )
             }
-            if (item.width > 1 && item.height > 1) {
+            if (item.width > 1 && item.height > 1 && !tileSettings.isAppLabelsHidden) {
                 Text(
                     text = item.app.name,
                     maxLines = 1,

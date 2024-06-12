@@ -4,6 +4,7 @@ import org.junit.Before
 import org.junit.Test
 import tgo1014.gridlauncher.FakeAppsManager
 import tgo1014.gridlauncher.domain.models.App
+import tgo1014.gridlauncher.domain.usecases.AddToGridUseCase
 import tgo1014.gridlauncher.runTurbineTest
 import tgo1014.gridlauncher.ui.models.GridItem
 

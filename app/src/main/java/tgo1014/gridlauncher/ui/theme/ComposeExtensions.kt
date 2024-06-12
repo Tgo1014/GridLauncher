@@ -1,7 +1,7 @@
 package tgo1014.gridlauncher.ui.theme
 
 import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.Easing
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.infiniteRepeatable
@@ -86,16 +86,29 @@ fun Modifier.onOpenNotificationShade(isOnTop: Boolean, onOpen: () -> Unit): Modi
     }
 }
 
+private val overshootEasing = Easing { fraction ->
+    val tension = 2.0f
+    var t = fraction
+    if (t < 0.5f) {
+        t *= 2.0f
+        0.5f * t * t * ((tension + 1) * t - tension)
+    } else {
+        t = t * 2.0f - 2.0f
+        0.5f * t * t * ((tension + 1) * t + tension) + 1.0f
+    }
+}
+
 fun Modifier.flipRandomly() = composed {
     val animatedFloat = remember { Animatable(0f) }
+
     LaunchedEffect(animatedFloat) {
         animatedFloat.animateTo(
             targetValue = 360f,
             animationSpec = infiniteRepeatable(
                 animation = tween(
                     1000,
-                    delayMillis = Random.nextInt(10000, 20000),
-                    easing = FastOutSlowInEasing
+                    delayMillis = Random.nextInt(15_000, 30_000),
+                    easing = overshootEasing
                 ),
                 repeatMode = RepeatMode.Restart
             )
