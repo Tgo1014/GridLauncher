@@ -2,7 +2,7 @@
 accompanist-systemuicontroller = "0.35.1-alpha"
 activity-compose = "1.9.0"
 # @pin so this is not updated to alpha versions
-agp = "8.4.2"
+agp = "8.5.0"
 androidx-test-ext-junit = "1.2.0-rc01"
 app-turbine = "1.1.0"
 coil-compose = "2.6.0"
@@ -17,7 +17,7 @@ kotlin = "2.0.0"
 kotlinx-coroutines-test = "1.9.0-RC"
 kotlinx-serialization-json = "1.7.0"
 lazytable = "1.8.0"
-lifecycle-runtime-ktx = "2.8.1"
+lifecycle-runtime-ktx = "2.8.2"
 reorderable = "0.9.6"
 
 [libraries]

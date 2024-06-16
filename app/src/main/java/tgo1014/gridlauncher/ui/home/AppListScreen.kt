@@ -34,6 +34,7 @@ import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -95,17 +96,18 @@ fun AppListScreen(
         },
         label = "Inclination"
     )
-    val isOnTop = lazyListState.canScrollBackward
+    val isOnTop by remember { derivedStateOf { lazyListState.firstVisibleItemIndex == 0 } }
     val mainColor = MaterialTheme.colorScheme.primary
     val focusManager = LocalFocusManager.current
     val searchInputTextPadding = 75.dp
+    val alignment = if (state.filterString.isEmpty()) Alignment.Top else Alignment.Bottom
     LazyColumn(
         state = lazyListState,
         contentPadding = PaddingValues(8.dp)
                 + WindowInsets.systemBars.asPaddingValues()
                 + WindowInsets.ime.asPaddingValues()
                 + PaddingValues(bottom = searchInputTextPadding),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp, alignment),
         modifier = Modifier
             .fillMaxSize()
             .pointerInput(Unit) {
@@ -200,7 +202,7 @@ fun AppListScreen(
                     val iconModifier = Modifier
                         .graphicsLayer { rotationX = angle }
                         .size(50.dp)
-                        .border(2.dp, mainColor, shape)
+                        .border(1.dp, mainColor, shape)
                         .clip(shape)
                     /*val filter = ColorFilter.lighting(
                         multiply = mainColor,
@@ -234,6 +236,7 @@ fun AppListScreen(
     SearchFab(
         buttonState = fabState,
         searchText = state.filterString,
+        cornerRadius = state.tileSettings.cornerRadius,
         onSearchTextChanged = {
             scope.launch {
                 lazyListState.animateScrollToItem(0)

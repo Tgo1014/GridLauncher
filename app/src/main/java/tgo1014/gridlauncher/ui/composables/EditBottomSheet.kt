@@ -110,7 +110,10 @@ private fun EditSheetContent(
             )
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text("Corners:", modifier = Modifier.align(Alignment.CenterVertically).weight(1f))
+            Text("Corners:", modifier = Modifier
+                .align(Alignment.CenterVertically)
+                .weight(1f))
+            Text(text = tileSettings.cornerRadius.toString())
             Slider(
                 value = tileSettings.cornerRadius.toFloat(),
                 onValueChange = { onSettingsUpdated(tileSettings.copy(cornerRadius = it.toInt())) },

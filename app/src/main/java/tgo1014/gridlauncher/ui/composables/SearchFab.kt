@@ -57,6 +57,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import tgo1014.gridlauncher.R
+import tgo1014.gridlauncher.app.Constants.defaultRadius
 import tgo1014.gridlauncher.ui.theme.GridLauncherTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -65,6 +66,7 @@ fun SearchFab(
     modifier: Modifier = Modifier,
     searchText: String,
     buttonState: SearchFabState,
+    cornerRadius: Int = defaultRadius,
     onCloseClicked: () -> Unit = {},
     onSearchTextChanged: (String) -> Unit = {},
     onButtonClicked: () -> Unit = {},
@@ -72,7 +74,7 @@ fun SearchFab(
     val keyboardController = LocalSoftwareKeyboardController.current
     val fabSize = 56.dp
     val itemsSize = 32.dp
-    val shape = RoundedCornerShape(25)
+    val shape = RoundedCornerShape(cornerRadius)
     val interactionSource = remember { MutableInteractionSource() }
     val transition = updateTransition(buttonState, label = "Width")
     val height by transition.animateDp(

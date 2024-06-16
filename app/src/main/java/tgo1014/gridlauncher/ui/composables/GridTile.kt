@@ -50,16 +50,16 @@ fun GridTile(
     val app = item.app
     Box(
         modifier = Modifier
-            .combinedClickable(
-                onClick = { onItemClicked(item) },
-                onLongClick = { onItemLongClicked(item) }
-            )
             .modifyIf(!isEditMode && tileSettings.isTileFlipEnabled) {
                 flipRandomly()
             }
             .tileEditMode(isEditMode)
             .background(MaterialTheme.colorScheme.primaryContainer, shape)
             .clip(shape)
+            .combinedClickable(
+                onClick = { onItemClicked(item) },
+                onLongClick = { onItemLongClicked(item) }
+            )
             .then(modifier)
     ) {
         AsyncImage(
@@ -88,7 +88,7 @@ fun GridTile(
                 AsyncImage(
                     model = item.app.icon.iconFile,
                     contentDescription = null,
-                    modifier = iconModifier
+                    modifier = iconModifier,
                 )
             }
             if (item.width > 1 && item.height > 1 && !tileSettings.isAppLabelsHidden) {
