@@ -13,5 +13,5 @@ Click on the "Assets" and download the `.apk`.
 
 ## Screenshots
 
-<img src="https://github.com/Tgo1014/GridLauncher/assets/8679058/ad0b21b3-fb06-4dae-b77e-26de518642ee" width="400">
-<img src="https://github.com/Tgo1014/GridLauncher/assets/8679058/79a1f486-68e7-4f34-9158-1ca5d94739f6" width="400">
+<img src="https://github.com/Tgo1014/GridLauncher/assets/8679058/ab5add81-98be-4464-b745-68857152925d" width="400">
+<img src="https://github.com/Tgo1014/GridLauncher/assets/8679058/30742da7-c4a0-47cb-9037-77e7db9a3d77" width="400">
