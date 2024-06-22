@@ -71,6 +71,7 @@ import tgo1014.gridlauncher.ui.theme.detectConsumedVerticalDragGestures
 import tgo1014.gridlauncher.ui.theme.isPreview
 import tgo1014.gridlauncher.ui.theme.isScrollingDown
 import tgo1014.gridlauncher.ui.theme.isScrollingUp
+import tgo1014.gridlauncher.ui.theme.modifyIf
 import tgo1014.gridlauncher.ui.theme.plus
 
 @OptIn(ExperimentalFoundationApi::class, DelicateCoroutinesApi::class)
@@ -217,8 +218,14 @@ fun AppListScreen(
                         )
                     } else {
                         Box(iconModifier) {
-                            AsyncImage(app.icon.bgFile)
-                            AsyncImage(model = app.icon.iconFile)
+                            AsyncImage(model = app.icon.bgFile)
+                            AsyncImage(model = app.icon.iconFile,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .modifyIf(app.icon.bgFile == null) {
+                                        padding(6.dp)
+                                    }
+                            )
                         }
                     }
                     Spacer(Modifier.width(8.dp))

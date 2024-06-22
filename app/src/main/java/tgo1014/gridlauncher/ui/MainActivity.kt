@@ -88,7 +88,8 @@ class MainActivity : ComponentActivity() {
             val intentFilter = IntentFilter(Intent.ACTION_MAIN)
             intentFilter.addCategory(Intent.CATEGORY_HOME)
             val activities = ArrayList<ComponentName>()
-            packageManager.getPreferredActivities(listOf(intentFilter), activities, null)
+            // has to be mutableList of it crashes
+            packageManager.getPreferredActivities(mutableListOf(intentFilter), activities, null)
             activities.contains(componentName)
         }
     }
