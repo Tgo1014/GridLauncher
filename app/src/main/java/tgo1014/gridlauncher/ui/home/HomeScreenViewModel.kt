@@ -58,7 +58,7 @@ class HomeScreenViewModel @Inject constructor(
     fun onOpenApp(app: App) {
         viewModelScope.launch {
             delay(200)
-            _stateFlow.update { it.copy(goToHome = true) }
+            _stateFlow.update { it.copy(goToHome = true, closeSearchFab = true) }
             resetState()
         }
         viewModelScope.launch { appsManager.openApp(app) }
@@ -101,7 +101,7 @@ class HomeScreenViewModel @Inject constructor(
             return
         }
         val appList = fullAppList.filter {
-            it.name.withoutAccents.contains(filter.withoutAccents, true)
+            it.name.withoutAccents.contains(filter.withoutAccents.trim(), true)
         }
         _stateFlow.update { it.copy(filterString = filter, appList = appList) }
     }
@@ -130,6 +130,10 @@ class HomeScreenViewModel @Inject constructor(
             .onSuccess {
                 _stateFlow.update { it.copy(itemBeingEdited = null) }
             }
+    }
+
+    fun onFabClosed() {
+        _stateFlow.update { it.copy(closeSearchFab = false) }
     }
 
     fun onSettingsUpdated(tileSettings: TileSettings) = viewModelScope.launch {

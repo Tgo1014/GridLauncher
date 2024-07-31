@@ -1,7 +1,6 @@
-@Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
     kotlin("kapt")
-    kotlin("plugin.serialization") version "1.9.22"
+    kotlin("plugin.serialization") version libs.versions.kotlin.get()
     alias(libs.plugins.com.android.application)
     alias(libs.plugins.org.jetbrains.kotlin.android)
     alias(libs.plugins.google.hilt)
@@ -10,12 +9,14 @@ plugins {
 
 android {
     namespace = "tgo1014.gridlauncher"
-    compileSdk = 34
+    // compileSdk = 34
+    compileSdkPreview = "VanillaIceCream"
 
     defaultConfig {
         applicationId = "tgo1014.gridlauncher"
         minSdk = 21
-        targetSdk = 34
+        // targetSdk = 34
+        targetSdkPreview = "VanillaIceCream"
         versionCode = 1
         versionName = "1.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

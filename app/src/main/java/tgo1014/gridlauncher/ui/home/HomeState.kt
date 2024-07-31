@@ -8,6 +8,7 @@ data class HomeState(
     val appList: List<App> = emptyList(),
     val grid: List<GridItem> = emptyList(),
     val goToHome: Boolean = false,
+    val closeSearchFab: Boolean = false,
     val filterString: String = "",
     val itemBeingEdited: GridItem? = null,
     val tileSettings: TileSettings = TileSettings(),

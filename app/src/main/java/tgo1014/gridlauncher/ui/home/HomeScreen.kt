@@ -49,7 +49,8 @@ fun HomeScreen(
         onItemMoved = viewModel::onItemMoved,
         onSizeChange = viewModel::onSizeChanged,
         onRemoveClicked = viewModel::onRemoveClicked,
-        onSettingsUpdated = viewModel::onSettingsUpdated
+        onSettingsUpdated = viewModel::onSettingsUpdated,
+        onFabClosed = viewModel::onFabClosed,
     )
 }
 
@@ -69,7 +70,8 @@ private fun HomeScreen(
     onItemMoved: (Direction) -> Unit = {},
     onSizeChange: (tileSize: TileSize) -> Unit = {},
     onRemoveClicked: () -> Unit = {},
-    onSettingsUpdated: (TileSettings) -> Unit = {}
+    onSettingsUpdated: (TileSettings) -> Unit = {},
+    onFabClosed: () -> Unit = {},
 ) = Box {
     val pagerState = rememberPagerState { 2 }
     val scope = rememberCoroutineScope()
@@ -127,6 +129,7 @@ private fun HomeScreen(
                 onFilterTextChanged = onFilterTextChanged,
                 onFilterClearPressed = onFilterClearPressed,
                 onUninstall = onUninstall,
+                onFabClosed = onFabClosed,
                 onBackPressed = {
                     scope.launch { pagerState.animateScrollToPage(0) }
                 }

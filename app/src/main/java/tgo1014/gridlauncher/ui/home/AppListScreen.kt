@@ -63,6 +63,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import tgo1014.gridlauncher.R
 import tgo1014.gridlauncher.domain.models.App
+import tgo1014.gridlauncher.ui.composables.LaunchedIfTrueEffect
 import tgo1014.gridlauncher.ui.composables.SearchFab
 import tgo1014.gridlauncher.ui.composables.SearchFabState
 import tgo1014.gridlauncher.ui.theme.AsyncImage
@@ -85,6 +86,7 @@ fun AppListScreen(
     onFilterClearPressed: () -> Unit = {},
     onUninstall: (App) -> Unit = {},
     onBackPressed: () -> Unit = {},
+    onFabClosed: () -> Unit = {},
 ) = Box {
     BackHandler(onBack = onBackPressed)
     val lazyListState = rememberLazyListState()
@@ -240,6 +242,10 @@ fun AppListScreen(
     }
     val scope = rememberCoroutineScope()
     var fabState by remember { mutableStateOf(SearchFabState.FAB) }
+    LaunchedIfTrueEffect(state.closeSearchFab) {
+        onFabClosed()
+        fabState = SearchFabState.FAB
+    }
     SearchFab(
         buttonState = fabState,
         searchText = state.filterString,
