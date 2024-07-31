@@ -15,8 +15,8 @@ android {
     defaultConfig {
         applicationId = "tgo1014.gridlauncher"
         minSdk = 21
-        // targetSdk = 34
-        targetSdkPreview = "VanillaIceCream"
+        targetSdk = 34
+        //targetSdkPreview = "VanillaIceCream"
         versionCode = 1
         versionName = "1.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -85,6 +85,7 @@ dependencies {
     implementation(libs.accompanist.systemuicontroller)
     implementation(libs.androidx.datastore)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.lazytable)
 
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
@@ -92,9 +93,8 @@ dependencies {
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.espresso.core)
     //androidTestImplementation(platform(libs.compose.bom))
-    // androidTestImplementation(libs.ui.test.junit4)
+    //androidTestImplementation(libs.ui.test.junit4)
     debugImplementation(libs.ui.tooling)
     debugImplementation(libs.ui.test.manifest)
 
-    implementation(libs.lazytable)
 }
