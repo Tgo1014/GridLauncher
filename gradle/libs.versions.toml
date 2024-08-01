@@ -11,6 +11,7 @@ compose-bom = "2024.06.00-alpha01"
 core-ktx = "1.15.0-alpha01"
 datastore = "1.1.1"
 espresso-core = "3.6.1"
+haze = "0.9.0-alpha04"
 hilt = "2.51.1"
 junit = "4.13.2"
 kotlin = "2.0.0"
@@ -31,6 +32,7 @@ coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil-compose
 compose-bom = { module = "dev.chrisbanes.compose:compose-bom", version.ref = "compose-bom" }
 core-ktx = { module = "androidx.core:core-ktx", version.ref = "core-ktx" }
 espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espresso-core" }
+haze = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }
 hilt = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-kapt = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
 hilt-navigation = "androidx.hilt:hilt-navigation-compose:1.2.0"

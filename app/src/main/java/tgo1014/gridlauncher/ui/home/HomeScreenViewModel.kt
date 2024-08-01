@@ -1,5 +1,6 @@
 package tgo1014.gridlauncher.ui.home
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,6 +26,8 @@ import tgo1014.gridlauncher.domain.usecases.ItemGridSizeChangeUseCase
 import tgo1014.gridlauncher.domain.usecases.MoveGridItemUseCase
 import tgo1014.gridlauncher.domain.usecases.OpenNotificationShadeUseCase
 import tgo1014.gridlauncher.domain.usecases.RemoveFromGridUseCase
+import tgo1014.gridlauncher.domain.usecases.wallpaper.OnWallpaperPickedUseCase
+import tgo1014.gridlauncher.domain.usecases.wallpaper.RemoveWallpaperUseCase
 import tgo1014.gridlauncher.ui.models.GridItem
 import javax.inject.Inject
 
@@ -38,6 +41,8 @@ class HomeScreenViewModel @Inject constructor(
     private val itemGridSizeChangeUseCase: ItemGridSizeChangeUseCase,
     private val appsManager: AppsManager,
     private val settingsRepository: SettingsRepository,
+    private val onWallpaperPickedUseCase: OnWallpaperPickedUseCase,
+    private val onRemoveWallpaperUseCase: RemoveWallpaperUseCase,
 ) : ViewModel() {
 
     private var fullAppList: List<App> = emptyList()
@@ -134,6 +139,14 @@ class HomeScreenViewModel @Inject constructor(
 
     fun onFabClosed() {
         _stateFlow.update { it.copy(closeSearchFab = false) }
+    }
+
+    fun onRemoveWallpaper() = viewModelScope.launch {
+        onRemoveWallpaperUseCase()
+    }
+
+    fun onWallpaperPicked(uri: Uri) = viewModelScope.launch {
+        onWallpaperPickedUseCase(uri)
     }
 
     fun onSettingsUpdated(tileSettings: TileSettings) = viewModelScope.launch {

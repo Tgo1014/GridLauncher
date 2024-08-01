@@ -62,12 +62,14 @@ fun GridTile(
             )
             .then(modifier)
     ) {
-        AsyncImage(
-            model = app.icon.bgFile,
-            contentDescription = null,
-            contentScale = ContentScale.FillWidth,
-            modifier = Modifier.fillMaxSize()
-        )
+        if (!tileSettings.isTransparencyEnabled) {
+            AsyncImage(
+                model = app.icon.bgFile,
+                contentDescription = null,
+                contentScale = ContentScale.FillWidth,
+                modifier = Modifier.fillMaxSize()
+            )
+        }
         val onContainer = MaterialTheme.colorScheme.onPrimaryContainer
         val textColor = remember {
             when {

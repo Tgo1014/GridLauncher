@@ -23,10 +23,10 @@
             android:clearTaskOnLaunch="true"
             android:excludeFromRecents="true"
             android:exported="true"
-            android:windowSoftInputMode="adjustResize"
             android:launchMode="singleTask"
             android:stateNotNeeded="true"
-            android:theme="@style/Theme.GridLauncher">
+            android:theme="@style/Theme.GridLauncher"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -35,6 +35,21 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
+        <!--Enabled photo picker on old android versions-->
+        <service
+            android:name="com.google.android.gms.metadata.ModuleDependencies"
+            android:enabled="false"
+            android:exported="false"
+            tools:ignore="MissingClass">
+            <intent-filter>
+                <action android:name="com.google.android.gms.metadata.MODULE_DEPENDENCIES" />
+            </intent-filter>
+            <meta-data
+                android:name="photopicker_activity:0:required"
+                android:value="" />
+        </service>
+
     </application>
 
 </manifest>

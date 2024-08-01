@@ -1,5 +1,6 @@
 package tgo1014.gridlauncher.ui.home
 
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -51,6 +52,8 @@ fun HomeScreen(
         onRemoveClicked = viewModel::onRemoveClicked,
         onSettingsUpdated = viewModel::onSettingsUpdated,
         onFabClosed = viewModel::onFabClosed,
+        onRemoveWallpaper = viewModel::onRemoveWallpaper,
+        onWallpaperPicked = viewModel::onWallpaperPicked,
     )
 }
 
@@ -72,6 +75,8 @@ private fun HomeScreen(
     onRemoveClicked: () -> Unit = {},
     onSettingsUpdated: (TileSettings) -> Unit = {},
     onFabClosed: () -> Unit = {},
+    onRemoveWallpaper: () -> Unit = {},
+    onWallpaperPicked: (Uri) -> Unit = {},
 ) = Box {
     val pagerState = rememberPagerState { 2 }
     val scope = rememberCoroutineScope()
@@ -114,6 +119,8 @@ private fun HomeScreen(
                 onSizeChange = onSizeChange,
                 onRemoveClicked = onRemoveClicked,
                 onSettingsUpdated = onSettingsUpdated,
+                onRemoveWallpaper = onRemoveWallpaper,
+                onWallpaperPicked = onWallpaperPicked,
                 onFooterClicked = {
                     scope.launch {
                         pagerState.animateScrollToPage(1)

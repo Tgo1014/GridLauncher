@@ -1,5 +1,6 @@
 package tgo1014.gridlauncher.ui.home
 
+import android.net.Uri
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -43,7 +44,9 @@ fun GridScreenScreen(
     onItemMoved: (Direction) -> Unit = {},
     onSizeChange: (tileSize: TileSize) -> Unit = {},
     onRemoveClicked: () -> Unit = {},
-    onSettingsUpdated: (TileSettings) -> Unit = {}
+    onSettingsUpdated: (TileSettings) -> Unit = {},
+    onRemoveWallpaper: () -> Unit = {},
+    onWallpaperPicked: (Uri) -> Unit = {},
 ) {
     var isOnTop by remember { mutableStateOf(true) }
     EditBottomSheet(
@@ -54,13 +57,15 @@ fun GridScreenScreen(
         onSizeChange = onSizeChange,
         onRemoveClicked = onRemoveClicked,
         onSettingsUpdated = onSettingsUpdated,
+        onRemoveWallpaper = onRemoveWallpaper,
+        onWallpaperPicked = onWallpaperPicked,
         contentModifier = modifier,
     ) {
         TileLayout(
             grid = state.grid,
             tileSettings = state.tileSettings,
             itemBeingEdited = state.itemBeingEdited,
-            footer = { Footer(onFooterClicked, state.tileSettings) },
+            footer = { modifier -> Footer(modifier, onFooterClicked, state.tileSettings) },
             onItemLongClicked = onItemLongClicked,
             isOnTop = { isOnTop = it },
             onItemClicked = onItemClicked,
@@ -76,7 +81,11 @@ fun GridScreenScreen(
 
 @Composable
 @Preview
-private fun Footer(onFooterClicked: () -> Unit = {}, tileSettings: TileSettings = TileSettings()) {
+private fun Footer(
+    modifier: Modifier = Modifier,
+    onFooterClicked: () -> Unit = {},
+    tileSettings: TileSettings = TileSettings()
+) {
     Box(Modifier.fillMaxWidth()) {
         Button(
             shape = RoundedCornerShape(tileSettings.cornerRadius),
@@ -85,6 +94,7 @@ private fun Footer(onFooterClicked: () -> Unit = {}, tileSettings: TileSettings 
             modifier = Modifier
                 .padding(8.dp)
                 .align(Alignment.TopEnd)
+                .then(modifier)
         ) {
             Text(text = "All apps")
             Icon(

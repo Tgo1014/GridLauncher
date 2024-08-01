@@ -1,6 +1,10 @@
 package tgo1014.gridlauncher.ui.composables
 
 import android.annotation.SuppressLint
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,6 +26,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
@@ -51,6 +56,8 @@ fun EditBottomSheet(
     onRemoveClicked: () -> Unit = {},
     onDismissed: () -> Unit = {},
     onSettingsUpdated: (TileSettings) -> Unit = {},
+    onRemoveWallpaper: () -> Unit = {},
+    onWallpaperPicked: (Uri) -> Unit = {},
     content: @Composable (PaddingValues) -> Unit,
 ) {
     val sheetState = rememberModalBottomSheetState()
@@ -72,6 +79,8 @@ fun EditBottomSheet(
                 onRightClicked = { onItemMoved(Direction.Right) },
                 onRemoveClicked = onRemoveClicked,
                 onSettingsUpdated = onSettingsUpdated,
+                onRemoveWallpaper = onRemoveWallpaper,
+                onWallpaperPicked = onWallpaperPicked,
             )
         }
     }
@@ -90,7 +99,13 @@ private fun EditSheetContent(
     onRightClicked: () -> Unit = {},
     onRemoveClicked: () -> Unit = {},
     onSettingsUpdated: (TileSettings) -> Unit = {},
+    onRemoveWallpaper: () -> Unit = {},
+    onWallpaperPicked: (Uri) -> Unit = {},
 ) {
+    val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = { uri -> uri?.let(onWallpaperPicked) }
+    )
     Column(
         verticalArrangement = Arrangement.spacedBy(4.dp),
         modifier = Modifier.padding(8.dp)
@@ -109,10 +124,41 @@ private fun EditSheetContent(
                 onCheckedChange = { onSettingsUpdated(tileSettings.copy(isAppLabelsHidden = it)) },
             )
         }
+        Column {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text("Enable tile transparency:", modifier = Modifier.weight(1f))
+                if (tileSettings.isTransparencyEnabled) {
+                    Button(
+                        onClick = onRemoveWallpaper,
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text("Remove Image")
+                    }
+                } else {
+                    Button(
+                        onClick = {
+                            singlePhotoPickerLauncher.launch(
+                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                            )
+                        },
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text("Pick Image")
+                    }
+                }
+            }
+            Text(
+                text = "To enable transparency you need to pick your wallpaper manually",
+                style = MaterialTheme.typography.labelSmall
+            )
+        }
+
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text("Corners:", modifier = Modifier
-                .align(Alignment.CenterVertically)
-                .weight(1f))
+            Text(
+                "Corners:", modifier = Modifier
+                    .align(Alignment.CenterVertically)
+                    .weight(1f)
+            )
             Text(text = tileSettings.cornerRadius.toString())
             Slider(
                 value = tileSettings.cornerRadius.toFloat(),
