@@ -17,11 +17,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.util.lerp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.haze
 import kotlinx.coroutines.launch
 import tgo1014.gridlauncher.domain.models.App
 import tgo1014.gridlauncher.domain.models.Direction
@@ -29,6 +32,7 @@ import tgo1014.gridlauncher.domain.models.TileSettings
 import tgo1014.gridlauncher.domain.models.TileSize
 import tgo1014.gridlauncher.ui.composables.LaunchedIfTrueEffect
 import tgo1014.gridlauncher.ui.models.GridItem
+import tgo1014.gridlauncher.ui.theme.AsyncImage
 
 @Composable
 fun HomeScreen(
@@ -97,6 +101,17 @@ private fun HomeScreen(
         onHome()
         keyboardController?.hide()
     }
+    val hazeState = remember { HazeState() }
+    if (state.tileSettings.isTransparencyEnabled) {
+        AsyncImage(
+            model = state.tileSettings.wallpaperFile,
+            contentScale = ContentScale.FillHeight,
+            contentDescription = null,
+            modifier = Modifier
+                .fillMaxSize()
+                .haze(state = hazeState)
+        )
+    }
     HorizontalPager(
         state = pagerState,
         flingBehavior = PagerDefaults.flingBehavior(
@@ -111,6 +126,7 @@ private fun HomeScreen(
         when (it) {
             0 -> GridScreenScreen(
                 state = state,
+                hazeState = hazeState,
                 onOpenNotificationShade = onOpenNotificationShade,
                 onItemClicked = onItemClicked,
                 onItemLongClicked = onItemLongClicked,

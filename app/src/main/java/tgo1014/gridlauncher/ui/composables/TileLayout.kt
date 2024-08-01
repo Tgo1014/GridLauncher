@@ -51,6 +51,7 @@ import tgo1014.gridlauncher.ui.theme.plus
 fun TileLayout(
     grid: List<GridItem>,
     modifier: Modifier = Modifier,
+    hazeState: HazeState = remember { HazeState() },
     columns: Int = gridColumns,
     tileSettings: TileSettings = TileSettings(),
     itemBeingEdited: GridItem? = null,
@@ -76,19 +77,6 @@ fun TileLayout(
         }
         base = basePadding
     }
-    val hazeState = remember { HazeState() }
-
-    if (tileSettings.isTransparencyEnabled) {
-        AsyncImage(
-            model = tileSettings.wallpaperFile,
-            contentScale = ContentScale.FillHeight,
-            contentDescription = null,
-            modifier = Modifier
-                .fillMaxSize()
-                .haze(state = hazeState)
-        )
-    }
-
     val hazeChildModifier = Modifier.hazeChild(
         state = hazeState,
         shape = RoundedCornerShape(tileSettings.cornerRadius),
