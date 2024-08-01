@@ -1,7 +1,10 @@
 package tgo1014.gridlauncher.ui.home
 
+import android.net.Uri
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -21,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.chrisbanes.haze.HazeState
 import tgo1014.gridlauncher.domain.models.App
 import tgo1014.gridlauncher.domain.models.Direction
 import tgo1014.gridlauncher.domain.models.TileSettings
@@ -35,6 +39,7 @@ import tgo1014.gridlauncher.ui.theme.onOpenNotificationShade
 fun GridScreenScreen(
     state: HomeState,
     modifier: Modifier = Modifier,
+    hazeState: HazeState = remember { HazeState() },
     onItemClicked: (item: GridItem) -> Unit = {},
     onItemLongClicked: (item: GridItem) -> Unit = {},
     onFooterClicked: () -> Unit = {},
@@ -43,7 +48,9 @@ fun GridScreenScreen(
     onItemMoved: (Direction) -> Unit = {},
     onSizeChange: (tileSize: TileSize) -> Unit = {},
     onRemoveClicked: () -> Unit = {},
-    onSettingsUpdated: (TileSettings) -> Unit = {}
+    onSettingsUpdated: (TileSettings) -> Unit = {},
+    onRemoveWallpaper: () -> Unit = {},
+    onWallpaperPicked: (Uri) -> Unit = {},
 ) {
     var isOnTop by remember { mutableStateOf(true) }
     EditBottomSheet(
@@ -54,13 +61,16 @@ fun GridScreenScreen(
         onSizeChange = onSizeChange,
         onRemoveClicked = onRemoveClicked,
         onSettingsUpdated = onSettingsUpdated,
+        onRemoveWallpaper = onRemoveWallpaper,
+        onWallpaperPicked = onWallpaperPicked,
         contentModifier = modifier,
     ) {
         TileLayout(
             grid = state.grid,
             tileSettings = state.tileSettings,
+            hazeState = hazeState,
             itemBeingEdited = state.itemBeingEdited,
-            footer = { Footer(onFooterClicked, state.tileSettings) },
+            footer = { modifier -> Footer(modifier, onFooterClicked, state.tileSettings) },
             onItemLongClicked = onItemLongClicked,
             isOnTop = { isOnTop = it },
             onItemClicked = onItemClicked,
@@ -76,22 +86,45 @@ fun GridScreenScreen(
 
 @Composable
 @Preview
-private fun Footer(onFooterClicked: () -> Unit = {}, tileSettings: TileSettings = TileSettings()) {
+private fun Footer(
+    modifier: Modifier = Modifier,
+    onFooterClicked: () -> Unit = {},
+    tileSettings: TileSettings = TileSettings()
+) {
     Box(Modifier.fillMaxWidth()) {
-        Button(
-            shape = RoundedCornerShape(tileSettings.cornerRadius),
-            onClick = { onFooterClicked() },
-            contentPadding = PaddingValues(start = 16.dp, end = 6.dp),
-            modifier = Modifier
-                .padding(8.dp)
-                .align(Alignment.TopEnd)
-        ) {
-            Text(text = "All apps")
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                contentDescription = null
-            )
+        if (tileSettings.isTransparencyEnabled) {
+            Box(
+                modifier = modifier
+                    .align(Alignment.TopEnd)
+                    .clickable { onFooterClicked() }
+                    .padding(8.dp)
+            ) {
+                Row(Modifier.padding(horizontal = 6.dp)) {
+                    Text(text = "All apps")
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                        contentDescription = null
+                    )
+                }
+            }
+        } else {
+            Button(
+                shape = RoundedCornerShape(tileSettings.cornerRadius),
+                onClick = { onFooterClicked() },
+                contentPadding = PaddingValues(start = 16.dp, end = 6.dp),
+                modifier = Modifier
+                    .padding(8.dp)
+                    .align(Alignment.TopEnd)
+
+            ) {
+                Text(text = "All apps")
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                    contentDescription = null
+                )
+            }
         }
+
     }
 }
 

@@ -16,7 +16,6 @@ android {
         applicationId = "tgo1014.gridlauncher"
         minSdk = 21
         targetSdk = 34
-        //targetSdkPreview = "VanillaIceCream"
         versionCode = 1
         versionName = "1.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -86,6 +85,7 @@ dependencies {
     implementation(libs.androidx.datastore)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.lazytable)
+    implementation(libs.haze)
 
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
