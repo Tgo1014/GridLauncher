@@ -19,6 +19,7 @@ kotlinx-coroutines-test = "1.9.0-RC"
 kotlinx-serialization-json = "1.7.0"
 lazytable = "1.8.0"
 lifecycle-runtime-ktx = "2.8.4"
+material-kolor = "1.7.0"
 reorderable = "0.9.6"
 
 [libraries]
@@ -43,6 +44,7 @@ lazytable = { module = "io.github.oleksandrbalan:lazytable", version.ref = "lazy
 lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle-runtime-ktx" }
 lifecycle-runtime-ktx = "androidx.lifecycle:lifecycle-runtime-ktx:2.8.4"
 # ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+material-kolor = { module = "com.materialkolor:material-kolor", version.ref = "material-kolor" }
 material3 = { module = "androidx.compose.material3:material3" }
 reorderable = { module = "org.burnoutcrew.composereorderable:reorderable", version.ref = "reorderable" }
 ui = { module = "androidx.compose.ui:ui" }

@@ -86,6 +86,7 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.lazytable)
     implementation(libs.haze)
+    implementation(libs.material.kolor)
 
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)

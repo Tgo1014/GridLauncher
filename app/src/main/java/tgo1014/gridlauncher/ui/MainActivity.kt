@@ -22,6 +22,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,6 +32,7 @@ import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import tgo1014.gridlauncher.domain.ThemeRepository
 import tgo1014.gridlauncher.domain.usecases.UpdateAppListUseCase
 import tgo1014.gridlauncher.ui.home.HomeScreen
 import tgo1014.gridlauncher.ui.home.HomeScreenViewModel
@@ -42,6 +44,9 @@ import javax.inject.Inject
 class MainActivity : ComponentActivity() {
 
     @Inject
+    lateinit var themeRepository: ThemeRepository
+
+    @Inject
     lateinit var updateAppListUseCase: UpdateAppListUseCase
 
     private val homeScreenViewModel: HomeScreenViewModel by viewModels()
@@ -50,7 +55,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             SetupStatusBarIconsColorEffect()
-            GridLauncherTheme {
+            val mainColor by themeRepository.currentTheme.collectAsState()
+            GridLauncherTheme(mainColor) {
                 HomeScreen(homeScreenViewModel)
             }
         }

@@ -15,10 +15,12 @@ import tgo1014.gridlauncher.data.AppIconManagerImpl
 import tgo1014.gridlauncher.data.AppsManagerDataSourceImpl
 import tgo1014.gridlauncher.data.AppsManagerImpl
 import tgo1014.gridlauncher.data.SettingsRepositoryImpl
+import tgo1014.gridlauncher.data.ThemeRepositoryImpl
 import tgo1014.gridlauncher.domain.AppIconManager
 import tgo1014.gridlauncher.domain.AppsManager
 import tgo1014.gridlauncher.domain.AppsManagerDataSource
 import tgo1014.gridlauncher.domain.SettingsRepository
+import tgo1014.gridlauncher.domain.ThemeRepository
 import javax.inject.Singleton
 
 @Module
@@ -40,6 +42,10 @@ abstract class StorageModule {
     @Binds
     @Singleton
     abstract fun bindSettingsRepository(repo: SettingsRepositoryImpl): SettingsRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindThemeRepository(repo: ThemeRepositoryImpl): ThemeRepository
 
     companion object {
 
