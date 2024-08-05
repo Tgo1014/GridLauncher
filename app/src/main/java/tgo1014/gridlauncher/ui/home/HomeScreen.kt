@@ -105,8 +105,7 @@ private fun HomeScreen(
     if (state.tileSettings.isTransparencyEnabled) {
         AsyncImage(
             model = state.tileSettings.wallpaperFile,
-            contentScale = ContentScale.FillHeight,
-            contentDescription = null,
+            contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxSize()
                 .haze(state = hazeState)
