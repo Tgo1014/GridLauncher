@@ -29,7 +29,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
-import coil.compose.AsyncImagePainter
+import coil3.compose.AsyncImagePainter
 import kotlin.random.Random
 
 operator fun PaddingValues.plus(that: PaddingValues): PaddingValues = object : PaddingValues {
@@ -149,7 +149,7 @@ fun AsyncImage(
     alpha: Float = DefaultAlpha,
     colorFilter: ColorFilter? = null,
     filterQuality: FilterQuality = DrawScope.DefaultFilterQuality,
-) = coil.compose.AsyncImage(
+) = coil3.compose.AsyncImage(
     model = model,
     contentDescription = contentDescription,
     modifier,

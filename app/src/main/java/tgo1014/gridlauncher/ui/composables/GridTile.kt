@@ -26,10 +26,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.Wallpapers
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import tgo1014.gridlauncher.domain.models.App
 import tgo1014.gridlauncher.domain.models.TileSettings
 import tgo1014.gridlauncher.ui.models.GridItem
+import tgo1014.gridlauncher.ui.theme.AsyncImage
 import tgo1014.gridlauncher.ui.theme.GridLauncherTheme
 import tgo1014.gridlauncher.ui.theme.flipRandomly
 import tgo1014.gridlauncher.ui.theme.isPreview
@@ -65,7 +65,6 @@ fun GridTile(
         if (!tileSettings.isTransparencyEnabled) {
             AsyncImage(
                 model = app.icon.bgFile,
-                contentDescription = null,
                 contentScale = ContentScale.FillWidth,
                 modifier = Modifier.fillMaxSize()
             )
