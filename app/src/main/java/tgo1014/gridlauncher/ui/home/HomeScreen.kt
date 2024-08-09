@@ -1,6 +1,5 @@
 package tgo1014.gridlauncher.ui.home
 
-import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,11 +26,10 @@ import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.haze
 import kotlinx.coroutines.launch
 import tgo1014.gridlauncher.domain.models.App
-import tgo1014.gridlauncher.domain.models.Direction
-import tgo1014.gridlauncher.domain.models.TileSettings
-import tgo1014.gridlauncher.domain.models.TileSize
 import tgo1014.gridlauncher.ui.composables.LaunchedIfTrueEffect
 import tgo1014.gridlauncher.ui.models.GridItem
+import tgo1014.gridlauncher.ui.models.SettingsEvent
+import tgo1014.gridlauncher.ui.models.TileEvent
 import tgo1014.gridlauncher.ui.theme.AsyncImage
 
 @Composable
@@ -42,22 +40,17 @@ fun HomeScreen(
     HomeScreen(
         state = state,
         onAppClicked = viewModel::onOpenApp,
+        onAddToGrid = viewModel::onAddToGrid,
         onOpenNotificationShade = viewModel::openNotificationShade,
         onHome = viewModel::onSwitchedToHome,
-        onAddToGrid = viewModel::onAddToGrid,
-        onFilterClearPressed = viewModel::onFilterCleared,
         onFilterTextChanged = viewModel::onFilterTextChanged,
+        onFilterClearPressed = viewModel::onFilterCleared,
         onUninstall = viewModel::uninstallApp,
         onItemClicked = viewModel::onGridItemClicked,
         onItemLongClicked = viewModel::onGridItemLongClicked,
-        onEditSheetDismiss = viewModel::onEditSheetDismissed,
-        onItemMoved = viewModel::onItemMoved,
-        onSizeChange = viewModel::onSizeChanged,
-        onRemoveClicked = viewModel::onRemoveClicked,
-        onSettingsUpdated = viewModel::onSettingsUpdated,
         onFabClosed = viewModel::onFabClosed,
-        onRemoveWallpaper = viewModel::onRemoveWallpaper,
-        onWallpaperPicked = viewModel::onWallpaperPicked,
+        onSettingsEvent = viewModel::onSettingsEvent,
+        onTileEvent = viewModel::onTileEvent
     )
 }
 
@@ -73,14 +66,9 @@ private fun HomeScreen(
     onUninstall: (App) -> Unit = {},
     onItemClicked: (item: GridItem) -> Unit = {},
     onItemLongClicked: (item: GridItem) -> Unit = {},
-    onEditSheetDismiss: () -> Unit = {},
-    onItemMoved: (Direction) -> Unit = {},
-    onSizeChange: (tileSize: TileSize) -> Unit = {},
-    onRemoveClicked: () -> Unit = {},
-    onSettingsUpdated: (TileSettings) -> Unit = {},
     onFabClosed: () -> Unit = {},
-    onRemoveWallpaper: () -> Unit = {},
-    onWallpaperPicked: (Uri) -> Unit = {},
+    onSettingsEvent: (SettingsEvent) -> Unit = {},
+    onTileEvent: (TileEvent) -> Unit = {},
 ) = Box {
     val pagerState = rememberPagerState { 2 }
     val scope = rememberCoroutineScope()
@@ -129,13 +117,8 @@ private fun HomeScreen(
                 onOpenNotificationShade = onOpenNotificationShade,
                 onItemClicked = onItemClicked,
                 onItemLongClicked = onItemLongClicked,
-                onEditSheetDismiss = onEditSheetDismiss,
-                onItemMoved = onItemMoved,
-                onSizeChange = onSizeChange,
-                onRemoveClicked = onRemoveClicked,
-                onSettingsUpdated = onSettingsUpdated,
-                onRemoveWallpaper = onRemoveWallpaper,
-                onWallpaperPicked = onWallpaperPicked,
+                onSettingsEvent = onSettingsEvent,
+                onTileEvent = onTileEvent,
                 onFooterClicked = {
                     scope.launch {
                         pagerState.animateScrollToPage(1)

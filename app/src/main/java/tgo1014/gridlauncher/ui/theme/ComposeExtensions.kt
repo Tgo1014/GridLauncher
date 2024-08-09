@@ -51,6 +51,20 @@ operator fun PaddingValues.plus(that: PaddingValues): PaddingValues = object : P
 fun Modifier.modifyIf(condition: Boolean, modifier: Modifier.() -> Modifier): Modifier =
     if (condition) this.then(modifier(Modifier)) else this
 
+fun Modifier.conditional(
+    condition: Boolean,
+    ifTrue: Modifier.() -> Modifier,
+    ifFalse: (Modifier.() -> Modifier)? = null
+): Modifier {
+    return if (condition) {
+        then(ifTrue(Modifier))
+    } else if (ifFalse != null) {
+        then(ifFalse(Modifier))
+    } else {
+        this
+    }
+}
+
 val isPreview @Composable get() = LocalInspectionMode.current
 
 @Composable

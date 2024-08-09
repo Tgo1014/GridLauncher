@@ -15,6 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -70,8 +71,10 @@ fun GridTile(
             )
         }
         val onContainer = MaterialTheme.colorScheme.onPrimaryContainer
+        val contentColor = contentColorFor(MaterialTheme.colorScheme.primary)
         val textColor = remember {
             when {
+                tileSettings.isTransparencyEnabled -> contentColor
                 app.icon.bgFile == null -> onContainer
                 app.icon.isLightBackground -> Color.Black
                 else -> Color.White
@@ -101,7 +104,8 @@ fun GridTile(
                     modifier = Modifier
                         .align(Alignment.BottomStart)
                         .fillMaxWidth()
-                        .padding(8.dp),
+                        .padding(8.dp)
+                        .padding(horizontal = (tileSettings.cornerRadius * 0.5).dp),
                 )
             }
         }

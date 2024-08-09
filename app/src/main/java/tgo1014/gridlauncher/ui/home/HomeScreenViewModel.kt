@@ -1,6 +1,5 @@
 package tgo1014.gridlauncher.ui.home
 
-import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,9 +16,6 @@ import tgo1014.gridlauncher.data.withoutAccents
 import tgo1014.gridlauncher.domain.AppsManager
 import tgo1014.gridlauncher.domain.SettingsRepository
 import tgo1014.gridlauncher.domain.models.App
-import tgo1014.gridlauncher.domain.models.Direction
-import tgo1014.gridlauncher.domain.models.TileSettings
-import tgo1014.gridlauncher.domain.models.TileSize
 import tgo1014.gridlauncher.domain.usecases.AddToGridUseCase
 import tgo1014.gridlauncher.domain.usecases.GetAppListUseCase
 import tgo1014.gridlauncher.domain.usecases.ItemGridSizeChangeUseCase
@@ -29,6 +25,8 @@ import tgo1014.gridlauncher.domain.usecases.RemoveFromGridUseCase
 import tgo1014.gridlauncher.domain.usecases.wallpaper.OnWallpaperPickedUseCase
 import tgo1014.gridlauncher.domain.usecases.wallpaper.RemoveWallpaperUseCase
 import tgo1014.gridlauncher.ui.models.GridItem
+import tgo1014.gridlauncher.ui.models.SettingsEvent
+import tgo1014.gridlauncher.ui.models.TileEvent
 import javax.inject.Inject
 
 @HiltViewModel
@@ -72,10 +70,6 @@ class HomeScreenViewModel @Inject constructor(
     fun onGridItemClicked(gridItem: GridItem) = viewModelScope.launch {
         when {
             !_stateFlow.value.isEditMode -> onOpenApp(gridItem.app)
-//            gridItem == _stateFlow.value.itemBeingEdited -> {
-//                removeFromGridUseCase(gridItem)
-//                    .onSuccess { _stateFlow.update { it.copy(itemBeingEdited = null) } }
-//            }
             else -> _stateFlow.update { it.copy(itemBeingEdited = gridItem) }
         }
     }
@@ -115,42 +109,30 @@ class HomeScreenViewModel @Inject constructor(
         _stateFlow.update { it.copy(filterString = "", appList = fullAppList) }
     }
 
-    fun onEditSheetDismissed() {
-        _stateFlow.update { it.copy(itemBeingEdited = null) }
-    }
-
-    fun onItemMoved(direction: Direction) = viewModelScope.launch {
-        val item = _stateFlow.value.itemBeingEdited ?: return@launch
-        moveGridItemUseCase(item.id, direction)
-    }
-
-    fun onSizeChanged(tileSize: TileSize) = viewModelScope.launch {
-        val item = _stateFlow.value.itemBeingEdited ?: return@launch
-        itemGridSizeChangeUseCase(item.id, tileSize)
-    }
-
-    fun onRemoveClicked() = viewModelScope.launch {
-        val item = _stateFlow.value.itemBeingEdited ?: return@launch
-        removeFromGridUseCase(item)
-            .onSuccess {
-                _stateFlow.update { it.copy(itemBeingEdited = null) }
-            }
-    }
-
     fun onFabClosed() {
         _stateFlow.update { it.copy(closeSearchFab = false) }
     }
 
-    fun onRemoveWallpaper() = viewModelScope.launch {
-        onRemoveWallpaperUseCase()
+    fun onSettingsEvent(event: SettingsEvent) = viewModelScope.launch {
+        when (event) {
+            SettingsEvent.OnSettingsIconClicked -> _stateFlow.update { it.copy(isSettingsSheetShowing = true) }
+            SettingsEvent.OnSettingsSheetDismissed -> _stateFlow.update { it.copy(isSettingsSheetShowing = false) }
+            is SettingsEvent.OnSettingsUpdated -> settingsRepository.updateSettings(event.tileSettings)
+            is SettingsEvent.OnWallpaperPicked -> onWallpaperPickedUseCase(event.uri)
+            SettingsEvent.OnWallpaperRemoved -> onRemoveWallpaperUseCase()
+        }
     }
 
-    fun onWallpaperPicked(uri: Uri) = viewModelScope.launch {
-        onWallpaperPickedUseCase(uri)
-    }
-
-    fun onSettingsUpdated(tileSettings: TileSettings) = viewModelScope.launch {
-        settingsRepository.updateSettings(tileSettings)
+    fun onTileEvent(event: TileEvent) = viewModelScope.launch {
+        val item = _stateFlow.value.itemBeingEdited ?: return@launch
+        when (event) {
+            is TileEvent.OnTileMoved -> moveGridItemUseCase(item.id, event.direction)
+            is TileEvent.OnSizeChange -> itemGridSizeChangeUseCase(item.id, event.tileSize)
+            TileEvent.OnTileSettingsSheetDismissed -> _stateFlow.update { it.copy(itemBeingEdited = null) }
+            TileEvent.OnRemoveClicked -> removeFromGridUseCase(item).onSuccess {
+                _stateFlow.update { it.copy(itemBeingEdited = null) }
+            }
+        }
     }
 
     private fun init() = viewModelScope.launch {

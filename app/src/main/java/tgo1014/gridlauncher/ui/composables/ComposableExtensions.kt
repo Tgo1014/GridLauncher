@@ -12,6 +12,3 @@ fun LaunchedIfTrueEffect(check: Boolean, block: suspend CoroutineScope.() -> Uni
         }
     }
 }
-
-@Composable
-fun LaunchedUnitEffect(block: suspend CoroutineScope.() -> Unit) = LaunchedEffect(Unit, block)

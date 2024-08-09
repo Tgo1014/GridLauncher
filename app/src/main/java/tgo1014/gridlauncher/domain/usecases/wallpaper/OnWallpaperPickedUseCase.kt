@@ -19,8 +19,6 @@ class OnWallpaperPickedUseCase @Inject constructor(
     @ApplicationContext private val context: Context,
     private val settingsRepository: SettingsRepository,
 ) {
-
-
     suspend operator fun invoke(uri: Uri) = runCatching {
         withContext(Dispatchers.IO) {
             val inputStream = context.contentResolver.openInputStream(uri)

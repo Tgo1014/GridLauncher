@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.compose.compiler.gradle.ComposeFeatureFlag
+
 plugins {
     kotlin("kapt")
     kotlin("plugin.serialization") version libs.versions.kotlin.get()
@@ -31,7 +33,7 @@ android {
     }
     buildTypes {
         debug {
-            //isMinifyEnabled = true
+            // isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -60,7 +62,11 @@ android {
 }
 
 composeCompiler {
-    enableStrongSkippingMode = true
+    featureFlags = setOf(
+        ComposeFeatureFlag.IntrinsicRemember,
+        ComposeFeatureFlag.OptimizeNonSkippingGroups,
+        ComposeFeatureFlag.StrongSkipping,
+    )
 }
 
 kapt.correctErrorTypes = true

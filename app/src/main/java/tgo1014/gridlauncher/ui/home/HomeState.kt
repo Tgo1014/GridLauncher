@@ -12,6 +12,7 @@ data class HomeState(
     val filterString: String = "",
     val itemBeingEdited: GridItem? = null,
     val tileSettings: TileSettings = TileSettings(),
+    val isSettingsSheetShowing: Boolean = false,
 ) {
     val isEditMode get() = itemBeingEdited != null
 }

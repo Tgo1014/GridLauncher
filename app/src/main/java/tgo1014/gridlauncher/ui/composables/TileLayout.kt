@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,6 +22,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
@@ -73,15 +75,17 @@ fun TileLayout(
         }
         base = basePadding
     }
-    val hazeChildModifier = Modifier.hazeChild(
-        state = hazeState,
-        style = HazeStyle(
-            backgroundColor = MaterialTheme.colorScheme.primary,
-            tint = MaterialTheme.colorScheme.primary.copy(0.3f),
-            blurRadius = 5.dp,
-            noiseFactor = 0.09f
-        ),
-    )
+    val hazeChildModifier = Modifier
+        .clip(RoundedCornerShape(tileSettings.cornerRadius))
+        .hazeChild(
+            state = hazeState,
+            style = HazeStyle(
+                backgroundColor = MaterialTheme.colorScheme.primary,
+                tint = MaterialTheme.colorScheme.primary.copy(0.3f),
+                blurRadius = 5.dp,
+                noiseFactor = 0.09f
+            ),
+        )
     LazyTable(
         scrollDirection = LazyTableScrollDirection.VERTICAL,
         contentPadding = base,
@@ -138,8 +142,6 @@ fun TileLayout(
             itemContent = { footer(hazeChildModifier) }
         )
     }
-
-
 }
 
 @Composable
