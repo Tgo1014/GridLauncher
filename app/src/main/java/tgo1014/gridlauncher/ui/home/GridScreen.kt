@@ -108,7 +108,7 @@ private fun Footer(
     onFooterClicked: () -> Unit = {},
     tileSettings: TileSettings = TileSettings()
 ) {
-    val bgColor = MaterialTheme.colorScheme.primary
+    val bgColor = MaterialTheme.colorScheme.primaryContainer
     val _modifier = Modifier
         .conditional(
             condition = tileSettings.isTransparencyEnabled,
@@ -144,7 +144,7 @@ private fun SettingsIcon(
             .height(40.dp)
             .aspectRatio(1f)
     ) {
-        val contentColor = contentColorFor(MaterialTheme.colorScheme.primary)
+        val contentColor = contentColorFor(MaterialTheme.colorScheme.primaryContainer)
         if (tileSettings.isTransparencyEnabled) {
             Box(
                 modifier = modifier

@@ -32,7 +32,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastMaxOfOrNull
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
+import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeChild
+import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
 import eu.wewox.lazytable.LazyTable
 import eu.wewox.lazytable.LazyTableItem
 import eu.wewox.lazytable.LazyTableScrollDirection
@@ -45,6 +47,7 @@ import tgo1014.gridlauncher.ui.theme.modifyIf
 import tgo1014.gridlauncher.ui.theme.plus
 
 
+@OptIn(ExperimentalHazeMaterialsApi::class)
 @Composable
 fun TileLayout(
     grid: List<GridItem>,
@@ -60,7 +63,7 @@ fun TileLayout(
     footer: @Composable (Modifier) -> Unit = {},
 ) = BoxWithConstraints(modifier = modifier) {
     val padding = 4.dp
-    val gridItemSize = (maxWidth - (padding * 2)) / columns
+    val gridItemSize = (this.maxWidth - (padding * 2)) / columns
     var firstItemPosition: Float? by remember { mutableStateOf(null) }
     LaunchedIfTrueEffect(grid.isEmpty()) {
         isOnTop(true)
@@ -81,9 +84,9 @@ fun TileLayout(
             state = hazeState,
             style = HazeStyle(
                 backgroundColor = MaterialTheme.colorScheme.primary,
-                tint = MaterialTheme.colorScheme.primary.copy(0.3f),
-                blurRadius = 5.dp,
-                noiseFactor = 0.09f
+                tint = HazeTint.Color(MaterialTheme.colorScheme.primaryContainer.copy(0.3f)),
+                blurRadius = 10.dp,
+                noiseFactor = 0.02f
             ),
         )
     LazyTable(

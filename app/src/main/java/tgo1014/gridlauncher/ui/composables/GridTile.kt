@@ -2,7 +2,6 @@ package tgo1014.gridlauncher.ui.composables
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -55,7 +54,6 @@ fun GridTile(
                 flipRandomly()
             }
             .tileEditMode(isEditMode)
-            .background(MaterialTheme.colorScheme.primaryContainer, shape)
             .clip(shape)
             .combinedClickable(
                 onClick = { onItemClicked(item) },
@@ -71,7 +69,7 @@ fun GridTile(
             )
         }
         val onContainer = MaterialTheme.colorScheme.onPrimaryContainer
-        val contentColor = contentColorFor(MaterialTheme.colorScheme.primary)
+        val contentColor = contentColorFor(MaterialTheme.colorScheme.primaryContainer)
         val textColor = remember {
             when {
                 tileSettings.isTransparencyEnabled -> contentColor
