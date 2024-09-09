@@ -4,6 +4,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
@@ -28,11 +29,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -56,6 +56,8 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.hazeChild
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -63,6 +65,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import tgo1014.gridlauncher.R
 import tgo1014.gridlauncher.domain.models.App
+import tgo1014.gridlauncher.domain.usecases.wallpaper.AppHazeStyle
 import tgo1014.gridlauncher.ui.composables.LaunchedIfTrueEffect
 import tgo1014.gridlauncher.ui.composables.SearchFab
 import tgo1014.gridlauncher.ui.composables.SearchFabState
@@ -79,6 +82,7 @@ import tgo1014.gridlauncher.ui.theme.plus
 @Composable
 fun AppListScreen(
     state: HomeState,
+    hazeState: HazeState = remember { HazeState() },
     onAppClicked: (App) -> Unit = {},
     onAddToGrid: (App) -> Unit = {},
     onOpenNotificationShade: () -> Unit = {},
@@ -129,21 +133,37 @@ fun AppListScreen(
         val shape = RoundedCornerShape(state.tileSettings.cornerRadius)
         listByLetter.forEach { group ->
             item(key = group.key) {
-                Card(
-                    shape = shape,
-                    colors = CardDefaults.cardColors(containerColor = mainColor),
+                val primaryContainer = MaterialTheme.colorScheme.primaryContainer
+                Box(
                     modifier = Modifier
                         .graphicsLayer { rotationX = angle }
                         .size(50.dp)
                         .animateItem()
+                        .clip(shape)
+                        .modifyIf(!state.tileSettings.isTransparencyEnabled) {
+                            background(primaryContainer)
+                        }
+                        .hazeChild(
+                            state = hazeState,
+                            style = AppHazeStyle,
+                        )
                 ) {
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(6.dp)
                     ) {
+                        val onContainer = MaterialTheme.colorScheme.onPrimaryContainer
+                        val contentColor = contentColorFor(MaterialTheme.colorScheme.primaryContainer)
+                        val textColor = remember {
+                            when {
+                                state.tileSettings.isTransparencyEnabled -> contentColor
+                                else -> onContainer
+                            }
+                        }
                         Text(
                             text = group.key.uppercase(),
+                            color = textColor,
                             fontSize = 30.sp,
                             modifier = Modifier.align(Alignment.BottomStart)
                         )

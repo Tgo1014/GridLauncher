@@ -137,6 +137,7 @@ private fun HomeScreen(
 
             1 -> AppListScreen(
                 state = state,
+                hazeState = hazeState,
                 onAppClicked = onAppClicked,
                 onOpenNotificationShade = onOpenNotificationShade,
                 onAddToGrid = onAddToGrid,

@@ -15,7 +15,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -159,10 +158,11 @@ private fun SettingsIcon(
                 )
             }
         } else {
-            Button(
-                shape = RoundedCornerShape(tileSettings.cornerRadius),
-                onClick = { onClicked() },
-                contentPadding = PaddingValues(0.dp),
+            Box(
+                modifier = modifier
+                    .background(MaterialTheme.colorScheme.primaryContainer)
+                    .clickable { onClicked() }
+                    .padding(8.dp)
             ) {
                 Icon(
                     imageVector = Icons.Filled.Settings,

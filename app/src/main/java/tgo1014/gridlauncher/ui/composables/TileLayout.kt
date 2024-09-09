@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -31,8 +30,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastMaxOfOrNull
 import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.HazeStyle
-import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeChild
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
 import eu.wewox.lazytable.LazyTable
@@ -42,6 +39,7 @@ import eu.wewox.lazytable.lazyTableDimensions
 import tgo1014.gridlauncher.app.Constants.gridColumns
 import tgo1014.gridlauncher.domain.models.App
 import tgo1014.gridlauncher.domain.models.TileSettings
+import tgo1014.gridlauncher.domain.usecases.wallpaper.AppHazeStyle
 import tgo1014.gridlauncher.ui.models.GridItem
 import tgo1014.gridlauncher.ui.theme.modifyIf
 import tgo1014.gridlauncher.ui.theme.plus
@@ -82,12 +80,7 @@ fun TileLayout(
         .clip(RoundedCornerShape(tileSettings.cornerRadius))
         .hazeChild(
             state = hazeState,
-            style = HazeStyle(
-                backgroundColor = MaterialTheme.colorScheme.primary,
-                tint = HazeTint.Color(MaterialTheme.colorScheme.primaryContainer.copy(0.3f)),
-                blurRadius = 10.dp,
-                noiseFactor = 0.02f
-            ),
+            style = AppHazeStyle,
         )
     LazyTable(
         scrollDirection = LazyTableScrollDirection.VERTICAL,
