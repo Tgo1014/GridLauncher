@@ -85,7 +85,6 @@ dependencies {
     implementation(libs.material3)
     implementation(libs.bundles.hilt)
     kapt(libs.hilt.kapt)
-    implementation(libs.reorderable)
     implementation(libs.coil.compose)
     implementation(libs.accompanist.systemuicontroller)
     implementation(libs.androidx.datastore)

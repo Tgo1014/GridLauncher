@@ -19,7 +19,6 @@ kotlinx-serialization-json = "1.7.2"
 lazytable = "1.9.0-beta01"
 lifecycle-runtime = "2.9.0-alpha02"
 material-kolor = "1.7.0"
-reorderable = "0.9.6" # TODO update this
 
 [libraries]
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist-systemuicontroller" }
@@ -45,7 +44,6 @@ lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", v
 # ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 material-kolor = { module = "com.materialkolor:material-kolor", version.ref = "material-kolor" }
 material3 = { module = "androidx.compose.material3:material3" }
-reorderable = { module = "org.burnoutcrew.composereorderable:reorderable", version.ref = "reorderable" }
 ui = { module = "androidx.compose.ui:ui" }
 ui-graphics = { module = "androidx.compose.ui:ui-graphics" }
 ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
