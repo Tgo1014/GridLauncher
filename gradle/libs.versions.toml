@@ -19,7 +19,7 @@ kotlinx-serialization-json = "1.7.2"
 lazytable = "1.9.0-beta01"
 lifecycle-runtime = "2.9.0-alpha02"
 material-kolor = "1.7.0"
-reorderable = "0.9.6"
+reorderable = "0.9.6" # TODO update this
 
 [libraries]
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist-systemuicontroller" }

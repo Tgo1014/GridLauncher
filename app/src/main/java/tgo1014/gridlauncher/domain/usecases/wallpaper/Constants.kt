@@ -5,3 +5,6 @@ import java.io.File
 
 val Context.wallpaperFile: File
     get() = File(cacheDir, "wallpaper.png")
+
+val Context.wallpaperDarkFile: File
+    get() = File(cacheDir, "wallpaperDark.png")

@@ -89,6 +89,7 @@ fun GridScreenScreen(
         modifier = Modifier
             .fillMaxSize()
             .onOpenNotificationShade(isOnTop, onOpenNotificationShade)
+            // .background(Color.Black) TODO this line recreates old WP 7 style, need to add some options for this in the future
     )
     TileSettingsBottomSheet(
         isShowing = state.isEditMode,

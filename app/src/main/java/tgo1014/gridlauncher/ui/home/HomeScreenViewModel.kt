@@ -22,8 +22,10 @@ import tgo1014.gridlauncher.domain.usecases.ItemGridSizeChangeUseCase
 import tgo1014.gridlauncher.domain.usecases.MoveGridItemUseCase
 import tgo1014.gridlauncher.domain.usecases.OpenNotificationShadeUseCase
 import tgo1014.gridlauncher.domain.usecases.RemoveFromGridUseCase
-import tgo1014.gridlauncher.domain.usecases.wallpaper.OnWallpaperPickedUseCase
+import tgo1014.gridlauncher.domain.usecases.wallpaper.OnSystemThemeChangedUseCase
 import tgo1014.gridlauncher.domain.usecases.wallpaper.RemoveWallpaperUseCase
+import tgo1014.gridlauncher.domain.usecases.wallpaper.StoreWallpaperPickedUseCase
+import tgo1014.gridlauncher.domain.usecases.wallpaper.UpdateWallpaperBasedOnThemeUseCase
 import tgo1014.gridlauncher.ui.models.GridItem
 import tgo1014.gridlauncher.ui.models.SettingsEvent
 import tgo1014.gridlauncher.ui.models.TileEvent
@@ -39,8 +41,10 @@ class HomeScreenViewModel @Inject constructor(
     private val itemGridSizeChangeUseCase: ItemGridSizeChangeUseCase,
     private val appsManager: AppsManager,
     private val settingsRepository: SettingsRepository,
-    private val onWallpaperPickedUseCase: OnWallpaperPickedUseCase,
+    private val storeWallpaperPickedUseCase: StoreWallpaperPickedUseCase,
     private val onRemoveWallpaperUseCase: RemoveWallpaperUseCase,
+    private val onSystemThemeChangedUseCase: OnSystemThemeChangedUseCase,
+    private val updateWallpaperBasedOnThemeUseCase: UpdateWallpaperBasedOnThemeUseCase,
 ) : ViewModel() {
 
     private var fullAppList: List<App> = emptyList()
@@ -115,10 +119,20 @@ class HomeScreenViewModel @Inject constructor(
 
     fun onSettingsEvent(event: SettingsEvent) = viewModelScope.launch {
         when (event) {
-            SettingsEvent.OnSettingsIconClicked -> _stateFlow.update { it.copy(isSettingsSheetShowing = true) }
-            SettingsEvent.OnSettingsSheetDismissed -> _stateFlow.update { it.copy(isSettingsSheetShowing = false) }
+            SettingsEvent.OnSettingsIconClicked -> _stateFlow.update {
+                it.copy(
+                    isSettingsSheetShowing = true
+                )
+            }
+
+            SettingsEvent.OnSettingsSheetDismissed -> _stateFlow.update {
+                it.copy(
+                    isSettingsSheetShowing = false
+                )
+            }
+
             is SettingsEvent.OnSettingsUpdated -> settingsRepository.updateSettings(event.tileSettings)
-            is SettingsEvent.OnWallpaperPicked -> onWallpaperPickedUseCase(event.uri)
+            is SettingsEvent.OnWallpaperPicked -> storeWallpaperPickedUseCase(event.uri)
             SettingsEvent.OnWallpaperRemoved -> onRemoveWallpaperUseCase()
         }
     }
@@ -136,6 +150,7 @@ class HomeScreenViewModel @Inject constructor(
     }
 
     private fun init() = viewModelScope.launch {
+        observeSystemTheme()
         getAppListUseCase()
             .onEach { appList ->
                 fullAppList = appList
@@ -145,6 +160,12 @@ class HomeScreenViewModel @Inject constructor(
         appsManager.homeGridFlow
             .onEach { grid -> _stateFlow.update { it.copy(grid = grid) } }
             .launchIn(this)
+    }
+
+    private fun observeSystemTheme() {
+        onSystemThemeChangedUseCase()
+            .onEach { updateWallpaperBasedOnThemeUseCase() }
+            .launchIn(viewModelScope)
     }
 
     private fun resetState() {

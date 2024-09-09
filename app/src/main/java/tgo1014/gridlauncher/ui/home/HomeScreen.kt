@@ -10,6 +10,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -18,10 +19,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.util.lerp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.haze
 import kotlinx.coroutines.launch
@@ -91,13 +95,18 @@ private fun HomeScreen(
     }
     val hazeState = remember { HazeState() }
     if (state.tileSettings.isTransparencyEnabled) {
-        AsyncImage(
-            model = state.tileSettings.wallpaperFile,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .fillMaxSize()
-                .haze(state = hazeState)
-        )
+        key(state.tileSettings.wallpaperFile) {
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(state.tileSettings.wallpaperFile)
+                    .crossfade(true)
+                    .build(),
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .haze(state = hazeState)
+            )
+        }
     }
     HorizontalPager(
         state = pagerState,
